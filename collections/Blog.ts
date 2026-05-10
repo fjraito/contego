@@ -6,6 +6,8 @@ export const Blog: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'category', 'status', 'publishedAt'],
+    preview: (doc) =>
+      doc?.slug ? `${process.env.NEXT_PUBLIC_SERVER_URL}/blog/${doc.slug}` : null,
   },
   fields: [
     {
