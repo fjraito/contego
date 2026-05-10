@@ -11,22 +11,61 @@ export const Blog: CollectionConfig = {
   },
   fields: [
     {
-      name: 'title',
-      type: 'text',
-      required: true,
+      type: 'tabs',
+      tabs: [
+        {
+          label: 'Content',
+          fields: [
+            {
+              name: 'title',
+              type: 'text',
+              required: true,
+            },
+            {
+              name: 'excerpt',
+              type: 'textarea',
+              admin: { description: 'Short summary shown in blog listings and SEO description.' },
+            },
+            {
+              name: 'content',
+              type: 'richText',
+            },
+          ],
+        },
+        {
+          label: 'SEO',
+          fields: [
+            {
+              name: 'seo',
+              type: 'group',
+              label: false,
+              fields: [
+                { name: 'metaTitle', type: 'text', admin: { description: 'Defaults to post title if empty.' } },
+                { name: 'metaDescription', type: 'textarea', admin: { description: 'Recommended: 140–160 chars.' } },
+                { name: 'canonicalUrl', type: 'text' },
+                { name: 'noIndex', type: 'checkbox', defaultValue: false },
+              ],
+            },
+          ],
+        },
+      ],
     },
     {
       name: 'slug',
       type: 'text',
       required: true,
       unique: true,
-      admin: { description: 'URL-friendly version of the title. e.g. best-prop-firms-2026' },
+      admin: {
+        position: 'sidebar',
+        description: 'URL-friendly. e.g. best-prop-firms-2026',
+      },
     },
     {
       name: 'category',
       type: 'select',
       options: ['SEO', 'AI UGC', 'Social Media', 'Prop Firm News', 'Marketing Strategy'],
       required: true,
+      admin: { position: 'sidebar' },
     },
     {
       name: 'status',
@@ -34,36 +73,21 @@ export const Blog: CollectionConfig = {
       options: ['draft', 'published'],
       defaultValue: 'draft',
       required: true,
+      admin: { position: 'sidebar' },
     },
     {
       name: 'publishedAt',
       type: 'date',
-      admin: { date: { pickerAppearance: 'dayAndTime' } },
+      admin: {
+        position: 'sidebar',
+        date: { pickerAppearance: 'dayAndTime' },
+      },
     },
     {
       name: 'featuredImage',
       type: 'upload',
       relationTo: 'media',
-    },
-    {
-      name: 'excerpt',
-      type: 'textarea',
-      admin: { description: 'Short summary shown in blog listings and SEO description.' },
-    },
-    {
-      name: 'content',
-      type: 'richText',
-    },
-    {
-      name: 'seo',
-      type: 'group',
-      label: 'SEO',
-      fields: [
-        { name: 'metaTitle', type: 'text', admin: { description: 'Defaults to post title if empty.' } },
-        { name: 'metaDescription', type: 'textarea', admin: { description: 'Recommended: 140–160 chars.' } },
-        { name: 'canonicalUrl', type: 'text' },
-        { name: 'noIndex', type: 'checkbox', defaultValue: false },
-      ],
+      admin: { position: 'sidebar' },
     },
   ],
 }
