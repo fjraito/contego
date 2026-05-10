@@ -32,7 +32,8 @@
       "WebFetch(domain:contego.vercel.app)",
       "Bash(node -e \"const p=require\\('./node_modules/@payloadcms/storage-vercel-blob/package.json'\\); console.log\\(p.main || p.exports\\)\")",
       "Bash(node -e \"const p=require\\('./node_modules/@payloadcms/storage-vercel-blob/package.json'\\); console.log\\('deps:', JSON.stringify\\(Object.keys\\(p.dependencies||{}\\)\\)\\); console.log\\('peerDeps:', JSON.stringify\\(Object.keys\\(p.peerDependencies||{}\\)\\)\\)\")",
-      "Bash(node -e \"const p=require\\('./node_modules/@payloadcms/plugin-cloud-storage/package.json'\\); console.log\\(p.version\\)\")"
+      "Bash(node -e \"const p=require\\('./node_modules/@payloadcms/plugin-cloud-storage/package.json'\\); console.log\\(p.version\\)\")",
+      "Bash(npm uninstall *)"
     ]
   }
 }
