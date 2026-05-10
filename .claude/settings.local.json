@@ -23,7 +23,8 @@
       "PowerShell(cd E:\\\\Contego; git add app/\\(payload\\)/admin/[[...segments]]/not-found.tsx; git commit -m \"Fix NotFoundPage type error — add params and searchParams\"; git push 2>&1)",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(node -e \"const p=require\\('./node_modules/@payloadcms/next/package.json'\\); console.log\\(JSON.stringify\\(p.exports, null, 2\\)\\)\")"
     ]
   }
 }
