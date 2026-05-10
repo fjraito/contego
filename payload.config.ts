@@ -25,7 +25,7 @@ export default buildConfig({
   editor: lexicalEditor(),
   plugins: [
     vercelBlobStorage({
-      enabled: true,
+      enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
       collections: {
         media: true,
       },
