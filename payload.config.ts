@@ -1,6 +1,7 @@
 import { buildConfig } from 'payload'
 import { mongooseAdapter } from '@payloadcms/db-mongodb'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { uploadthingStorage } from '@payloadcms/storage-uploadthing'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
@@ -22,6 +23,16 @@ export default buildConfig({
   },
   collections: [Users, Media, Blog, Comparisons],
   editor: lexicalEditor(),
+  plugins: [
+    uploadthingStorage({
+      collections: {
+        media: true,
+      },
+      options: {
+        token: process.env.UPLOADTHING_TOKEN || '',
+      },
+    }),
+  ],
   db: mongooseAdapter({
     url: process.env.DATABASE_URI || '',
   }),
