@@ -89,5 +89,20 @@ export const Blog: CollectionConfig = {
       relationTo: 'media',
       admin: { position: 'sidebar' },
     },
+    {
+      name: 'author',
+      type: 'text',
+      admin: { position: 'sidebar' },
+    },
+    {
+      name: 'editedBy',
+      type: 'text',
+      admin: { position: 'sidebar' },
+    },
+    {
+      name: 'factCheckedBy',
+      type: 'text',
+      admin: { position: 'sidebar' },
+    },
   ],
 }

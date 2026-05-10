@@ -23,21 +23,16 @@ async function getRelated(category, currentSlug) {
   return (data.docs ?? []).filter((p) => p.slug !== currentSlug).slice(0, 3)
 }
 
-function slugify(text) {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)/g, '')
+function toId(text) {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 }
 
 function extractText(nodes = []) {
-  return nodes
-    .flatMap((n) => {
-      if (typeof n.text === 'string') return [n.text]
-      if (n.children) return extractText(n.children)
-      return []
-    })
-    .join(' ')
+  return nodes.flatMap((n) => {
+    if (typeof n.text === 'string') return [n.text]
+    if (n.children) return extractText(n.children)
+    return []
+  }).join(' ')
 }
 
 function extractHeadings(content) {
@@ -46,14 +41,13 @@ function extractHeadings(content) {
     .filter((n) => n.type === 'heading' && (n.tag === 'h2' || n.tag === 'h3'))
     .map((n) => {
       const text = extractText(n.children)
-      return { tag: n.tag, text, id: slugify(text) }
+      return { tag: n.tag, text, id: toId(text) }
     })
 }
 
 function getReadTime(content) {
   if (!content?.root?.children) return null
-  const text = extractText(content.root.children)
-  const words = text.trim().split(/\s+/).filter(Boolean).length
+  const words = extractText(content.root.children).trim().split(/\s+/).filter(Boolean).length
   return Math.max(1, Math.round(words / 225))
 }
 
@@ -68,6 +62,15 @@ export async function generateMetadata({ params }) {
   }
 }
 
+function CheckIcon() {
+  return (
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+      <circle cx="7.5" cy="7.5" r="7.5" fill="var(--green)" />
+      <path d="M4 7.5l2.5 2.5 4.5-4.5" stroke="#06140b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 export default async function BlogPost({ params }) {
   const { slug } = await params
   const post = await getPost(slug)
@@ -78,112 +81,166 @@ export default async function BlogPost({ params }) {
   const related = post.category ? await getRelated(post.category, slug) : []
 
   const publishedDate = post.publishedAt
-    ? new Date(post.publishedAt).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-      })
+    ? new Date(post.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
     : null
+
+  const titleShort = post.title.length > 40 ? post.title.slice(0, 40) + '…' : post.title
 
   return (
     <>
       <Navbar />
       <main>
-        <article>
-          {post.featuredImage?.url && (
-            <div className="post-hero">
-              <div className="shell">
-                <img
-                  src={post.featuredImage.url}
-                  alt={post.featuredImage.alt || post.title}
-                  className="post-hero__img"
-                />
+        <div className="shell">
+          {/* Breadcrumb */}
+          <nav className="post-breadcrumb" aria-label="Breadcrumb">
+            <Link href="/">Home</Link>
+            <span>/</span>
+            <Link href="/blog">Blog</Link>
+            {post.category && (
+              <>
+                <span>/</span>
+                <Link href={`/blog?category=${encodeURIComponent(post.category)}`}>{post.category}</Link>
+              </>
+            )}
+            <span>/</span>
+            <span aria-current="page">{titleShort}</span>
+          </nav>
+
+          {/* Centered header */}
+          <div className="post-center">
+            {post.category && (
+              <Link href={`/blog?category=${encodeURIComponent(post.category)}`} className="post-cat-pill">
+                {post.category}
+              </Link>
+            )}
+            <h1 className="post-h1">{post.title}</h1>
+            {post.excerpt && <p className="post-lead">{post.excerpt}</p>}
+            <div className="post-meta-row">
+              {publishedDate && <span>{publishedDate}</span>}
+              {post.author && <><span className="post-meta-dot">·</span><span>by {post.author}</span></>}
+              {readTime && <><span className="post-meta-dot">·</span><span>{readTime} min read</span></>}
+            </div>
+            {(post.editedBy || post.factCheckedBy) && (
+              <div className="post-verified-row">
+                {post.editedBy && (
+                  <span className="post-verified-item">
+                    <CheckIcon /> Edited by {post.editedBy}
+                  </span>
+                )}
+                {post.factCheckedBy && (
+                  <span className="post-verified-item">
+                    <CheckIcon /> Fact checked by {post.factCheckedBy}
+                  </span>
+                )}
               </div>
+            )}
+          </div>
+
+          {/* Featured image */}
+          {post.featuredImage?.url && (
+            <div className="post-hero-img">
+              <img
+                src={post.featuredImage.url}
+                alt={post.featuredImage.alt || post.title}
+              />
             </div>
           )}
 
-          <div className="shell">
-            <div className="post-wrap">
-              <header className="post-header">
-                {post.category && (
-                  <Link
-                    href={`/blog?category=${encodeURIComponent(post.category)}`}
-                    className="post-cat"
-                  >
-                    {post.category}
-                  </Link>
-                )}
-                <h1 className="post-title">{post.title}</h1>
-                <div className="post-meta">
-                  {publishedDate && (
-                    <time dateTime={post.publishedAt}>{publishedDate}</time>
-                  )}
-                  {readTime && <span>{readTime} min read</span>}
-                </div>
-                {post.excerpt && <p className="post-excerpt">{post.excerpt}</p>}
-              </header>
+          {/* Content layout: TOC left + body right */}
+          <div className="post-layout">
+            {headings.length > 1 && (
+              <aside className="post-toc">
+                <p className="post-toc__label">Table of Contents</p>
+                <ol className="post-toc__list">
+                  {headings.map((h, i) => (
+                    <li key={i} className={h.tag === 'h3' ? 'post-toc__sub' : ''}>
+                      <a href={`#${h.id}`}>{h.text}</a>
+                    </li>
+                  ))}
+                </ol>
+              </aside>
+            )}
 
-              {headings.length > 2 && (
-                <nav className="post-toc" aria-label="Table of contents">
-                  <p className="post-toc__label">What's in this guide</p>
-                  <ol className="post-toc__list">
-                    {headings.map((h, i) => (
-                      <li key={i} className={h.tag === 'h3' ? 'post-toc__sub' : ''}>
-                        <a href={`#${h.id}`}>{h.text}</a>
-                      </li>
-                    ))}
-                  </ol>
-                </nav>
+            <div className="post-body">
+              <RichTextRenderer content={post.content} />
+
+              {/* Author box */}
+              {post.author && (
+                <div className="post-author">
+                  <div className="post-author__avatar">
+                    {post.author.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase()}
+                  </div>
+                  <div className="post-author__info">
+                    <p className="post-author__name">{post.author}</p>
+                    <p className="post-author__role">Contego Team</p>
+                  </div>
+                </div>
               )}
 
-              <div className="post-body">
-                <RichTextRenderer content={post.content} />
+              {/* Verified row bottom */}
+              {(post.editedBy || post.factCheckedBy) && (
+                <div className="post-verified-bottom">
+                  {post.editedBy && (
+                    <span className="post-verified-item">
+                      <CheckIcon /> Edited by {post.editedBy}
+                    </span>
+                  )}
+                  {post.factCheckedBy && (
+                    <span className="post-verified-item">
+                      <CheckIcon /> Fact checked by {post.factCheckedBy}
+                    </span>
+                  )}
+                </div>
+              )}
+
+              {/* Inline CTA */}
+              <div className="post-cta-box">
+                <span className="post-cta-box__eyebrow">Work with Contego</span>
+                <h3 className="post-cta-box__title">Build a prop firm marketing system traders can trust.</h3>
+                <p className="post-cta-box__desc">Get a growth audit for your SEO, social content, AI UGC video, and trader acquisition strategy.</p>
+                <div className="post-cta-box__btns">
+                  <a href="/#cta" className="btn btn-primary">Book a Call <span className="arrow">→</span></a>
+                  <a href="mailto:hello@contego.com" className="btn btn-ghost">Email Contego</a>
+                </div>
               </div>
             </div>
           </div>
-        </article>
 
-        {related.length > 0 && (
-          <section className="post-related">
-            <div className="shell">
-              <h2 className="post-related__title">Related articles</h2>
-              <div className="blog">
+          {/* Related articles */}
+          {related.length > 0 && (
+            <section className="post-related">
+              <h2 className="post-related__title">Related Articles</h2>
+              <div className="bpi-grid bpi-grid--3">
                 {related.map((p) => (
-                  <Link key={p.id} href={`/blog/${p.slug}`} className="blog-card">
-                    <div className="blog-thumb">
-                      {p.featuredImage?.url ? (
-                        <img
-                          src={p.featuredImage.url}
-                          alt={p.featuredImage.alt || p.title}
-                          loading="lazy"
-                        />
-                      ) : (
-                        <div style={{ width: '100%', height: '100%', background: 'var(--surface-2)' }} />
-                      )}
-                    </div>
-                    <div className="blog-body">
-                      <div className="blog-meta">
-                        <span className="tag">{p.category}</span>
-                        {p.publishedAt && (
-                          <time dateTime={p.publishedAt}>
-                            {new Date(p.publishedAt).toLocaleDateString('en-US', {
-                              year: 'numeric',
-                              month: 'short',
-                              day: 'numeric',
-                            })}
-                          </time>
+                  <li key={p.id} style={{ listStyle: 'none' }}>
+                    <Link href={`/blog/${p.slug}`} className="bpi-card">
+                      <div className="bpi-card__img">
+                        {p.featuredImage?.url ? (
+                          <img src={p.featuredImage.url} alt={p.featuredImage.alt || p.title} loading="lazy" />
+                        ) : (
+                          <div className="bpi-card__img-placeholder" />
                         )}
                       </div>
-                      <h3>{p.title}</h3>
-                      {p.excerpt && <p>{p.excerpt}</p>}
-                      <span className="read">Read more</span>
-                    </div>
-                  </Link>
+                      <div className="bpi-card__body">
+                        <div className="bpi-card__meta">
+                          {p.category && <span className="bpi-card__cat">{p.category}</span>}
+                          {p.publishedAt && (
+                            <time dateTime={p.publishedAt}>
+                              {new Date(p.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                            </time>
+                          )}
+                        </div>
+                        <h3 className="bpi-card__title">{p.title}</h3>
+                        {p.excerpt && <p className="bpi-card__excerpt">{p.excerpt}</p>}
+                        <span className="bpi-card__btn">Read More</span>
+                      </div>
+                    </Link>
+                  </li>
                 ))}
               </div>
-            </div>
-          </section>
-        )}
+            </section>
+          )}
+        </div>
       </main>
       <Footer />
     </>
@@ -203,15 +260,8 @@ function renderNode(node, key) {
   if (node.type === 'heading') {
     const Tag = node.tag || 'h2'
     const text = node.children?.map((c) => c.text || '').join('') || ''
-    const id = text
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '')
-    return (
-      <Tag key={key} id={id}>
-        {node.children?.map((c, i) => renderLeaf(c, i))}
-      </Tag>
-    )
+    const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+    return <Tag key={key} id={id}>{node.children?.map((c, i) => renderLeaf(c, i))}</Tag>
   }
   if (node.type === 'list') {
     const Tag = node.listType === 'number' ? 'ol' : 'ul'
@@ -224,15 +274,9 @@ function renderNode(node, key) {
     )
   }
   if (node.type === 'quote') {
-    return (
-      <blockquote key={key}>
-        {node.children?.map((c, i) => renderLeaf(c, i))}
-      </blockquote>
-    )
+    return <blockquote key={key}>{node.children?.map((c, i) => renderLeaf(c, i))}</blockquote>
   }
-  if (node.type === 'horizontalrule') {
-    return <hr key={key} />
-  }
+  if (node.type === 'horizontalrule') return <hr key={key} />
   return null
 }
 
@@ -240,12 +284,7 @@ function renderLeaf(leaf, key) {
   if (leaf.type === 'linebreak') return <br key={key} />
   if (leaf.type === 'link') {
     return (
-      <a
-        key={key}
-        href={leaf.fields?.url}
-        rel="nofollow noopener noreferrer"
-        target="_blank"
-      >
+      <a key={key} href={leaf.fields?.url} rel="nofollow noopener noreferrer" target="_blank">
         {leaf.children?.map((c, i) => renderLeaf(c, i))}
       </a>
     )
