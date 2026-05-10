@@ -45,7 +45,10 @@
       "Bash(curl -sI https://contego.vercel.app/api/users/me)",
       "Bash(curl -s https://contego.vercel.app/api/users)",
       "Bash(curl -sL \"https://contego.vercel.app/_next/static/chunks/app/\\(payload\\)/admin/%5B%5B...segments%5D%5D/page-120b409cfa747fbe.js\" -o /tmp/admin-page.js)",
-      "Bash(npx payload *)"
+      "Bash(npx payload *)",
+      "Bash(curl -sX POST \"https://contego.vercel.app/api/media?depth=0&fallback-locale=null\" -H \"Content-Type: application/json\" -d '{\"alt\":\"test\"}')",
+      "Bash(curl -sX PUT \"https://blob.vercel-storage.com/test-debug.txt\" -H \"authorization: Bearer vercel_blob_rw_o0rxtFdv1VCZYvr3_6Ksn11dczr0VjiCnl1jrfjMWZBaGzW\" -H \"x-content-type: text/plain\" -H \"x-add-random-suffix: 1\" -d \"test\")",
+      "Bash(npx vercel *)"
     ]
   }
 }
