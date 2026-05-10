@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:api.anthropic.com)",
+      "Bash(tar -xf \"/c/Users/fajar/.claude/projects/E--Contego/f74c4310-7800-4694-9be2-de70864a6517/tool-results/design_extracted.txt\" -C \"/c/Users/fajar/.claude/projects/E--Contego/design_extracted/\")",
+      "Read(//c/Users/fajar/.claude/projects/E--Contego/design_extracted//**)",
+      "Bash(mkdir -p /e/Contego/assets && cp \"/c/Users/fajar/.claude/projects/E--Contego/design_extracted/contego-website-design/project/uploads/Contego-Logo-FIX-02-scaled.png\" /e/Contego/assets/contego-logo.png && echo \"done\")",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "mcp__Claude_in_Chrome__browser_batch",
+      "mcp__Claude_in_Chrome__list_connected_browsers",
+      "mcp__Claude_in_Chrome__select_browser",
+      "mcp__Claude_in_Chrome__navigate",
+      "mcp__Claude_in_Chrome__computer",
+      "mcp__Claude_Preview__preview_start",
+      "PowerShell(Get-NetTCPConnection -LocalPort 3000 -State Listen | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }; Write-Output \"killed\")",
+      "Bash(Remove-Item \"E:\\\\Contego\\\\vite.config.js\" -Force)",
+      "Bash(Remove-Item \"E:\\\\Contego\\\\index.html\" -Force)",
+      "Bash(Remove-Item \"E:\\\\Contego\\\\app.jsx\" -Force)",
+      "Bash(Remove-Item \"E:\\\\Contego\\\\hero.jsx\" -Force)",
+      "Bash(Remove-Item \"E:\\\\Contego\\\\sections.jsx\" -Force)",
+      "WebFetch(domain:strapi.io)",
+      "PowerShell(Rename-Item \"E:\\\\Contego\\\\next.config.js\" \"next.config.mjs\")"
+    ]
+  }
+}
