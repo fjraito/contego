@@ -813,6 +813,7 @@ footer {
   padding: 64px 0 48px;
   border-bottom: 1px solid var(--border);
   margin-bottom: 56px;
+  text-align: center;
 }
 .bpi-header__title { font-size: clamp(40px, 5vw, 72px); margin-top: 12px; }
 .bpi-header__sub { color: var(--text-2); font-size: 16px; margin: 10px 0 0; }
@@ -1091,6 +1092,7 @@ html { scroll-behavior: smooth; }
   align-items: start;
   padding-bottom: 80px;
 }
+.post-layout--no-toc { grid-template-columns: 1fr; }
 @media (max-width: 900px) {
   .post-layout { grid-template-columns: 1fr; gap: 32px; }
 }

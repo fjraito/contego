@@ -85,6 +85,8 @@ export default async function BlogPost({ params }) {
     : null
 
   const titleShort = post.title.length > 40 ? post.title.slice(0, 40) + '…' : post.title
+  const authorName = post.author || 'Contego Team'
+  const hasToc = headings.length > 1
 
   return (
     <>
@@ -117,23 +119,27 @@ export default async function BlogPost({ params }) {
             {post.excerpt && <p className="post-lead">{post.excerpt}</p>}
             <div className="post-meta-row">
               {publishedDate && <span>{publishedDate}</span>}
-              {post.author && <><span className="post-meta-dot">·</span><span>by {post.author}</span></>}
+              <span className="post-meta-dot">·</span>
+              <span>by {authorName}</span>
               {readTime && <><span className="post-meta-dot">·</span><span>{readTime} min read</span></>}
             </div>
-            {(post.editedBy || post.factCheckedBy) && (
-              <div className="post-verified-row">
-                {post.editedBy && (
-                  <span className="post-verified-item">
-                    <CheckIcon /> Edited by {post.editedBy}
-                  </span>
-                )}
-                {post.factCheckedBy && (
-                  <span className="post-verified-item">
-                    <CheckIcon /> Fact checked by {post.factCheckedBy}
-                  </span>
-                )}
-              </div>
-            )}
+            <div className="post-verified-row">
+              {post.editedBy && (
+                <span className="post-verified-item">
+                  <CheckIcon /> Edited by {post.editedBy}
+                </span>
+              )}
+              {post.factCheckedBy && (
+                <span className="post-verified-item">
+                  <CheckIcon /> Fact checked by {post.factCheckedBy}
+                </span>
+              )}
+              {!post.editedBy && !post.factCheckedBy && (
+                <span className="post-verified-item">
+                  <CheckIcon /> Fact checked by Contego Editorial
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Featured image */}
@@ -147,8 +153,8 @@ export default async function BlogPost({ params }) {
           )}
 
           {/* Content layout: TOC left + body right */}
-          <div className="post-layout">
-            {headings.length > 1 && (
+          <div className={`post-layout${hasToc ? '' : ' post-layout--no-toc'}`}>
+            {hasToc && (
               <aside className="post-toc">
                 <p className="post-toc__label">Table of Contents</p>
                 <ol className="post-toc__list">
@@ -165,17 +171,15 @@ export default async function BlogPost({ params }) {
               <RichTextRenderer content={post.content} />
 
               {/* Author box */}
-              {post.author && (
-                <div className="post-author">
-                  <div className="post-author__avatar">
-                    {post.author.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase()}
-                  </div>
-                  <div className="post-author__info">
-                    <p className="post-author__name">{post.author}</p>
-                    <p className="post-author__role">Contego Team</p>
-                  </div>
+              <div className="post-author">
+                <div className="post-author__avatar">
+                  {authorName.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase()}
                 </div>
-              )}
+                <div className="post-author__info">
+                  <p className="post-author__name">{authorName}</p>
+                  <p className="post-author__role">Contego Team</p>
+                </div>
+              </div>
 
               {/* Verified row bottom */}
               {(post.editedBy || post.factCheckedBy) && (
