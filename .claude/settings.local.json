@@ -25,7 +25,9 @@
       "Bash(git commit *)",
       "Bash(git push *)",
       "Bash(node -e \"const p=require\\('./node_modules/@payloadcms/next/package.json'\\); console.log\\(JSON.stringify\\(p.exports, null, 2\\)\\)\")",
-      "Bash(cd \"E:\\\\Contego\" && mkdir \"app/\\(frontend\\)/blog\" && mkdir \"app/\\(frontend\\)/blog/[slug]\")"
+      "Bash(cd \"E:\\\\Contego\" && mkdir \"app/\\(frontend\\)/blog\" && mkdir \"app/\\(frontend\\)/blog/[slug]\")",
+      "Bash(npm install *)",
+      "Bash(node -e \"const p=require\\('./node_modules/@payloadcms/storage-vercel-blob/package.json'\\); console.log\\(p.version\\)\")"
     ]
   }
 }
