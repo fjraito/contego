@@ -19,7 +19,8 @@
       "Bash(Remove-Item \"E:\\\\Contego\\\\hero.jsx\" -Force)",
       "Bash(Remove-Item \"E:\\\\Contego\\\\sections.jsx\" -Force)",
       "WebFetch(domain:strapi.io)",
-      "PowerShell(Rename-Item \"E:\\\\Contego\\\\next.config.js\" \"next.config.mjs\")"
+      "PowerShell(Rename-Item \"E:\\\\Contego\\\\next.config.js\" \"next.config.mjs\")",
+      "PowerShell(cd E:\\\\Contego; git add app/\\(payload\\)/admin/[[...segments]]/not-found.tsx; git commit -m \"Fix NotFoundPage type error — add params and searchParams\"; git push 2>&1)"
     ]
   }
 }
