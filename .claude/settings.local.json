@@ -37,7 +37,15 @@
       "Bash(npm show *)",
       "Bash(node -e \"const p=require\\('./node_modules/@payloadcms/plugin-cloud-storage/package.json'\\); console.log\\('exports:', JSON.stringify\\(Object.keys\\(p.exports||{}\\)\\)\\)\")",
       "Bash(node -e \"const p=require\\('./node_modules/@payloadcms/plugin-cloud-storage/package.json'\\); console.log\\(JSON.stringify\\(p.exports, null, 2\\)\\)\")",
-      "Bash(node -e \"const p=require\\('./node_modules/next/package.json'\\); console.log\\(p.version\\)\")"
+      "Bash(node -e \"const p=require\\('./node_modules/next/package.json'\\); console.log\\(p.version\\)\")",
+      "Bash(curl -sL https://contego.vercel.app/admin -o /tmp/admin.html)",
+      "Read(//tmp/**)",
+      "Bash(curl -sI https://contego.vercel.app/admin)",
+      "Bash(curl -sI https://contego.vercel.app/admin/login)",
+      "Bash(curl -sI https://contego.vercel.app/api/users/me)",
+      "Bash(curl -s https://contego.vercel.app/api/users)",
+      "Bash(curl -sL \"https://contego.vercel.app/_next/static/chunks/app/\\(payload\\)/admin/%5B%5B...segments%5D%5D/page-120b409cfa747fbe.js\" -o /tmp/admin-page.js)",
+      "Bash(npx payload *)"
     ]
   }
 }
