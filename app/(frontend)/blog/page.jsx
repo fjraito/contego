@@ -4,7 +4,7 @@ import { Footer } from '@/components/Footer'
 
 export const metadata = {
   title: 'Blog — Contego',
-  description: 'Insights on prop firm marketing, SEO, and growth strategies.',
+  description: 'Prop firm marketing, SEO, and growth insights from the Contego team.',
 }
 
 async function getPosts() {
@@ -23,54 +23,59 @@ export default async function BlogIndex() {
   return (
     <>
       <Navbar />
-      <main className="blog-index">
-        <header className="blog-index__header">
-          <h1>Blog</h1>
-          <p>Prop firm marketing, SEO, and growth insights.</p>
-        </header>
+      <main>
+        <section className="section shell">
+          <div className="section-head" style={{ textAlign: 'left', margin: '0 0 56px' }}>
+            <span className="eyebrow"><span className="dot" />Contego Blog</span>
+            <h1 style={{ marginTop: 16, fontSize: 'clamp(32px, 4vw, 56px)' }}>
+              Insights for prop firm <span className="italic-accent">operators</span>
+            </h1>
+            <p className="muted" style={{ marginTop: 16, fontSize: 17, maxWidth: 560 }}>
+              Marketing, SEO, and growth tactics from the team behind the fastest-growing prop firm brands.
+            </p>
+          </div>
 
-        {posts.length === 0 ? (
-          <p className="blog-index__empty">No posts yet.</p>
-        ) : (
-          <ul className="blog-index__grid">
-            {posts.map((post) => (
-              <li key={post.id} className="blog-card">
-                <Link href={`/blog/${post.slug}`}>
-                  {post.featuredImage?.url && (
-                    <div className="blog-card__image">
-                      <img
-                        src={post.featuredImage.url}
-                        alt={post.featuredImage.alt || post.title}
-                        loading="lazy"
-                      />
+          {posts.length === 0 ? (
+            <p style={{ color: 'var(--text-3)', fontSize: 15 }}>No posts published yet.</p>
+          ) : (
+            <ul className="blog" style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+              {posts.map((post) => (
+                <li key={post.id}>
+                  <Link href={`/blog/${post.slug}`} className="blog-card" style={{ display: 'flex', flexDirection: 'column', height: '100%', textDecoration: 'none' }}>
+                    <div className="blog-thumb">
+                      {post.featuredImage?.url ? (
+                        <img
+                          src={post.featuredImage.url}
+                          alt={post.featuredImage.alt || post.title}
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div style={{ width: '100%', height: '100%', background: 'var(--surface-2)' }} />
+                      )}
                     </div>
-                  )}
-                  <div className="blog-card__body">
-                    {post.category && (
-                      <span className="blog-card__category">{post.category}</span>
-                    )}
-                    <h2 className="blog-card__title">{post.title}</h2>
-                    {post.excerpt && (
-                      <p className="blog-card__excerpt">{post.excerpt}</p>
-                    )}
-                    {post.publishedAt && (
-                      <time
-                        className="blog-card__date"
-                        dateTime={post.publishedAt}
-                      >
-                        {new Date(post.publishedAt).toLocaleDateString('en-US', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        })}
-                      </time>
-                    )}
-                  </div>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
+                    <div className="blog-body">
+                      <div className="blog-meta">
+                        <span className="tag">{post.category}</span>
+                        {post.publishedAt && (
+                          <time dateTime={post.publishedAt}>
+                            {new Date(post.publishedAt).toLocaleDateString('en-US', {
+                              year: 'numeric',
+                              month: 'short',
+                              day: 'numeric',
+                            })}
+                          </time>
+                        )}
+                      </div>
+                      <h3>{post.title}</h3>
+                      {post.excerpt && <p>{post.excerpt}</p>}
+                      <span className="read">Read more</span>
+                    </div>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       </main>
       <Footer />
     </>
