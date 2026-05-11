@@ -7,9 +7,23 @@ const CATEGORIES = ['SEO', 'AI UGC', 'Social Media', 'Prop Firm News', 'Marketin
 
 export async function generateMetadata({ searchParams }) {
   const { category } = await searchParams
+  const title = category ? `${category} — Contego Blog` : 'Blog'
+  const description = 'Prop firm marketing, SEO, and growth insights from the Contego team.'
+  const canonical = category ? `/blog?category=${encodeURIComponent(category)}` : '/blog'
   return {
-    title: category ? `${category} — Contego Blog` : 'Blog — Contego',
-    description: 'Prop firm marketing, SEO, and growth insights from the Contego team.',
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: {
+      type: 'website',
+      title: category ? `${category} — Contego Blog` : 'Contego Blog',
+      description,
+      url: canonical,
+    },
+    twitter: {
+      title: category ? `${category} — Contego Blog` : 'Contego Blog',
+      description,
+    },
   }
 }
 

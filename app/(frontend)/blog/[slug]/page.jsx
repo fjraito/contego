@@ -55,10 +55,32 @@ export async function generateMetadata({ params }) {
   const { slug } = await params
   const post = await getPost(slug)
   if (!post) return {}
+  const title = post.seo?.metaTitle || post.title
+  const description = post.seo?.metaDescription || post.excerpt
+  const ogImage = post.featuredImage?.url
+    ? [{ url: post.featuredImage.url, width: 1200, height: 630, alt: post.featuredImage.alt || title }]
+    : undefined
   return {
-    title: post.seo?.metaTitle || post.title,
-    description: post.seo?.metaDescription || post.excerpt,
+    title,
+    description,
     robots: post.seo?.noIndex ? 'noindex' : 'index,follow',
+    alternates: { canonical: `/blog/${slug}` },
+    openGraph: {
+      type: 'article',
+      title,
+      description,
+      url: `/blog/${slug}`,
+      publishedTime: post.publishedAt,
+      modifiedTime: post.updatedAt || post.publishedAt,
+      authors: post.author ? [post.author] : ['Contego Team'],
+      images: ogImage,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: post.featuredImage?.url ? [post.featuredImage.url] : undefined,
+    },
   }
 }
 
@@ -70,6 +92,8 @@ function CheckIcon() {
     </svg>
   )
 }
+
+const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contego.agency'
 
 export default async function BlogPost({ params }) {
   const { slug } = await params
@@ -88,8 +112,29 @@ export default async function BlogPost({ params }) {
   const authorName = post.author || 'Contego Team'
   const hasToc = headings.length > 1
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.excerpt || '',
+    datePublished: post.publishedAt,
+    dateModified: post.updatedAt || post.publishedAt,
+    url: `${SITE_URL}/blog/${slug}`,
+    author: { '@type': 'Person', name: authorName },
+    publisher: {
+      '@type': 'Organization',
+      name: 'Contego',
+      url: SITE_URL,
+    },
+    ...(post.featuredImage?.url && { image: post.featuredImage.url }),
+  }
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Navbar />
       <main>
         <div className="shell">

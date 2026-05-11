@@ -11,9 +11,33 @@ const instrumentSerif = Instrument_Serif({
   variable: '--font-serif',
 })
 
+const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contego.agency'
+
 export const metadata = {
-  title: 'Contego | Prop Firm Marketing Agency',
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: 'Contego | Prop Firm Marketing Agency',
+    template: '%s | Contego',
+  },
   description: 'Contego helps prop firms grow through SEO, social media, and AI UGC video systems built to attract traders, explain your offer clearly, and protect brand trust.',
+  openGraph: {
+    type: 'website',
+    siteName: 'Contego',
+    locale: 'en_US',
+    images: [
+      {
+        url: '/og-default.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Contego — Prop Firm Marketing Agency',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@contegoagency',
+  },
+  robots: { index: true, follow: true },
 }
 
 export default function RootLayout({ children }) {
