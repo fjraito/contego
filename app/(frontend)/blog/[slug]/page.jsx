@@ -4,6 +4,7 @@ import { PortableText } from '@portabletext/react'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { client } from '@/sanity/lib/client'
+import { TocClient } from './TocClient'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contego.agency'
 
@@ -14,9 +15,8 @@ const POST_QUERY = `*[_type == "blogPost" && slug.current == $slug && status == 
   seo
 }`
 
-const RELATED_QUERY = `*[_type == "blogPost" && status == "published" && category == $category && slug.current != $slug] | order(publishedAt desc) [0...3] {
-  _id, title, "slug": slug.current, excerpt, category, publishedAt,
-  "featuredImage": featuredImage { "url": asset->url, "alt": coalesce(alt, "") }
+const RELATED_QUERY = `*[_type == "blogPost" && status == "published" && category == $category && slug.current != $slug] | order(publishedAt desc) [0...4] {
+  _id, title, "slug": slug.current, publishedAt
 }`
 
 async function getPost(slug) {
@@ -87,6 +87,37 @@ export async function generateMetadata({ params }) {
   }
 }
 
+function VerifiedIcon({ size = 14 }) {
+  return (
+    <svg
+      width={size} height={size} viewBox="0 0 24 24"
+      fill="var(--green)" aria-label="Verified"
+      style={{ display: 'inline-flex', flexShrink: 0 }}
+    >
+      <path d="M12 1.5l2.3 2.1 3.1-.3.4 3.1 2.6 1.8-1.3 2.8 1.3 2.8-2.6 1.8-.4 3.1-3.1-.3L12 20.5 9.7 18.4l-3.1.3-.4-3.1-2.6-1.8L4.9 11l-1.3-2.8 2.6-1.8.4-3.1 3.1.3L12 1.5z" />
+      <path d="M9.2 12l2 2 3.6-3.6" stroke="#06140b" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
+function Avatar({ name, size = 36 }) {
+  const initials = name.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase()
+  return (
+    <div
+      aria-label={name}
+      style={{
+        width: size, height: size, borderRadius: '50%', flexShrink: 0,
+        background: 'linear-gradient(135deg, #4ade80, #166534)',
+        border: '1px solid var(--border-2)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: Math.round(size * 0.36), fontWeight: 600, color: '#06140b',
+      }}
+    >
+      {initials}
+    </div>
+  )
+}
+
 const ptComponents = {
   block: {
     h2: ({ children, value }) => {
@@ -111,21 +142,12 @@ const ptComponents = {
   types: {
     image: ({ value }) =>
       value?.url ? (
-        <figure style={{ margin: '1.5em 0' }}>
-          <img src={value.url} alt={value.alt || ''} style={{ width: '100%', borderRadius: 8 }} />
-          {value.caption && <figcaption style={{ fontSize: 13, color: 'var(--text-3)', marginTop: 6 }}>{value.caption}</figcaption>}
+        <figure>
+          <img src={value.url} alt={value.alt || ''} />
+          {value.caption && <figcaption>{value.caption}</figcaption>}
         </figure>
       ) : null,
   },
-}
-
-function CheckIcon() {
-  return (
-    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
-      <circle cx="7.5" cy="7.5" r="7.5" fill="var(--green)" />
-      <path d="M4 7.5l2.5 2.5 4.5-4.5" stroke="#06140b" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
 }
 
 export default async function BlogPost({ params }) {
@@ -144,7 +166,13 @@ export default async function BlogPost({ params }) {
 
   const titleShort = post.title.length > 40 ? post.title.slice(0, 40) + '…' : post.title
   const authorName = post.author || 'Contego Team'
-  const hasToc = headings.length > 1
+
+  const credits = [
+    { role: 'Written by', name: authorName },
+    ...(post.editedBy ? [{ role: 'Edited by', name: post.editedBy }] : []),
+    ...(post.factCheckedBy ? [{ role: 'Fact checked by', name: post.factCheckedBy }] : []),
+    ...(!post.editedBy && !post.factCheckedBy ? [{ role: 'Fact checked by', name: 'Contego Editorial' }] : []),
+  ]
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -194,13 +222,6 @@ export default async function BlogPost({ params }) {
               <span className="post-meta-dot">·</span>
               <span>{readTime} min read</span>
             </div>
-            <div className="post-verified-row">
-              {post.editedBy && <span className="post-verified-item"><CheckIcon /> Edited by {post.editedBy}</span>}
-              {post.factCheckedBy && <span className="post-verified-item"><CheckIcon /> Fact checked by {post.factCheckedBy}</span>}
-              {!post.editedBy && !post.factCheckedBy && (
-                <span className="post-verified-item"><CheckIcon /> Fact checked by Contego Editorial</span>
-              )}
-            </div>
           </div>
 
           {post.featuredImage?.url && (
@@ -209,39 +230,54 @@ export default async function BlogPost({ params }) {
             </div>
           )}
 
-          <div className={`post-layout${hasToc ? '' : ' post-layout--no-toc'}`}>
-            {hasToc && (
-              <aside className="post-toc">
-                <p className="post-toc__label">Table of Contents</p>
-                <ol className="post-toc__list">
-                  {headings.map((h, i) => (
-                    <li key={i} className={h.tag === 'h3' ? 'post-toc__sub' : ''}>
-                      <a href={`#${h.id}`}>{h.text}</a>
-                    </li>
-                  ))}
-                </ol>
-              </aside>
-            )}
+          <div className="post-layout">
+            <aside className="post-side">
+              {headings.length > 1 && (
+                <div className="side-card">
+                  <h4>Table of contents</h4>
+                  <TocClient headings={headings} />
+                </div>
+              )}
+
+              <div className="side-card pub-card">
+                <h4>Published by</h4>
+                <div className="pub-author">
+                  <Avatar name={authorName} size={38} />
+                  <div>
+                    <div className="pub-name">
+                      {authorName}
+                      <VerifiedIcon size={13} />
+                    </div>
+                    <div className="pub-role">Contego Team</div>
+                  </div>
+                </div>
+                {publishedDate && (
+                  <div className="pub-date">
+                    <span className="lbl">Published</span>
+                    {publishedDate}
+                  </div>
+                )}
+              </div>
+
+              <div className="side-card credit-card">
+                <h4>Article credits</h4>
+                {credits.map((c, i) => (
+                  <div className="credit" key={i}>
+                    <Avatar name={c.name} size={34} />
+                    <div>
+                      <div className="credit-role">{c.role}</div>
+                      <span className="credit-name">
+                        {c.name}
+                        <VerifiedIcon size={12} />
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </aside>
 
             <div className="post-body">
               {post.content && <PortableText value={post.content} components={ptComponents} />}
-
-              <div className="post-author">
-                <div className="post-author__avatar">
-                  {authorName.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase()}
-                </div>
-                <div className="post-author__info">
-                  <p className="post-author__name">{authorName}</p>
-                  <p className="post-author__role">Contego Team</p>
-                </div>
-              </div>
-
-              {(post.editedBy || post.factCheckedBy) && (
-                <div className="post-verified-bottom">
-                  {post.editedBy && <span className="post-verified-item"><CheckIcon /> Edited by {post.editedBy}</span>}
-                  {post.factCheckedBy && <span className="post-verified-item"><CheckIcon /> Fact checked by {post.factCheckedBy}</span>}
-                </div>
-              )}
 
               <div className="post-cta-box">
                 <span className="post-cta-box__eyebrow">Work with Contego</span>
@@ -252,42 +288,40 @@ export default async function BlogPost({ params }) {
                   <a href="mailto:hello@contego.co" className="btn btn-ghost">Email Contego</a>
                 </div>
               </div>
+
+              <div className="author-box">
+                <Avatar name={authorName} size={80} />
+                <div>
+                  <div className="author-box__name">
+                    {authorName}
+                    <VerifiedIcon size={16} />
+                  </div>
+                  <div className="author-box__role">Contego Team</div>
+                  <p className="author-box__bio">
+                    The Contego editorial team covers prop firm marketing, SEO strategy, AI UGC video production, and social media management for trading companies.
+                  </p>
+                </div>
+              </div>
+
+              {related.length > 0 && (
+                <div className="post-related-list-wrap">
+                  <h4 className="post-related-list-wrap__label">Related articles</h4>
+                  <div className="post-related-list">
+                    {related.map((p) => (
+                      <Link key={p._id} href={`/blog/${p.slug}`}>
+                        <span className="rel-t">{p.title}</span>
+                        {p.publishedAt && (
+                          <span className="rel-d">
+                            {new Date(p.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
+                          </span>
+                        )}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-
-          {related.length > 0 && (
-            <section className="post-related">
-              <h2 className="post-related__title">Related Articles</h2>
-              <div className="bpi-grid bpi-grid--3">
-                {related.map((p) => (
-                  <li key={p._id} style={{ listStyle: 'none' }}>
-                    <Link href={`/blog/${p.slug}`} className="bpi-card">
-                      <div className="bpi-card__img">
-                        {p.featuredImage?.url ? (
-                          <img src={p.featuredImage.url} alt={p.featuredImage.alt || p.title} loading="lazy" />
-                        ) : (
-                          <div className="bpi-card__img-placeholder" />
-                        )}
-                      </div>
-                      <div className="bpi-card__body">
-                        <div className="bpi-card__meta">
-                          {p.category && <span className="bpi-card__cat">{p.category}</span>}
-                          {p.publishedAt && (
-                            <time dateTime={p.publishedAt}>
-                              {new Date(p.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-                            </time>
-                          )}
-                        </div>
-                        <h3 className="bpi-card__title">{p.title}</h3>
-                        {p.excerpt && <p className="bpi-card__excerpt">{p.excerpt}</p>}
-                        <span className="bpi-card__btn">Read More</span>
-                      </div>
-                    </Link>
-                  </li>
-                ))}
-              </div>
-            </section>
-          )}
         </div>
       </main>
       <Footer />
