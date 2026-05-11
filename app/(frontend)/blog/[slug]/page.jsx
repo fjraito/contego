@@ -1,54 +1,57 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { PortableText } from '@portabletext/react'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
+import { client } from '@/sanity/lib/client'
+
+const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contego.agency'
+
+const POST_QUERY = `*[_type == "blogPost" && slug.current == $slug && status == "published"][0] {
+  _id, title, "slug": slug.current, excerpt, content, category,
+  publishedAt, _updatedAt, author, editedBy, factCheckedBy,
+  "featuredImage": featuredImage { "url": asset->url, "alt": coalesce(alt, "") },
+  seo
+}`
+
+const RELATED_QUERY = `*[_type == "blogPost" && status == "published" && category == $category && slug.current != $slug] | order(publishedAt desc) [0...3] {
+  _id, title, "slug": slug.current, excerpt, category, publishedAt,
+  "featuredImage": featuredImage { "url": asset->url, "alt": coalesce(alt, "") }
+}`
 
 async function getPost(slug) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/blog?where[slug][equals]=${slug}&where[status][equals]=published&limit=1`,
-    { next: { revalidate: 60 } },
-  )
-  if (!res.ok) return null
-  const data = await res.json()
-  return data.docs?.[0] ?? null
+  try {
+    return await client.fetch(POST_QUERY, { slug }, { next: { revalidate: 60 } })
+  } catch { return null }
 }
 
-async function getRelated(category, currentSlug) {
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_SERVER_URL}/api/blog?where[status][equals]=published&where[category][equals]=${encodeURIComponent(category)}&sort=-publishedAt&limit=4`,
-    { next: { revalidate: 60 } },
-  )
-  if (!res.ok) return []
-  const data = await res.json()
-  return (data.docs ?? []).filter((p) => p.slug !== currentSlug).slice(0, 3)
+async function getRelated(category, slug) {
+  try {
+    return await client.fetch(RELATED_QUERY, { category, slug }, { next: { revalidate: 60 } })
+  } catch { return [] }
 }
 
 function toId(text) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 }
 
-function extractText(nodes = []) {
-  return nodes.flatMap((n) => {
-    if (typeof n.text === 'string') return [n.text]
-    if (n.children) return extractText(n.children)
-    return []
-  }).join(' ')
-}
-
-function extractHeadings(content) {
-  if (!content?.root?.children) return []
-  return content.root.children
-    .filter((n) => n.type === 'heading' && (n.tag === 'h2' || n.tag === 'h3'))
-    .map((n) => {
-      const text = extractText(n.children)
-      return { tag: n.tag, text, id: toId(text) }
+function extractHeadings(blocks = []) {
+  return blocks
+    .filter((b) => b._type === 'block' && (b.style === 'h2' || b.style === 'h3'))
+    .map((b) => {
+      const text = b.children?.map((c) => c.text || '').join('') || ''
+      return { tag: b.style, text, id: toId(text) }
     })
 }
 
-function getReadTime(content) {
-  if (!content?.root?.children) return null
-  const words = extractText(content.root.children).trim().split(/\s+/).filter(Boolean).length
-  return Math.max(1, Math.round(words / 225))
+function countWords(blocks = []) {
+  return blocks
+    .filter((b) => b._type === 'block')
+    .flatMap((b) => b.children?.map((c) => c.text || '') ?? [])
+    .join(' ')
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean).length
 }
 
 export async function generateMetadata({ params }) {
@@ -71,7 +74,7 @@ export async function generateMetadata({ params }) {
       description,
       url: `/blog/${slug}`,
       publishedTime: post.publishedAt,
-      modifiedTime: post.updatedAt || post.publishedAt,
+      modifiedTime: post._updatedAt || post.publishedAt,
       authors: post.author ? [post.author] : ['Contego Team'],
       images: ogImage,
     },
@@ -84,6 +87,38 @@ export async function generateMetadata({ params }) {
   }
 }
 
+const ptComponents = {
+  block: {
+    h2: ({ children, value }) => {
+      const text = value?.children?.map((c) => c.text || '').join('') || ''
+      return <h2 id={toId(text)}>{children}</h2>
+    },
+    h3: ({ children, value }) => {
+      const text = value?.children?.map((c) => c.text || '').join('') || ''
+      return <h3 id={toId(text)}>{children}</h3>
+    },
+    blockquote: ({ children }) => <blockquote>{children}</blockquote>,
+    normal: ({ children }) => <p>{children}</p>,
+  },
+  marks: {
+    link: ({ children, value }) => (
+      <a href={value?.href} rel="nofollow noopener noreferrer" target={value?.blank !== false ? '_blank' : undefined}>
+        {children}
+      </a>
+    ),
+    code: ({ children }) => <code>{children}</code>,
+  },
+  types: {
+    image: ({ value }) =>
+      value?.url ? (
+        <figure style={{ margin: '1.5em 0' }}>
+          <img src={value.url} alt={value.alt || ''} style={{ width: '100%', borderRadius: 8 }} />
+          {value.caption && <figcaption style={{ fontSize: 13, color: 'var(--text-3)', marginTop: 6 }}>{value.caption}</figcaption>}
+        </figure>
+      ) : null,
+  },
+}
+
 function CheckIcon() {
   return (
     <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
@@ -93,15 +128,14 @@ function CheckIcon() {
   )
 }
 
-const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contego.agency'
-
 export default async function BlogPost({ params }) {
   const { slug } = await params
   const post = await getPost(slug)
   if (!post) notFound()
 
   const headings = extractHeadings(post.content)
-  const readTime = getReadTime(post.content)
+  const wordCount = countWords(post.content)
+  const readTime = Math.max(1, Math.round(wordCount / 225))
   const related = post.category ? await getRelated(post.category, slug) : []
 
   const publishedDate = post.publishedAt
@@ -118,27 +152,19 @@ export default async function BlogPost({ params }) {
     headline: post.title,
     description: post.excerpt || '',
     datePublished: post.publishedAt,
-    dateModified: post.updatedAt || post.publishedAt,
+    dateModified: post._updatedAt || post.publishedAt,
     url: `${SITE_URL}/blog/${slug}`,
     author: { '@type': 'Person', name: authorName },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Contego',
-      url: SITE_URL,
-    },
+    publisher: { '@type': 'Organization', name: 'Contego', url: SITE_URL },
     ...(post.featuredImage?.url && { image: post.featuredImage.url }),
   }
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Navbar />
       <main>
         <div className="shell">
-          {/* Breadcrumb */}
           <nav className="post-breadcrumb" aria-label="Breadcrumb">
             <Link href="/">Home</Link>
             <span>/</span>
@@ -153,7 +179,6 @@ export default async function BlogPost({ params }) {
             <span aria-current="page">{titleShort}</span>
           </nav>
 
-          {/* Centered header */}
           <div className="post-center">
             {post.category && (
               <Link href={`/blog?category=${encodeURIComponent(post.category)}`} className="post-cat-pill">
@@ -166,38 +191,24 @@ export default async function BlogPost({ params }) {
               {publishedDate && <span>{publishedDate}</span>}
               <span className="post-meta-dot">·</span>
               <span>by {authorName}</span>
-              {readTime && <><span className="post-meta-dot">·</span><span>{readTime} min read</span></>}
+              <span className="post-meta-dot">·</span>
+              <span>{readTime} min read</span>
             </div>
             <div className="post-verified-row">
-              {post.editedBy && (
-                <span className="post-verified-item">
-                  <CheckIcon /> Edited by {post.editedBy}
-                </span>
-              )}
-              {post.factCheckedBy && (
-                <span className="post-verified-item">
-                  <CheckIcon /> Fact checked by {post.factCheckedBy}
-                </span>
-              )}
+              {post.editedBy && <span className="post-verified-item"><CheckIcon /> Edited by {post.editedBy}</span>}
+              {post.factCheckedBy && <span className="post-verified-item"><CheckIcon /> Fact checked by {post.factCheckedBy}</span>}
               {!post.editedBy && !post.factCheckedBy && (
-                <span className="post-verified-item">
-                  <CheckIcon /> Fact checked by Contego Editorial
-                </span>
+                <span className="post-verified-item"><CheckIcon /> Fact checked by Contego Editorial</span>
               )}
             </div>
           </div>
 
-          {/* Featured image */}
           {post.featuredImage?.url && (
             <div className="post-hero-img">
-              <img
-                src={post.featuredImage.url}
-                alt={post.featuredImage.alt || post.title}
-              />
+              <img src={post.featuredImage.url} alt={post.featuredImage.alt || post.title} />
             </div>
           )}
 
-          {/* Content layout: TOC left + body right */}
           <div className={`post-layout${hasToc ? '' : ' post-layout--no-toc'}`}>
             {hasToc && (
               <aside className="post-toc">
@@ -213,9 +224,8 @@ export default async function BlogPost({ params }) {
             )}
 
             <div className="post-body">
-              <RichTextRenderer content={post.content} />
+              {post.content && <PortableText value={post.content} components={ptComponents} />}
 
-              {/* Author box */}
               <div className="post-author">
                 <div className="post-author__avatar">
                   {authorName.split(' ').map((w) => w[0]).slice(0, 2).join('').toUpperCase()}
@@ -226,42 +236,31 @@ export default async function BlogPost({ params }) {
                 </div>
               </div>
 
-              {/* Verified row bottom */}
               {(post.editedBy || post.factCheckedBy) && (
                 <div className="post-verified-bottom">
-                  {post.editedBy && (
-                    <span className="post-verified-item">
-                      <CheckIcon /> Edited by {post.editedBy}
-                    </span>
-                  )}
-                  {post.factCheckedBy && (
-                    <span className="post-verified-item">
-                      <CheckIcon /> Fact checked by {post.factCheckedBy}
-                    </span>
-                  )}
+                  {post.editedBy && <span className="post-verified-item"><CheckIcon /> Edited by {post.editedBy}</span>}
+                  {post.factCheckedBy && <span className="post-verified-item"><CheckIcon /> Fact checked by {post.factCheckedBy}</span>}
                 </div>
               )}
 
-              {/* Inline CTA */}
               <div className="post-cta-box">
                 <span className="post-cta-box__eyebrow">Work with Contego</span>
                 <h3 className="post-cta-box__title">Build a prop firm marketing system traders can trust.</h3>
                 <p className="post-cta-box__desc">Get a growth audit for your SEO, social content, AI UGC video, and trader acquisition strategy.</p>
                 <div className="post-cta-box__btns">
                   <a href="/#cta" className="btn btn-primary">Book a Call <span className="arrow">→</span></a>
-                  <a href="mailto:hello@contego.com" className="btn btn-ghost">Email Contego</a>
+                  <a href="mailto:hello@contego.co" className="btn btn-ghost">Email Contego</a>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Related articles */}
           {related.length > 0 && (
             <section className="post-related">
               <h2 className="post-related__title">Related Articles</h2>
               <div className="bpi-grid bpi-grid--3">
                 {related.map((p) => (
-                  <li key={p.id} style={{ listStyle: 'none' }}>
+                  <li key={p._id} style={{ listStyle: 'none' }}>
                     <Link href={`/blog/${p.slug}`} className="bpi-card">
                       <div className="bpi-card__img">
                         {p.featuredImage?.url ? (
@@ -294,56 +293,4 @@ export default async function BlogPost({ params }) {
       <Footer />
     </>
   )
-}
-
-function RichTextRenderer({ content }) {
-  if (!content?.root?.children) return null
-  return <>{content.root.children.map((node, i) => renderNode(node, i))}</>
-}
-
-function renderNode(node, key) {
-  if (node.type === 'paragraph') {
-    if (!node.children?.length) return <br key={key} />
-    return <p key={key}>{node.children.map((c, i) => renderLeaf(c, i))}</p>
-  }
-  if (node.type === 'heading') {
-    const Tag = node.tag || 'h2'
-    const text = node.children?.map((c) => c.text || '').join('') || ''
-    const id = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
-    return <Tag key={key} id={id}>{node.children?.map((c, i) => renderLeaf(c, i))}</Tag>
-  }
-  if (node.type === 'list') {
-    const Tag = node.listType === 'number' ? 'ol' : 'ul'
-    return (
-      <Tag key={key}>
-        {node.children?.map((item, i) => (
-          <li key={i}>{item.children?.map((c, j) => renderLeaf(c, j))}</li>
-        ))}
-      </Tag>
-    )
-  }
-  if (node.type === 'quote') {
-    return <blockquote key={key}>{node.children?.map((c, i) => renderLeaf(c, i))}</blockquote>
-  }
-  if (node.type === 'horizontalrule') return <hr key={key} />
-  return null
-}
-
-function renderLeaf(leaf, key) {
-  if (leaf.type === 'linebreak') return <br key={key} />
-  if (leaf.type === 'link') {
-    return (
-      <a key={key} href={leaf.fields?.url} rel="nofollow noopener noreferrer" target="_blank">
-        {leaf.children?.map((c, i) => renderLeaf(c, i))}
-      </a>
-    )
-  }
-  let content = leaf.text || ''
-  if (!content) return null
-  if (leaf.bold) content = <strong key={`b${key}`}>{content}</strong>
-  if (leaf.italic) content = <em key={`i${key}`}>{content}</em>
-  if (leaf.underline) content = <u key={`u${key}`}>{content}</u>
-  if (leaf.strikethrough) content = <s key={`s${key}`}>{content}</s>
-  if (leaf.code) content = <code key={`c${key}`}>{content}</code>
-  return typeof content === 'string' ? <span key={key}>{content}</span> : content
 }

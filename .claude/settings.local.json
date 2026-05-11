@@ -48,7 +48,9 @@
       "Bash(npx payload *)",
       "Bash(curl -sX POST \"https://contego.vercel.app/api/media?depth=0&fallback-locale=null\" -H \"Content-Type: application/json\" -d '{\"alt\":\"test\"}')",
       "Bash(curl -sX PUT \"https://blob.vercel-storage.com/test-debug.txt\" -H \"authorization: Bearer vercel_blob_rw_o0rxtFdv1VCZYvr3_6Ksn11dczr0VjiCnl1jrfjMWZBaGzW\" -H \"x-content-type: text/plain\" -H \"x-add-random-suffix: 1\" -d \"test\")",
-      "Bash(npx vercel *)"
+      "Bash(npx vercel *)",
+      "Bash(Copy-Item \"E:\\\\Contego\\\\.env.local\" \"E:\\\\Contego\\\\.claude\\\\worktrees\\\\sharp-solomon-d297c6\\\\.env.local\")",
+      "PowerShell(Set-Location \"E:\\\\Contego\\\\.claude\\\\worktrees\\\\sharp-solomon-d297c6\"; npm run build 2>&1 | Tee-Object -Variable buildOut | Select-Object -Last 40; Write-Output \"EXIT: $LASTEXITCODE\")"
     ]
   }
 }
