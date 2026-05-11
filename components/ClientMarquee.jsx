@@ -1,12 +1,12 @@
 const LOGOS = [
-  { name: 'FundedNext', icon: 'rect' },
-  { name: 'Maven Capital', icon: 'tri' },
-  { name: 'PropElite', icon: 'circle' },
-  { name: 'Apex Quant', icon: 'path' },
-  { name: 'Forge Markets', icon: 'bars' },
-  { name: 'Atlas Trading', icon: 'wave' },
-  { name: 'Northwind FX', icon: 'n' },
-  { name: 'Ember Prop', icon: 'flame' },
+  { name: 'Vaultra',      icon: 'rect' },
+  { name: 'Kestrel Prop', icon: 'tri' },
+  { name: 'Oryn Markets', icon: 'circle' },
+  { name: 'Dexon Capital', icon: 'path' },
+  { name: 'Pinnacle FX',  icon: 'bars' },
+  { name: 'Stratos Fund', icon: 'wave' },
+  { name: 'Nexar Trade',  icon: 'n' },
+  { name: 'Corvus Prop',  icon: 'flame' },
 ]
 
 function LogoIcon({ icon }) {
