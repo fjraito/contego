@@ -13,6 +13,11 @@ const instrumentSerif = Instrument_Serif({
 
 const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contego.agency'
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+}
+
 export const metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
