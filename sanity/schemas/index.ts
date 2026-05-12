@@ -1,4 +1,4 @@
 import { blogPost } from './blogPost'
-import { comparison } from './comparison'
+import { alternative } from './alternative'
 
-export const schemaTypes = [blogPost, comparison]
+export const schemaTypes = [blogPost, alternative]

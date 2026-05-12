@@ -29,13 +29,13 @@ export default defineConfig({
                   .defaultOrdering([{ field: 'publishedAt', direction: 'desc' }])
               ),
             S.listItem()
-              .title('Comparisons')
+              .title('Alternatives')
               .icon(() => '⚖️')
               .child(
                 S.documentList()
-                  .title('Comparisons')
-                  .schemaType('comparison')
-                  .filter('_type == "comparison"')
+                  .title('Alternatives')
+                  .schemaType('alternative')
+                  .filter('_type == "alternative"')
               ),
             S.divider(),
             S.listItem()
