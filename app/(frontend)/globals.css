@@ -1383,6 +1383,35 @@ html { scroll-behavior: smooth; }
 
 /* ───── Compare / Alternatives page ───── */
 
+/* Page-wide background: subtle dot grid + ambient glows */
+.compare-page {
+  position: relative;
+  isolation: isolate;
+}
+.compare-page::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle, color-mix(in oklch, var(--border) 60%, transparent) 1px, transparent 1px);
+  background-size: 32px 32px;
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: -1;
+}
+.compare-page::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 80% 10%, color-mix(in oklch, var(--green-glow) 30%, transparent), transparent 60%),
+    radial-gradient(ellipse 50% 35% at 15% 60%, color-mix(in oklch, var(--green-glow) 20%, transparent), transparent 55%),
+    radial-gradient(ellipse 40% 30% at 65% 85%, color-mix(in oklch, var(--green-glow) 15%, transparent), transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+[data-theme='light'] .compare-page::before { opacity: 0.2; }
+[data-theme='light'] .compare-page::after { opacity: 0.4; }
+
 .compare-hero {
   position: relative;
   padding: 100px 0 80px;
@@ -1392,9 +1421,6 @@ html { scroll-behavior: smooth; }
 .compare-hero__bg {
   position: absolute;
   inset: 0;
-  background-image: radial-gradient(circle, color-mix(in oklch, var(--border) 70%, transparent) 1px, transparent 1px);
-  background-size: 28px 28px;
-  opacity: 0.55;
   pointer-events: none;
 }
 .compare-hero__bg::after {
@@ -1402,29 +1428,50 @@ html { scroll-behavior: smooth; }
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 50% -10%, var(--green-glow), transparent 65%),
-    linear-gradient(to bottom, transparent 60%, var(--bg) 100%);
+    radial-gradient(ellipse 90% 70% at 50% -5%, color-mix(in oklch, var(--green-glow) 55%, transparent), transparent 60%),
+    linear-gradient(to bottom, transparent 50%, var(--bg) 100%);
 }
-[data-theme='light'] .compare-hero__bg { opacity: 0.3; }
 .compare-hero .shell { max-width: 1000px; position: relative; z-index: 1; }
+
+/* vs-title: flex row so "vs" is always visually centered between the two names */
 .compare-hero__title {
-  font-size: clamp(28px, 4.2vw, 58px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  font-size: clamp(26px, 3.8vw, 56px);
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1.04;
-  white-space: nowrap;
   margin-top: 28px;
+  flex-wrap: nowrap;
 }
-@media (max-width: 600px) {
-  .compare-hero__title { white-space: normal; font-size: clamp(28px, 7vw, 42px); }
+.compare-hero__title .hero-name {
+  white-space: nowrap;
+}
+@media (max-width: 640px) {
+  .compare-hero__title { flex-wrap: wrap; justify-content: center; gap: 4px 0; font-size: clamp(26px, 7vw, 40px); }
+  .compare-hero__title .hero-name { flex: 1 1 100%; text-align: center; }
 }
 .compare-hero .vs {
-  color: var(--green);
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.38em;
   font-weight: 700;
-  margin: 0 16px;
-  font-size: 0.62em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--green);
+  background: color-mix(in oklch, var(--green) 12%, transparent);
+  border: 1px solid color-mix(in oklch, var(--green) 30%, transparent);
+  border-radius: 6px;
+  padding: 4px 10px;
+  margin: 0 18px;
   vertical-align: middle;
-  opacity: 0.8;
+  opacity: 1;
+  position: relative;
+  top: -2px;
 }
 .compare-hero .lead {
   margin: 26px auto 0;

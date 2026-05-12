@@ -190,14 +190,18 @@ export default async function ComparePage({ params }) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Navbar />
-      <main>
+      <main className="compare-page">
 
         {/* ── Hero ── */}
         <section className="compare-hero">
           <div className="compare-hero__bg" aria-hidden="true" />
           <div className="shell">
             <span className="eyebrow"><span className="dot" />Alternatives</span>
-            <h1 className="compare-hero__title">Contego<span className="vs">vs</span>{c.name}</h1>
+            <h1 className="compare-hero__title">
+              <span className="hero-name">Contego</span>
+              <span className="vs">vs</span>
+              <span className="hero-name">{c.name}</span>
+            </h1>
             <p className="lead">
               An honest, side-by-side teardown of how Contego stacks up against {c.name.toLowerCase()} —
               what&apos;s the same, what&apos;s different, and when each one is the right call for your prop firm.
