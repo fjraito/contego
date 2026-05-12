@@ -1387,21 +1387,44 @@ html { scroll-behavior: smooth; }
   position: relative;
   padding: 100px 0 80px;
   text-align: center;
+  overflow: hidden;
 }
-.compare-hero .shell { max-width: 900px; }
-.compare-hero h1 {
-  font-size: clamp(40px, 6vw, 76px);
+.compare-hero__bg {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, color-mix(in oklch, var(--border) 70%, transparent) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.55;
+  pointer-events: none;
+}
+.compare-hero__bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%, var(--green-glow), transparent 65%),
+    linear-gradient(to bottom, transparent 60%, var(--bg) 100%);
+}
+[data-theme='light'] .compare-hero__bg { opacity: 0.3; }
+.compare-hero .shell { max-width: 1000px; position: relative; z-index: 1; }
+.compare-hero__title {
+  font-size: clamp(28px, 4.2vw, 58px);
   font-weight: 800;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.04em;
   line-height: 1.04;
+  white-space: nowrap;
   margin-top: 28px;
 }
+@media (max-width: 600px) {
+  .compare-hero__title { white-space: normal; font-size: clamp(28px, 7vw, 42px); }
+}
 .compare-hero .vs {
-  color: var(--text-3);
+  color: var(--green);
   font-weight: 700;
-  margin: 0 14px;
-  font-size: 0.7em;
+  margin: 0 16px;
+  font-size: 0.62em;
   vertical-align: middle;
+  opacity: 0.8;
 }
 .compare-hero .lead {
   margin: 26px auto 0;
@@ -1409,6 +1432,7 @@ html { scroll-behavior: smooth; }
   font-size: 17px;
   color: var(--text-2);
   line-height: 1.55;
+  position: relative; z-index: 1;
 }
 
 /* ── Evergreen pillars ── */
@@ -1431,11 +1455,17 @@ html { scroll-behavior: smooth; }
   border-radius: 18px;
   overflow: hidden;
   display: flex; flex-direction: column;
+  cursor: default;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
-.pillar.feature {
+.pillar:hover {
   border-color: var(--green);
-  background: linear-gradient(180deg, color-mix(in oklch, var(--surface) 80%, var(--green) 12%), var(--surface));
-  box-shadow: 0 0 0 1px var(--green), 0 24px 60px -24px var(--green);
+  background: linear-gradient(180deg, color-mix(in oklch, var(--surface) 80%, var(--green) 10%), var(--surface));
+  box-shadow: 0 0 0 1px var(--green), 0 20px 48px -20px var(--green-glow);
+}
+.pillar:hover .pillar-icon {
+  background: var(--green);
+  color: #06140b;
 }
 .pillar .pillar-icon {
   width: 44px; height: 44px;
@@ -1444,8 +1474,8 @@ html { scroll-behavior: smooth; }
   color: var(--green);
   display: flex; align-items: center; justify-content: center;
   margin-bottom: 22px;
+  transition: background 0.2s ease, color 0.2s ease;
 }
-.pillar.feature .pillar-icon { background: var(--green); color: #06140b; }
 .pillar .pillar-stat {
   font-family: var(--display);
   font-size: 44px;

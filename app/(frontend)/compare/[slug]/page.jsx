@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
+import { FAQAccordion } from '@/components/FAQAccordion'
 import { FEATURE_SCHEMA, CONTEGO, COMPETITORS } from './data'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contego.agency'
@@ -169,6 +169,15 @@ export default async function ComparePage({ params }) {
 
   const dd = c.deepDive
 
+  const faqItems = [
+    { q: `Is Contego really cheaper than ${c.short}?`, a: `On entry pricing, sometimes yes, sometimes no — they're roughly comparable. The real difference is volume per dollar: Contego ships 5–10× the UGC video output at the same monthly spend. That's where the ROI gap opens up.` },
+    { q: `Can I switch from ${c.short} mid-contract?`, a: `If you're locked in, we can plan around the transition window so you don't pay double. Most clients run a 30-day parallel pilot to compare output before moving fully across. Bring your contract — we'll map out the cleanest path.` },
+    { q: `Does ${c.short} do anything Contego doesn't?`, a: `Honestly — yes, in specific cases. If your priority is, say, traditional creator partnerships at celebrity tier, that's not our wheelhouse. Our edge is volume, velocity, and prop firm specialization. We'll tell you upfront if you're not a fit.` },
+    { q: 'How long until I see results after switching?', a: 'Week 1: pipeline live. Week 2: first UGC batch shipping. Month 1: leading indicators (CPC, CTR) move. Month 3: organic compounding kicks in. Month 6: typically dominant rankings on commercial keywords.' },
+    { q: 'What happens to my existing content if I switch?', a: "You own it — and we audit it. Anything still working we keep and reinforce. Anything underperforming we either rework or retire. No scorched-earth migrations." },
+    { q: 'Do you take on direct competitors of your existing clients?', a: "No. We keep one prop firm per regional/regulatory category — so when you sign with us, you have a moat against any competitor coming to us next." },
+  ]
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
@@ -185,12 +194,13 @@ export default async function ComparePage({ params }) {
 
         {/* ── Hero ── */}
         <section className="compare-hero">
+          <div className="compare-hero__bg" aria-hidden="true" />
           <div className="shell">
             <span className="eyebrow"><span className="dot" />Alternatives</span>
-            <h1>Contego<span className="vs">vs</span>{c.name}</h1>
+            <h1 className="compare-hero__title">Contego<span className="vs">vs</span>{c.name}</h1>
             <p className="lead">
               An honest, side-by-side teardown of how Contego stacks up against {c.name.toLowerCase()} —
-              what's the same, what's different, and when each one is the right call for your prop firm.
+              what&apos;s the same, what&apos;s different, and when each one is the right call for your prop firm.
             </p>
           </div>
         </section>
@@ -200,10 +210,10 @@ export default async function ComparePage({ params }) {
           <div style={{ textAlign: 'center', maxWidth: 720, margin: '0 auto 36px', padding: '0 28px' }}>
             <span className="eyebrow"><span className="dot" />The Contego difference</span>
             <h2 style={{ marginTop: 14 }}>Built differently<br />for prop firms.</h2>
-            <p style={{ color: 'var(--text-2)', marginTop: 16, fontSize: 16 }}>Four things every prop firm gets with Contego — regardless of who you're comparing against.</p>
+            <p style={{ color: 'var(--text-2)', marginTop: 16, fontSize: 16 }}>Four things every prop firm gets with Contego — regardless of who you&apos;re comparing against.</p>
           </div>
           <div className="pillars">
-            <div className="pillar feature">
+            <div className="pillar">
               <div className="pillar-icon">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>
               </div>
@@ -236,30 +246,9 @@ export default async function ComparePage({ params }) {
               </div>
               <div className="pillar-stat">Fri<span className="unit"> 9AM</span></div>
               <h3>Weekly reporting, founder-led</h3>
-              <p>A single weekly snapshot every Friday — keyword movement, UGC performance, CAC, what we're testing next. No account-manager-only filter.</p>
+              <p>A single weekly snapshot every Friday — keyword movement, UGC performance, CAC, what we&apos;re testing next. No account-manager-only filter.</p>
               <div className="pillar-foot"><span className="dot" />Direct founder access</div>
             </div>
-          </div>
-        </section>
-
-        {/* ── Key differentiators ── */}
-        <section className="section-tight">
-          <div style={{ textAlign: 'center', maxWidth: 720, margin: '0 auto 36px', padding: '0 28px' }}>
-            <span className="eyebrow"><span className="dot" />Key differences</span>
-            <h2 style={{ marginTop: 14 }}>Where Contego<br />pulls ahead.</h2>
-          </div>
-          <div className="diff-grid">
-            {c.differentiators.map((d, i) => (
-              <div key={i} className={`diff-card${d.major ? ' major' : ''}`}>
-                <div className="diff-badge"><span className="dot" />{d.badge}</div>
-                <h3>{d.title}</h3>
-                <p>{d.desc}</p>
-                <div className="vs-row">
-                  <div className="vs-cell us"><div className="name">{d.us.label}</div><div className="val">{d.us.value}</div></div>
-                  <div className="vs-cell"><div className="name">{d.them.label}</div><div className="val">{d.them.value}</div></div>
-                </div>
-              </div>
-            ))}
           </div>
         </section>
 
@@ -365,8 +354,8 @@ export default async function ComparePage({ params }) {
                 Final verdict
               </div>
               <h3>If you sell prop firm challenges and want a marketing partner that compounds — pick Contego.</h3>
-              <p>{c.name} is a reasonable choice if you only need posts on a calendar and a quarterly content drop. But the prop firm category rewards velocity: more landing pages, more video hooks tested, faster ranking compounds. That's where Contego is built differently — and where {c.short} simply isn't structured to compete.</p>
-              <p>You can still hire {c.short}. But you'll spend month one teaching them what we already know.</p>
+              <p>{c.name} is a reasonable choice if you only need posts on a calendar and a quarterly content drop. But the prop firm category rewards velocity: more landing pages, more video hooks tested, faster ranking compounds. That&apos;s where Contego is built differently — and where {c.short} simply isn&apos;t structured to compete.</p>
+              <p>You can still hire {c.short}. But you&apos;ll spend month one teaching them what we already know.</p>
               <div className="verdict-summary">
                 <div className="verdict-col us">
                   <h4>
@@ -385,7 +374,7 @@ export default async function ComparePage({ params }) {
                 <div className="verdict-col them">
                   <h4>Pick {c.short} if you…</h4>
                   <ul>
-                    {['Only need basic posting and quarterly content', 'Don\'t care about UGC video at scale', 'Are comfortable with longer commitments', 'Want a generalist team rather than prop firm specialists'].map((item, i) => (
+                    {['Only need basic posting and quarterly content', "Don't care about UGC video at scale", 'Are comfortable with longer commitments', 'Want a generalist team rather than prop firm specialists'].map((item, i) => (
                       <li key={i}>
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg>
                         {item}
@@ -402,7 +391,7 @@ export default async function ComparePage({ params }) {
         <section className="section-tight">
           <div className="shell">
             <div className="testify">
-              <div className="mark">"</div>
+              <div className="mark">&ldquo;</div>
               <blockquote>{c.testimonial.quote}</blockquote>
               <div className="who">
                 <div className="who-avatar">{c.testimonial.initials}</div>
@@ -440,26 +429,7 @@ export default async function ComparePage({ params }) {
               <span className="eyebrow"><span className="dot" />FAQ</span>
               <h2 style={{ marginTop: 14 }}>Questions when<br />switching from {c.short}.</h2>
             </div>
-            <div className="faq-grid">
-              {[
-                { q: `Is Contego really cheaper than ${c.short}?`, a: `On entry pricing, sometimes yes, sometimes no — they're roughly comparable. The real difference is volume per dollar: Contego ships 5–10× the UGC video output at the same monthly spend. That's where the ROI gap opens up.` },
-                { q: `Can I switch from ${c.short} mid-contract?`, a: `If you're locked in, we can plan around the transition window so you don't pay double. Most clients run a 30-day parallel pilot to compare output before moving fully across. Bring your contract — we'll map out the cleanest path.` },
-                { q: `Does ${c.short} do anything Contego doesn't?`, a: `Honestly — yes, in specific cases. If your priority is, say, traditional creator partnerships at celebrity tier, that's not our wheelhouse. Our edge is volume, velocity, and prop firm specialization. We'll tell you upfront if you're not a fit.` },
-                { q: 'How long until I see results after switching?', a: 'Week 1: pipeline live. Week 2: first UGC batch shipping. Month 1: leading indicators (CPC, CTR) move. Month 3: organic compounding kicks in. Month 6: typically dominant rankings on commercial keywords.' },
-                { q: 'What happens to my existing content if I switch?', a: "You own it — and we audit it. Anything still working we keep and reinforce. Anything underperforming we either rework or retire. No scorched-earth migrations." },
-                { q: 'Do you take on direct competitors of your existing clients?', a: "No. We keep one prop firm per regional/regulatory category — so when you sign with us, you have a moat against any competitor coming to us next." },
-              ].map((it, i) => (
-                <details key={i} className="faq-item" open={i === 0}>
-                  <summary className="faq-summary">
-                    {it.q}
-                    <span className="plus">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 5v14M5 12h14" /></svg>
-                    </span>
-                  </summary>
-                  <div className="answer" style={{ paddingBottom: 20 }}>{it.a}</div>
-                </details>
-              ))}
-            </div>
+            <FAQAccordion items={faqItems} />
           </div>
         </section>
 
@@ -468,8 +438,8 @@ export default async function ComparePage({ params }) {
           <div className="shell">
             <div className="cta">
               <span className="pill"><span className="dot" />Free comparison call</span>
-              <h2 style={{ marginTop: 24 }}>See exactly what we'd do<br />that {c.short} isn't.</h2>
-              <p>30-minute call. We'll teardown your current setup and show you the gaps — whether you switch or not.</p>
+              <h2 style={{ marginTop: 24 }}>See exactly what we&apos;d do<br />that {c.short} isn&apos;t.</h2>
+              <p>30-minute call. We&apos;ll teardown your current setup and show you the gaps — whether you switch or not.</p>
               <div className="hero-ctas">
                 <a href="/#cta" className="btn btn-primary">Book a teardown call <span className="arrow">→</span></a>
                 <a href="mailto:hello@contego.co" className="btn btn-ghost">See services</a>
