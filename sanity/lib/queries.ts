@@ -43,3 +43,25 @@ export const RELATED_POSTS_QUERY = groq`*[_type == "blogPost" && status == "publ
   publishedAt,
   "featuredImage": featuredImage { ${IMAGE_FRAGMENT} }
 }`
+
+export const ALTERNATIVE_SLUGS_QUERY = groq`*[_type == "alternative" && defined(slug.current)] { "slug": slug.current }`
+
+export const ALTERNATIVE_QUERY = groq`*[_type == "alternative" && slug.current == $slug][0] {
+  _id,
+  title,
+  "slug": slug.current,
+  status,
+  competitorName,
+  competitorShort,
+  competitorInitials,
+  featureValues[] { rowId, v, text },
+  differentiators[] { major, badge, title, desc, usLabel, usValue, themLabel, themValue },
+  deepDive {
+    seo { paras, inShort },
+    social { paras, inShort },
+    ugc { paras, inShort },
+    reporting { paras, inShort }
+  },
+  testimonial { quote, who, initials },
+  seo
+}`

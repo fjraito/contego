@@ -2,17 +2,62 @@ import { notFound } from 'next/navigation'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { FAQAccordion } from '@/components/FAQAccordion'
+import { client } from '@/sanity/lib/client'
+import { ALTERNATIVE_SLUGS_QUERY, ALTERNATIVE_QUERY } from '@/sanity/lib/queries'
 import { FEATURE_SCHEMA, CONTEGO, COMPETITORS } from './data'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contego.agency'
 
+// Map a Sanity "alternative" doc back to the shape the page expects (matches data.js COMPETITORS entries).
+function sanityToCompetitor(doc) {
+  if (!doc) return null
+  const values = {}
+  for (const fv of doc.featureValues || []) {
+    values[fv.rowId] = { v: fv.v, text: fv.text }
+  }
+  const differentiators = (doc.differentiators || []).map((d) => ({
+    major: !!d.major,
+    badge: d.badge,
+    title: d.title,
+    desc: d.desc,
+    us: { label: d.usLabel, value: d.usValue },
+    them: { label: d.themLabel, value: d.themValue },
+  }))
+  return {
+    slug: doc.slug,
+    name: doc.competitorName,
+    short: doc.competitorShort,
+    initials: doc.competitorInitials,
+    values,
+    differentiators,
+    testimonial: doc.testimonial || { quote: '', who: '', initials: '' },
+    deepDive: doc.deepDive || { seo: {}, social: {}, ugc: {}, reporting: {} },
+  }
+}
+
+// Sanity is the source of truth. Falls back to data.js if no doc exists yet (e.g. seed hasn't run).
+async function getCompetitor(slug) {
+  try {
+    const doc = await client.fetch(ALTERNATIVE_QUERY, { slug })
+    if (doc) return sanityToCompetitor(doc)
+  } catch (_) { /* fall through to static */ }
+  return COMPETITORS[slug] || null
+}
+
 export async function generateStaticParams() {
-  return Object.keys(COMPETITORS).map((slug) => ({ slug }))
+  let slugs = []
+  try {
+    const sanitySlugs = await client.fetch(ALTERNATIVE_SLUGS_QUERY)
+    slugs = (sanitySlugs || []).map((s) => s.slug).filter(Boolean)
+  } catch (_) { /* fall through */ }
+  // Merge with static fallback so build never produces zero pages.
+  const all = new Set([...slugs, ...Object.keys(COMPETITORS)])
+  return Array.from(all).map((slug) => ({ slug }))
 }
 
 export async function generateMetadata({ params }) {
   const { slug } = await params
-  const c = COMPETITORS[slug]
+  const c = await getCompetitor(slug)
   if (!c) return {}
   return {
     title: `Contego vs ${c.name}`,
@@ -164,7 +209,7 @@ function IllReport() {
 
 export default async function ComparePage({ params }) {
   const { slug } = await params
-  const c = COMPETITORS[slug]
+  const c = await getCompetitor(slug)
   if (!c) notFound()
 
   const dd = c.deepDive
