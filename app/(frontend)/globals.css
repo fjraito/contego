@@ -1422,14 +1422,20 @@ html { scroll-behavior: smooth; }
   position: absolute;
   inset: 0;
   pointer-events: none;
+  background-image:
+    linear-gradient(color-mix(in oklch, var(--border) 55%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklch, var(--border) 55%, transparent) 1px, transparent 1px);
+  background-size: 48px 48px;
+  opacity: 0.7;
 }
+[data-theme='light'] .compare-hero__bg { opacity: 0.35; }
 .compare-hero__bg::after {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 90% 70% at 50% -5%, color-mix(in oklch, var(--green-glow) 55%, transparent), transparent 60%),
-    linear-gradient(to bottom, transparent 50%, var(--bg) 100%);
+    radial-gradient(ellipse 90% 70% at 50% -5%, color-mix(in oklch, var(--green-glow) 60%, transparent), transparent 60%),
+    linear-gradient(to bottom, transparent 45%, var(--bg) 100%);
 }
 .compare-hero .shell { max-width: 1000px; position: relative; z-index: 1; }
 
