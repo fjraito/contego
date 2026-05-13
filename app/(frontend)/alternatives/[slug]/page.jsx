@@ -35,7 +35,7 @@ function sanityToCompetitor(doc) {
 
 async function getCompetitor(slug) {
   try {
-    const doc = await client.fetch(ALTERNATIVE_QUERY, { slug })
+    const doc = await client.fetch(ALTERNATIVE_QUERY, { slug }, { next: { revalidate: 60 } })
     if (doc) return sanityToCompetitor(doc)
   } catch (_) { /* fall through */ }
   return COMPETITORS[slug] || null
