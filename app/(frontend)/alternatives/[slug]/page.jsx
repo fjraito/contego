@@ -1,7 +1,9 @@
 import { notFound } from 'next/navigation'
+import Image from 'next/image'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { FAQAccordion } from '@/components/FAQAccordion'
+import { IllSEO, IllSocial, IllUGC, IllLanding } from '@/components/AlternativeIllustrations'
 import { client } from '@/sanity/lib/client'
 import { ALTERNATIVE_SLUGS_QUERY, ALTERNATIVE_QUERY } from '@/sanity/lib/queries'
 import { FEATURE_SCHEMA, CONTEGO, COMPETITORS } from './data'
@@ -176,8 +178,7 @@ export default async function AlternativePage({ params }) {
                   <th>Feature</th>
                   <th className="us-col">
                     <span className="brand-cell">
-                      <span className="brand-logo us">C</span>
-                      <span className="brand-text">Contego</span>
+                      <Image src="/assets/contego-logo.png" alt="Contego" width={100} height={32} className="brand-logo-img" />
                     </span>
                   </th>
                   <th>
@@ -252,7 +253,7 @@ export default async function AlternativePage({ params }) {
                 <p>Contego shapes your offer, rules, proof, pricing, and CTA into copy that is easy to scan and easier to act on.</p>
                 <div className="in-short"><strong>In short:</strong> Make your page clearer before asking people to convert.</div>
               </div>
-              <IllReport />
+              <IllLanding />
             </div>
           </div>
         </section>
@@ -355,114 +356,5 @@ export default async function AlternativePage({ params }) {
       </main>
       <Footer />
     </>
-  )
-}
-
-// ── Illustrations (reusable) ──
-
-function IllSEO() {
-  return (
-    <div className="dd-visual">
-      <div className="ill-seo-dash">
-        <div className="frame panel-main">
-          <div className="head">
-            <div className="ttl">SEO Rankings</div>
-            <div className="badge">+312%</div>
-          </div>
-          <div className="kw-row"><span className="kw">best prop firm 2026</span><span className="rank">#1</span><span className="delta up">↑ 4</span></div>
-          <div className="kw-row"><span className="kw">funded trader review</span><span className="rank">#2</span><span className="delta up">↑ 7</span></div>
-          <div className="kw-row"><span className="kw">prop firm vs broker</span><span className="rank">#3</span><span className="delta up">↑ 12</span></div>
-          <div className="kw-row"><span className="kw">prop firm payout proof</span><span className="rank">#5</span><span className="delta up">↑ 9</span></div>
-        </div>
-        <div className="frame panel-floating">
-          <div className="ttl">Organic visits</div>
-          <div className="big">94.2k</div>
-          <div className="sub">vs 22.8k six months ago</div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function IllSocial() {
-  return (
-    <div className="dd-visual">
-      <div className="ill-social">
-        <div className="phone side">
-          <div className="ph-header"><div className="av" /><div className="meta">@maverick.fx</div></div>
-          <div className="ph-img b" />
-          <div className="ph-stats"><span className="heart">♥ 8.2k</span><span>↻ 412</span></div>
-        </div>
-        <div className="phone center">
-          <div className="ph-header"><div className="av" /><div className="meta">@propinsider</div></div>
-          <div className="ph-img" />
-          <div className="ph-stats"><span className="heart">♥ 24k</span><span>↻ 1.1k</span></div>
-        </div>
-        <div className="phone side right">
-          <div className="ph-header"><div className="av" /><div className="meta">@funded.live</div></div>
-          <div className="ph-img c" />
-          <div className="ph-stats"><span className="heart">♥ 5.7k</span><span>↻ 248</span></div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function IllUGC() {
-  return (
-    <div className="dd-visual">
-      <div className="ill-ugc-pipe">
-        <div className="frame board">
-          <div className="board-head">
-            <div className="ttl">AI UGC pipeline</div>
-            <div className="cnt">62 / 120</div>
-          </div>
-          <div className="lanes">
-            <div className="lane">
-              <div className="lane-h">Drafting<span className="n">18</span></div>
-              <div className="card" /><div className="card" /><div className="card" />
-            </div>
-            <div className="lane">
-              <div className="lane-h">Editing<span className="n">14</span></div>
-              <div className="card" /><div className="card" /><div className="card" />
-            </div>
-            <div className="lane">
-              <div className="lane-h">Shipped<span className="n">30</span></div>
-              <div className="card done" /><div className="card done" /><div className="card done" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function IllReport() {
-  return (
-    <div className="dd-visual">
-      <div className="ill-report">
-        <div className="frame panel">
-          <div className="ttl">Landing page</div>
-          <h4>Conversion flow</h4>
-          <div className="chart">
-            <svg viewBox="0 0 280 80" preserveAspectRatio="none">
-              <defs>
-                <linearGradient id="rg1" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="var(--green)" stopOpacity="0.4" />
-                  <stop offset="100%" stopColor="var(--green)" stopOpacity="0" />
-                </linearGradient>
-              </defs>
-              <path d="M0,60 L20,55 L40,58 L60,48 L80,50 L100,40 L120,42 L140,32 L160,30 L180,22 L200,28 L220,18 L240,14 L260,8 L280,4 L280,80 L0,80 Z" fill="url(#rg1)" />
-              <path d="M0,60 L20,55 L40,58 L60,48 L80,50 L100,40 L120,42 L140,32 L160,30 L180,22 L200,28 L220,18 L240,14 L260,8 L280,4" stroke="var(--green)" strokeWidth="2" fill="none" />
-            </svg>
-          </div>
-          <div className="grid-3">
-            <div className="stat"><div className="v">4.2%<span className="pos">↑18%</span></div><div className="l">CVR</div></div>
-            <div className="stat"><div className="v">184<span className="pos">↑24%</span></div><div className="l">Signups</div></div>
-            <div className="stat"><div className="v">2.1s<span className="pos">↓12%</span></div><div className="l">Bounce</div></div>
-          </div>
-        </div>
-      </div>
-    </div>
   )
 }

@@ -1752,6 +1752,7 @@ html { scroll-behavior: smooth; }
   font-size: 11.5px; font-weight: 800; color: var(--text);
 }
 .simple-table thead .brand-logo.us { background: var(--green); color: #06140b; border-color: var(--green); }
+.simple-table thead .brand-logo-img { height: 24px; width: auto; object-fit: contain; }
 
 .simple-table .sect-row td {
   background: var(--surface-2);
