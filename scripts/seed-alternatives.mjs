@@ -1,4 +1,4 @@
-// One-off seed script: pushes the 4 static alternatives from data.js into Sanity as drafts.
+// Seed script: pushes alternatives from data.js into Sanity using the flat schema.
 // Run: node scripts/seed-alternatives.mjs
 import { createClient } from '@sanity/client'
 import { readFileSync } from 'node:fs'
@@ -8,7 +8,6 @@ import { dirname, resolve } from 'node:path'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-// Read .env.local manually (dotenv default is .env)
 const envPath = resolve(__dirname, '..', '.env.local')
 const envText = readFileSync(envPath, 'utf8')
 envText.split('\n').forEach((line) => {
@@ -24,72 +23,51 @@ const client = createClient({
   useCdn: false,
 })
 
-// Dynamic import of data.js (ESM-compatible)
-const dataModule = await import('../app/(frontend)/compare/[slug]/data.js')
+const dataModule = await import('../app/(frontend)/alternatives/[slug]/data.js')
 const { COMPETITORS } = dataModule
 
-function toFeatureValues(values) {
-  return Object.entries(values).map(([rowId, val]) => ({
-    _key: rowId,
-    rowId,
-    v: val.v,
-    text: val.text || '',
-  }))
+// Convert deep dive object { paras: string[], inShort: string } to a single text block
+function deepDiveToText(dd) {
+  if (!dd || !dd.paras) return ''
+  const parts = [...dd.paras]
+  if (dd.inShort) parts.push(`In short: ${dd.inShort}`)
+  return parts.join('\n\n')
 }
 
-function toDifferentiators(diffs) {
-  return diffs.map((d, i) => ({
-    _key: `diff-${i}`,
-    major: !!d.major,
-    badge: d.badge,
-    title: d.title,
-    desc: d.desc,
-    usLabel: d.us?.label || 'Contego',
-    usValue: d.us?.value || '',
-    themLabel: d.them?.label || '',
-    themValue: d.them?.value || '',
-  }))
-}
-
-function toDeepDive(dd) {
-  return {
-    seo: { paras: dd.seo.paras, inShort: dd.seo.inShort },
-    social: { paras: dd.social.paras, inShort: dd.social.inShort },
-    ugc: { paras: dd.ugc.paras, inShort: dd.ugc.inShort },
-    reporting: { paras: dd.reporting.paras, inShort: dd.reporting.inShort },
+const docs = Object.entries(COMPETITORS).map(([slug, c]) => {
+  const doc = {
+    _id: `alternative-${slug}`,
+    _type: 'alternative',
+    competitorName: c.name,
+    competitorShort: c.short,
+    competitorInitials: c.initials,
+    slug: { _type: 'slug', current: slug },
+    status: 'published',
+    // Testimonial
+    testimonialQuote: c.testimonial?.quote || '',
+    testimonialAttribution: c.testimonial?.who || '',
+    testimonialInitials: c.testimonial?.initials || '',
+    // Deep dive (flat text fields)
+    deepDiveSeo: deepDiveToText(c.deepDive?.seo),
+    deepDiveSocial: deepDiveToText(c.deepDive?.social),
+    deepDiveUgc: deepDiveToText(c.deepDive?.ugc),
+    deepDiveReporting: deepDiveToText(c.deepDive?.reporting),
   }
-}
 
-const docs = Object.entries(COMPETITORS).map(([slug, c]) => ({
-  _id: `drafts.alternative-${slug}`,
-  _type: 'alternative',
-  title: `Contego vs ${c.name}`,
-  slug: { _type: 'slug', current: slug },
-  status: 'draft',
-  competitorName: c.name,
-  competitorShort: c.short,
-  competitorInitials: c.initials,
-  featureValues: toFeatureValues(c.values),
-  differentiators: toDifferentiators(c.differentiators),
-  deepDive: toDeepDive(c.deepDive),
-  testimonial: {
-    quote: c.testimonial.quote,
-    who: c.testimonial.who,
-    initials: c.testimonial.initials,
-  },
-  seo: {
-    metaTitle: `Contego vs ${c.name}`,
-    metaDescription: `An honest side-by-side comparison of Contego vs ${c.name} — services, pricing, UGC volume, and which is the right call for your prop firm.`,
-    noIndex: false,
-  },
-}))
+  // Feature values as flat f_ fields
+  for (const [id, val] of Object.entries(c.values)) {
+    doc[`f_${id}`] = { v: val.v, text: val.text || '' }
+  }
+
+  return doc
+})
 
 console.log(`Seeding ${docs.length} alternatives to Sanity (project ${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID})…`)
 
 for (const doc of docs) {
   try {
     const res = await client.createOrReplace(doc)
-    console.log(`  ✓ ${doc._id} (${res._id})`)
+    console.log(`  ✓ ${res._id} — ${doc.competitorName}`)
   } catch (err) {
     console.error(`  ✗ ${doc._id}: ${err.message}`)
     process.exitCode = 1

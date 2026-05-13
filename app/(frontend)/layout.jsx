@@ -1,6 +1,8 @@
 import { Inter } from 'next/font/google'
 import { Instrument_Serif } from 'next/font/google'
 import { Cursor } from '@/components/Cursor'
+import { BgStage } from '@/components/BgStage'
+import { ThemeProvider } from '@/components/ThemeProvider'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -49,8 +51,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" data-theme="dark" className={`${inter.variable} ${instrumentSerif.variable}`}>
       <body>
-        <Cursor />
-        {children}
+        <ThemeProvider>
+          <Cursor />
+          <BgStage />
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   )

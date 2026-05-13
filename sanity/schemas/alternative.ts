@@ -1,195 +1,204 @@
 import { defineField, defineType } from 'sanity'
 
+// Helper for feature value fields — keeps the schema flat and readable in the Studio.
+function featureField(name: string, title: string, description: string) {
+  return defineField({
+    name,
+    title,
+    type: 'object',
+    description,
+    fields: [
+      {
+        name: 'v',
+        type: 'string',
+        title: 'Rating',
+        options: {
+          list: [
+            { title: 'Yes', value: 'yes' },
+            { title: 'No', value: 'no' },
+            { title: 'Partial', value: 'partial' },
+            { title: 'Custom value', value: 'val' },
+          ],
+          layout: 'radio',
+          direction: 'horizontal',
+        },
+        initialValue: 'val',
+      },
+      {
+        name: 'text',
+        type: 'string',
+        title: 'Detail',
+        description: 'Short description or value, e.g. "Content only", "4 / mo", "Not offered"',
+      },
+    ],
+  })
+}
+
 export const alternative = defineType({
   name: 'alternative',
   title: 'Alternative',
   type: 'document',
   groups: [
-    { name: 'content', title: 'Content', default: true },
-    { name: 'competitor', title: 'Competitor' },
-    { name: 'features', title: 'Feature matrix' },
-    { name: 'deepDive', title: 'Deep dive' },
-    { name: 'testimonial', title: 'Testimonial' },
+    { name: 'info', title: 'Competitor info', default: true },
+    { name: 'features', title: 'Feature comparison' },
+    { name: 'content', title: 'Page content' },
     { name: 'seo', title: 'SEO' },
   ],
   fields: [
-    defineField({
-      name: 'title',
-      title: 'Title',
-      type: 'string',
-      group: 'content',
-      description: 'e.g. Contego vs In-house team',
-      validation: (R) => R.required(),
-    }),
-    defineField({
-      name: 'slug',
-      title: 'Slug',
-      type: 'slug',
-      group: 'content',
-      options: { source: 'title', maxLength: 96 },
-      description: 'e.g. in-house-team',
-      validation: (R) => R.required(),
-    }),
-    defineField({
-      name: 'status',
-      title: 'Status',
-      type: 'string',
-      group: 'content',
-      options: {
-        list: [
-          { title: 'Draft', value: 'draft' },
-          { title: 'Published', value: 'published' },
-        ],
-        layout: 'radio',
-      },
-      initialValue: 'draft',
-      validation: (R) => R.required(),
-    }),
-
-    // Competitor identity
+    // ── Competitor info ──
     defineField({
       name: 'competitorName',
       title: 'Competitor name',
       type: 'string',
-      group: 'competitor',
-      description: 'Full name, e.g. "In-house team"',
+      group: 'info',
+      description: 'e.g. "In-house team", "PropMarket Co.", "Freelance roster"',
       validation: (R) => R.required(),
     }),
     defineField({
       name: 'competitorShort',
       title: 'Short name',
       type: 'string',
-      group: 'competitor',
-      description: 'For inline references, e.g. "an in-house team"',
+      group: 'info',
+      description: 'Used inline in sentences, e.g. "In-house", "PropMarket", "Freelancers"',
+      validation: (R) => R.required(),
     }),
     defineField({
       name: 'competitorInitials',
       title: 'Initials',
       type: 'string',
-      group: 'competitor',
-      description: 'Logo initials, e.g. "IH"',
+      group: 'info',
+      description: '1-2 letters for the logo badge, e.g. "IH", "PM", "FR"',
+      validation: (R) => R.max(3),
+    }),
+    defineField({
+      name: 'slug',
+      title: 'URL slug',
+      type: 'slug',
+      group: 'info',
+      options: { source: 'competitorName', maxLength: 96 },
+      description: 'Auto-generated from competitor name. Shows as /alternatives/[slug]',
+      validation: (R) => R.required(),
+    }),
+    defineField({
+      name: 'status',
+      title: 'Status',
+      type: 'string',
+      group: 'info',
+      options: {
+        list: [
+          { title: 'Draft', value: 'draft' },
+          { title: 'Published', value: 'published' },
+        ],
+        layout: 'radio',
+        direction: 'horizontal',
+      },
+      initialValue: 'draft',
+      validation: (R) => R.required(),
     }),
 
-    // Feature matrix
-    defineField({
-      name: 'featureValues',
-      title: 'Feature comparison values',
-      type: 'array',
-      group: 'features',
-      description: 'One entry per feature row (id matches FEATURE_SCHEMA)',
-      of: [
-        {
-          type: 'object',
-          fields: [
-            { name: 'rowId', type: 'string', title: 'Row ID', description: 'e.g. seo, smm, ugc, paid, articles, videos…' },
-            {
-              name: 'v',
-              type: 'string',
-              title: 'Type',
-              options: {
-                list: [
-                  { title: 'Yes (green check)', value: 'yes' },
-                  { title: 'No (dash)', value: 'no' },
-                  { title: 'Partial (tilde)', value: 'partial' },
-                  { title: 'Value (text)', value: 'val' },
-                ],
-              },
-            },
-            { name: 'text', type: 'string', title: 'Text/value' },
-          ],
-          preview: {
-            select: { title: 'rowId', subtitle: 'text' },
-          },
-        },
-      ],
-    }),
+    // ── Feature comparison (their column) ──
+    // Service scope
+    defineField({ name: 'featuresHeading1', title: 'Service scope', type: 'string', group: 'features', readOnly: true, initialValue: '── Service scope ──', hidden: false }),
+    featureField('f_seo', 'SEO (programmatic + content)', 'Do they offer SEO services?'),
+    featureField('f_smm', 'Social media management', 'Do they manage social channels?'),
+    featureField('f_ugc', 'AI UGC video at scale', 'Do they produce AI UGC?'),
+    featureField('f_paid', 'Paid social creative ops', 'Paid ad creative support?'),
+    featureField('f_compliance', 'Built-in compliance review', 'Do they review content for compliance?'),
 
-    // Differentiators
+    // Output cadence
+    defineField({ name: 'featuresHeading2', title: 'Output cadence', type: 'string', group: 'features', readOnly: true, initialValue: '── Output cadence ──', hidden: false }),
+    featureField('f_articles', 'Articles per month', 'How many articles do they ship?'),
+    featureField('f_videos', 'UGC videos per month', 'Monthly video output'),
+    featureField('f_channels', 'Social channels managed', 'How many channels?'),
+    featureField('f_reports', 'Reporting cadence', 'How often do they report?'),
+
+    // Engagement model
+    defineField({ name: 'featuresHeading3', title: 'Engagement model', type: 'string', group: 'features', readOnly: true, initialValue: '── Engagement model ──', hidden: false }),
+    featureField('f_lockin', 'Contract length', 'Month-to-month or lock-in?'),
+    featureField('f_pricing', 'Starting price', 'Their entry price point'),
+    featureField('f_focus', 'Prop firm specialization', 'Are they prop-firm focused?'),
+    featureField('f_ownership', 'You own the content', 'Content ownership terms'),
+    featureField('f_strategy', 'Founder-led strategy', 'Who leads the strategy?'),
+
+    // ── Page content ──
     defineField({
-      name: 'differentiators',
-      title: 'Differentiators (used by /compare static page section)',
-      type: 'array',
+      name: 'testimonialQuote',
+      title: 'Testimonial quote',
+      type: 'text',
       group: 'content',
-      of: [
-        {
-          type: 'object',
-          fields: [
-            { name: 'major', type: 'boolean', title: 'Major differentiator' },
-            { name: 'badge', type: 'string', title: 'Badge label' },
-            { name: 'title', type: 'string', title: 'Title' },
-            { name: 'desc', type: 'text', title: 'Description', rows: 3 },
-            { name: 'usLabel', type: 'string', title: 'Contego label' },
-            { name: 'usValue', type: 'string', title: 'Contego value' },
-            { name: 'themLabel', type: 'string', title: 'Competitor label' },
-            { name: 'themValue', type: 'string', title: 'Competitor value' },
-          ],
-          preview: { select: { title: 'title', subtitle: 'desc' } },
-        },
-      ],
+      rows: 3,
+      description: 'A quote from a client who switched from this competitor to Contego.',
+    }),
+    defineField({
+      name: 'testimonialAttribution',
+      title: 'Testimonial attribution',
+      type: 'string',
+      group: 'content',
+      description: 'e.g. "Lukas R., Marketing Lead at a $3M/mo prop firm"',
+    }),
+    defineField({
+      name: 'testimonialInitials',
+      title: 'Testimonial initials',
+      type: 'string',
+      group: 'content',
+      description: 'Avatar initials, e.g. "LR"',
     }),
 
-    // Deep dive
     defineField({
-      name: 'deepDive',
-      title: 'Deep dive sections',
-      type: 'object',
-      group: 'deepDive',
-      fields: [
-        deepDiveSection('seo', 'SEO & content'),
-        deepDiveSection('social', 'Social media'),
-        deepDiveSection('ugc', 'AI UGC video'),
-        deepDiveSection('reporting', 'Reporting'),
-      ],
+      name: 'deepDiveSeo',
+      title: 'Deep dive: SEO',
+      type: 'text',
+      group: 'content',
+      rows: 8,
+      description: 'Write 2-3 paragraphs comparing their SEO approach to ours. Separate paragraphs with a blank line. Use <strong> for emphasis. End with "In short: [one-line summary]" on its own line.',
+    }),
+    defineField({
+      name: 'deepDiveSocial',
+      title: 'Deep dive: Social media',
+      type: 'text',
+      group: 'content',
+      rows: 8,
+      description: 'Same format as above. Compare their social media management to ours.',
+    }),
+    defineField({
+      name: 'deepDiveUgc',
+      title: 'Deep dive: AI UGC',
+      type: 'text',
+      group: 'content',
+      rows: 8,
+      description: 'Same format. Compare their UGC video capability to ours.',
+    }),
+    defineField({
+      name: 'deepDiveReporting',
+      title: 'Deep dive: Reporting',
+      type: 'text',
+      group: 'content',
+      rows: 8,
+      description: 'Same format. Compare their reporting cadence to ours.',
     }),
 
-    // Testimonial
+    // ── SEO overrides ──
     defineField({
-      name: 'testimonial',
-      title: 'Testimonial',
-      type: 'object',
-      group: 'testimonial',
-      fields: [
-        { name: 'quote', type: 'text', title: 'Quote', rows: 4 },
-        { name: 'who', type: 'string', title: 'Attribution (Name, Title)' },
-        { name: 'initials', type: 'string', title: 'Avatar initials' },
-      ],
-    }),
-
-    // SEO
-    defineField({
-      name: 'seo',
-      title: 'SEO',
-      type: 'object',
+      name: 'metaTitle',
+      title: 'Meta title override',
+      type: 'string',
       group: 'seo',
-      fields: [
-        { name: 'metaTitle', type: 'string', title: 'Meta Title' },
-        { name: 'metaDescription', type: 'text', title: 'Meta Description', rows: 3 },
-        { name: 'noIndex', type: 'boolean', title: 'No Index', initialValue: false },
-      ],
+      description: 'Leave blank to use "Contego vs [Competitor name]"',
+    }),
+    defineField({
+      name: 'metaDescription',
+      title: 'Meta description override',
+      type: 'text',
+      group: 'seo',
+      rows: 3,
+      description: 'Leave blank to auto-generate',
     }),
   ],
   preview: {
-    select: { title: 'title', status: 'status', name: 'competitorName' },
-    prepare: ({ title, status, name }) => ({
-      title: title || `Contego vs ${name}`,
-      subtitle: status,
+    select: { name: 'competitorName', status: 'status' },
+    prepare: ({ name, status }) => ({
+      title: `Contego vs ${name || 'Untitled'}`,
+      subtitle: status === 'published' ? 'Published' : 'Draft',
     }),
   },
 })
-
-function deepDiveSection(name: string, title: string) {
-  return defineField({
-    name,
-    title,
-    type: 'object',
-    fields: [
-      {
-        name: 'paras',
-        type: 'array',
-        title: 'Paragraphs',
-        of: [{ type: 'text', rows: 3 }],
-      },
-      { name: 'inShort', type: 'text', title: '"In short" summary', rows: 2 },
-    ],
-  })
-}

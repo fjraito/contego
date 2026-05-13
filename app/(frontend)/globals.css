@@ -1383,39 +1383,9 @@ html { scroll-behavior: smooth; }
 
 /* ───── Compare / Alternatives page ───── */
 
-/* Seamless full-page bg: fine grid that scrolls as parallax (fixed), soft glow blobs on top */
 .compare-page {
   position: relative;
-  isolation: isolate;
 }
-.compare-page::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image:
-    linear-gradient(color-mix(in oklch, var(--border) 38%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in oklch, var(--border) 38%, transparent) 1px, transparent 1px);
-  background-size: 56px 56px;
-  opacity: 0.55;
-  pointer-events: none;
-  z-index: -2;
-  mask-image: radial-gradient(ellipse 120% 100% at 50% 30%, black 30%, transparent 95%);
-  -webkit-mask-image: radial-gradient(ellipse 120% 100% at 50% 30%, black 30%, transparent 95%);
-}
-.compare-page::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 75% 55% at 75% -5%, color-mix(in oklch, var(--green-glow) 32%, transparent), transparent 65%),
-    radial-gradient(ellipse 60% 45% at 10% 55%, color-mix(in oklch, var(--green-glow) 18%, transparent), transparent 60%),
-    radial-gradient(ellipse 70% 50% at 90% 95%, color-mix(in oklch, var(--green-glow) 22%, transparent), transparent 60%);
-  pointer-events: none;
-  z-index: -1;
-  filter: blur(20px);
-}
-[data-theme='light'] .compare-page::before { opacity: 0.32; }
-[data-theme='light'] .compare-page::after { opacity: 0.5; }
 
 .compare-hero {
   position: relative;
@@ -1482,6 +1452,103 @@ html { scroll-behavior: smooth; }
 @media (max-width: 720px) {
   .compare-hero { padding: 90px 0 50px; }
   .compare-hero .lead { font-size: 15px; }
+}
+
+/* ── Alternatives index page ── */
+.alt-index__title {
+  font-size: clamp(28px, 5vw, 52px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  margin-top: 28px;
+}
+.alt-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+.alt-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 32px 28px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  text-decoration: none;
+  color: var(--text);
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+}
+.alt-card:hover {
+  border-color: color-mix(in oklch, var(--green) 50%, transparent);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px color-mix(in oklch, var(--green-glow) 12%, transparent);
+}
+.alt-card__vs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.alt-card__logo {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 15px;
+  border: 1px solid var(--border-2);
+  flex-shrink: 0;
+}
+.alt-card__logo.us {
+  background: linear-gradient(135deg, #4ade80, #166534);
+  color: #06140b;
+  border-color: transparent;
+}
+.alt-card__logo.them {
+  background: var(--surface-2);
+  color: var(--text-2);
+}
+.alt-card__vs-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.alt-card__name {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0 0 8px;
+}
+.alt-card__desc {
+  font-size: 14px;
+  color: var(--text-2);
+  line-height: 1.55;
+  margin: 0;
+}
+.alt-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--green);
+  transition: gap 0.2s;
+}
+.alt-card:hover .alt-card__link {
+  gap: 10px;
+}
+@media (max-width: 640px) {
+  .alt-grid { grid-template-columns: 1fr; }
+  .alt-card { padding: 24px 20px 20px; }
 }
 
 /* ── Evergreen pillars (redesigned) ── */

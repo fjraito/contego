@@ -8,34 +8,61 @@ import { FEATURE_SCHEMA, CONTEGO, COMPETITORS } from './data'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contego.agency'
 
-// Map a Sanity "alternative" doc back to the shape the page expects (matches data.js COMPETITORS entries).
+// Feature field IDs (match the f_ prefix fields in the Sanity schema)
+const FEATURE_IDS = [
+  'seo', 'smm', 'ugc', 'paid', 'compliance',
+  'articles', 'videos', 'channels', 'reports',
+  'lockin', 'pricing', 'focus', 'ownership', 'strategy',
+]
+
+// Parse a deep dive text field into { paras: string[], inShort: string }
+// Format: paragraphs separated by blank lines, last line starting with "In short:" is the summary
+function parseDeepDive(text) {
+  if (!text) return { paras: [], inShort: '' }
+  const blocks = text.split(/\n\s*\n/).map((b) => b.trim()).filter(Boolean)
+  let inShort = ''
+  const paras = []
+  for (const block of blocks) {
+    const match = block.match(/^In short:\s*(.+)$/is)
+    if (match) {
+      inShort = match[1].trim()
+    } else {
+      paras.push(block)
+    }
+  }
+  return { paras, inShort }
+}
+
+// Map flat Sanity doc to the shape the page template expects
 function sanityToCompetitor(doc) {
   if (!doc) return null
   const values = {}
-  for (const fv of doc.featureValues || []) {
-    values[fv.rowId] = { v: fv.v, text: fv.text }
+  for (const id of FEATURE_IDS) {
+    const f = doc[`f_${id}`]
+    if (f) values[id] = { v: f.v || 'val', text: f.text || '' }
+    else values[id] = { v: 'val', text: '' }
   }
-  const differentiators = (doc.differentiators || []).map((d) => ({
-    major: !!d.major,
-    badge: d.badge,
-    title: d.title,
-    desc: d.desc,
-    us: { label: d.usLabel, value: d.usValue },
-    them: { label: d.themLabel, value: d.themValue },
-  }))
   return {
     slug: doc.slug,
     name: doc.competitorName,
-    short: doc.competitorShort,
-    initials: doc.competitorInitials,
+    short: doc.competitorShort || doc.competitorName,
+    initials: doc.competitorInitials || doc.competitorName?.[0] || '?',
     values,
-    differentiators,
-    testimonial: doc.testimonial || { quote: '', who: '', initials: '' },
-    deepDive: doc.deepDive || { seo: {}, social: {}, ugc: {}, reporting: {} },
+    testimonial: {
+      quote: doc.testimonialQuote || '',
+      who: doc.testimonialAttribution || '',
+      initials: doc.testimonialInitials || '',
+    },
+    deepDive: {
+      seo: parseDeepDive(doc.deepDiveSeo),
+      social: parseDeepDive(doc.deepDiveSocial),
+      ugc: parseDeepDive(doc.deepDiveUgc),
+      reporting: parseDeepDive(doc.deepDiveReporting),
+    },
   }
 }
 
-// Sanity is the source of truth. Falls back to data.js if no doc exists yet (e.g. seed hasn't run).
+// Sanity is the source of truth. Falls back to data.js if no doc exists yet.
 async function getCompetitor(slug) {
   try {
     const doc = await client.fetch(ALTERNATIVE_QUERY, { slug })
@@ -62,8 +89,8 @@ export async function generateMetadata({ params }) {
   return {
     title: `Contego vs ${c.name}`,
     description: `An honest side-by-side comparison of Contego vs ${c.name} — services, pricing, UGC volume, and which is the right call for your prop firm.`,
-    alternates: { canonical: `/compare/${slug}` },
-    openGraph: { title: `Contego vs ${c.name}`, url: `/compare/${slug}` },
+    alternates: { canonical: `/alternatives/${slug}` },
+    openGraph: { title: `Contego vs ${c.name}`, url: `/alternatives/${slug}` },
   }
 }
 
@@ -227,7 +254,7 @@ export default async function ComparePage({ params }) {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
     name: `Contego vs ${c.name}`,
-    url: `${SITE_URL}/compare/${slug}`,
+    url: `${SITE_URL}/alternatives/${slug}`,
     description: `Contego vs ${c.name} — full feature comparison for prop firm marketing.`,
   }
 

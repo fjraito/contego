@@ -48,20 +48,29 @@ export const ALTERNATIVE_SLUGS_QUERY = groq`*[_type == "alternative" && defined(
 
 export const ALTERNATIVE_QUERY = groq`*[_type == "alternative" && slug.current == $slug][0] {
   _id,
-  title,
   "slug": slug.current,
   status,
   competitorName,
   competitorShort,
   competitorInitials,
-  featureValues[] { rowId, v, text },
-  differentiators[] { major, badge, title, desc, usLabel, usValue, themLabel, themValue },
-  deepDive {
-    seo { paras, inShort },
-    social { paras, inShort },
-    ugc { paras, inShort },
-    reporting { paras, inShort }
-  },
-  testimonial { quote, who, initials },
-  seo
+  f_seo, f_smm, f_ugc, f_paid, f_compliance,
+  f_articles, f_videos, f_channels, f_reports,
+  f_lockin, f_pricing, f_focus, f_ownership, f_strategy,
+  testimonialQuote,
+  testimonialAttribution,
+  testimonialInitials,
+  deepDiveSeo,
+  deepDiveSocial,
+  deepDiveUgc,
+  deepDiveReporting,
+  metaTitle,
+  metaDescription
+}`
+
+export const ALTERNATIVES_LIST_QUERY = groq`*[_type == "alternative" && status == "published"] | order(competitorName asc) {
+  _id,
+  "slug": slug.current,
+  competitorName,
+  competitorShort,
+  competitorInitials
 }`
