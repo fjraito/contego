@@ -1,12 +1,10 @@
 import { defineField, defineType } from 'sanity'
 
-// Helper for feature value fields — keeps the schema flat and readable in the Studio.
-function featureField(name: string, title: string, description: string) {
+function featureField(name: string, title: string) {
   return defineField({
     name,
     title,
     type: 'object',
-    description,
     fields: [
       {
         name: 'v',
@@ -17,18 +15,11 @@ function featureField(name: string, title: string, description: string) {
             { title: 'Yes', value: 'yes' },
             { title: 'No', value: 'no' },
             { title: 'Partial', value: 'partial' },
-            { title: 'Custom value', value: 'val' },
           ],
           layout: 'radio',
           direction: 'horizontal',
         },
-        initialValue: 'val',
-      },
-      {
-        name: 'text',
-        type: 'string',
-        title: 'Detail',
-        description: 'Short description or value, e.g. "Content only", "4 / mo", "Not offered"',
+        initialValue: 'partial',
       },
     ],
   })
@@ -41,7 +32,8 @@ export const alternative = defineType({
   groups: [
     { name: 'info', title: 'Competitor info', default: true },
     { name: 'features', title: 'Feature comparison' },
-    { name: 'content', title: 'Page content' },
+    { name: 'verdict', title: 'Verdict' },
+    { name: 'faq', title: 'FAQ' },
     { name: 'seo', title: 'SEO' },
   ],
   fields: [
@@ -51,7 +43,7 @@ export const alternative = defineType({
       title: 'Competitor name',
       type: 'string',
       group: 'info',
-      description: 'e.g. "In-house team", "PropMarket Co.", "Freelance roster"',
+      description: 'e.g. "GrowYourPropFirm"',
       validation: (R) => R.required(),
     }),
     defineField({
@@ -59,7 +51,7 @@ export const alternative = defineType({
       title: 'Short name',
       type: 'string',
       group: 'info',
-      description: 'Used inline in sentences, e.g. "In-house", "PropMarket", "Freelancers"',
+      description: 'Used inline, e.g. "GYPF"',
       validation: (R) => R.required(),
     }),
     defineField({
@@ -67,7 +59,7 @@ export const alternative = defineType({
       title: 'Initials',
       type: 'string',
       group: 'info',
-      description: '1-2 letters for the logo badge, e.g. "IH", "PM", "FR"',
+      description: '1-3 letters for the logo badge',
       validation: (R) => R.max(3),
     }),
     defineField({
@@ -76,7 +68,7 @@ export const alternative = defineType({
       type: 'slug',
       group: 'info',
       options: { source: 'competitorName', maxLength: 96 },
-      description: 'Auto-generated from competitor name. Shows as /alternatives/[slug]',
+      description: 'Shows as /alternatives/[slug]',
       validation: (R) => R.required(),
     }),
     defineField({
@@ -96,88 +88,72 @@ export const alternative = defineType({
       validation: (R) => R.required(),
     }),
 
-    // ── Feature comparison (their column) ──
-    // Service scope
-    defineField({ name: 'featuresHeading1', title: 'Service scope', type: 'string', group: 'features', readOnly: true, initialValue: '── Service scope ──', hidden: false }),
-    featureField('f_seo', 'SEO (programmatic + content)', 'Do they offer SEO services?'),
-    featureField('f_smm', 'Social media management', 'Do they manage social channels?'),
-    featureField('f_ugc', 'AI UGC video at scale', 'Do they produce AI UGC?'),
-    featureField('f_paid', 'Paid social creative ops', 'Paid ad creative support?'),
-    featureField('f_compliance', 'Built-in compliance review', 'Do they review content for compliance?'),
+    // ── Feature comparison ──
+    // Strategic Fit
+    featureField('f_specialization', 'Prop firm specialization'),
+    featureField('f_trust', 'Trust-led positioning'),
+    featureField('f_content_acq', 'Content-led acquisition focus'),
+    // Service Scope
+    featureField('f_seo', 'SEO strategy'),
+    featureField('f_smm', 'Social media management'),
+    featureField('f_ugc', 'AI UGC video system'),
+    featureField('f_paid', 'Paid ads support'),
+    featureField('f_landing', 'Landing page messaging'),
+    // Content & Creative
+    featureField('f_scripts', 'Short-form video scripts'),
+    featureField('f_hooks', 'Hook testing system'),
+    featureField('f_guardrails', 'AI content guardrails'),
+    featureField('f_voice', 'Brand voice control'),
+    // Best Fit
+    featureField('f_fit_trust', 'Best for trust-aware content growth'),
+    featureField('f_fit_integrated', 'Best for SEO, social, and AI UGC together'),
+    featureField('f_fit_broader', 'Best for broader digital marketing support'),
 
-    // Output cadence
-    defineField({ name: 'featuresHeading2', title: 'Output cadence', type: 'string', group: 'features', readOnly: true, initialValue: '── Output cadence ──', hidden: false }),
-    featureField('f_articles', 'Articles per month', 'How many articles do they ship?'),
-    featureField('f_videos', 'UGC videos per month', 'Monthly video output'),
-    featureField('f_channels', 'Social channels managed', 'How many channels?'),
-    featureField('f_reports', 'Reporting cadence', 'How often do they report?'),
-
-    // Engagement model
-    defineField({ name: 'featuresHeading3', title: 'Engagement model', type: 'string', group: 'features', readOnly: true, initialValue: '── Engagement model ──', hidden: false }),
-    featureField('f_lockin', 'Contract length', 'Month-to-month or lock-in?'),
-    featureField('f_pricing', 'Starting price', 'Their entry price point'),
-    featureField('f_focus', 'Prop firm specialization', 'Are they prop-firm focused?'),
-    featureField('f_ownership', 'You own the content', 'Content ownership terms'),
-    featureField('f_strategy', 'Founder-led strategy', 'Who leads the strategy?'),
-
-    // ── Page content ──
+    // ── Verdict ──
     defineField({
-      name: 'testimonialQuote',
-      title: 'Testimonial quote',
+      name: 'verdictIntro',
+      title: 'Verdict intro',
       type: 'text',
-      group: 'content',
-      rows: 3,
-      description: 'A quote from a client who switched from this competitor to Contego.',
+      group: 'verdict',
+      rows: 4,
+      description: 'The main verdict paragraph(s). Separate paragraphs with blank lines.',
     }),
     defineField({
-      name: 'testimonialAttribution',
-      title: 'Testimonial attribution',
-      type: 'string',
-      group: 'content',
-      description: 'e.g. "Lukas R., Marketing Lead at a $3M/mo prop firm"',
+      name: 'pickContego',
+      title: 'Pick Contego if you want...',
+      type: 'array',
+      group: 'verdict',
+      of: [{ type: 'string' }],
+      description: 'List of reasons to pick Contego',
     }),
     defineField({
-      name: 'testimonialInitials',
-      title: 'Testimonial initials',
-      type: 'string',
-      group: 'content',
-      description: 'Avatar initials, e.g. "LR"',
-    }),
-
-    defineField({
-      name: 'deepDiveSeo',
-      title: 'Deep dive: SEO',
-      type: 'text',
-      group: 'content',
-      rows: 8,
-      description: 'Write 2-3 paragraphs comparing their SEO approach to ours. Separate paragraphs with a blank line. Use <strong> for emphasis. End with "In short: [one-line summary]" on its own line.',
-    }),
-    defineField({
-      name: 'deepDiveSocial',
-      title: 'Deep dive: Social media',
-      type: 'text',
-      group: 'content',
-      rows: 8,
-      description: 'Same format as above. Compare their social media management to ours.',
-    }),
-    defineField({
-      name: 'deepDiveUgc',
-      title: 'Deep dive: AI UGC',
-      type: 'text',
-      group: 'content',
-      rows: 8,
-      description: 'Same format. Compare their UGC video capability to ours.',
-    }),
-    defineField({
-      name: 'deepDiveReporting',
-      title: 'Deep dive: Reporting',
-      type: 'text',
-      group: 'content',
-      rows: 8,
-      description: 'Same format. Compare their reporting cadence to ours.',
+      name: 'pickThem',
+      title: 'Pick [competitor] if you want...',
+      type: 'array',
+      group: 'verdict',
+      of: [{ type: 'string' }],
+      description: 'List of reasons to pick the competitor',
     }),
 
-    // ── SEO overrides ──
+    // ── FAQ ──
+    defineField({
+      name: 'faqItems',
+      title: 'FAQ items',
+      type: 'array',
+      group: 'faq',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            { name: 'q', type: 'string', title: 'Question' },
+            { name: 'a', type: 'text', title: 'Answer', rows: 3 },
+          ],
+          preview: { select: { title: 'q' } },
+        },
+      ],
+    }),
+
+    // ── SEO ──
     defineField({
       name: 'metaTitle',
       title: 'Meta title override',
@@ -191,7 +167,6 @@ export const alternative = defineType({
       type: 'text',
       group: 'seo',
       rows: 3,
-      description: 'Leave blank to auto-generate',
     }),
   ],
   preview: {
