@@ -5,6 +5,17 @@ import { schemaTypes } from './sanity/schemas'
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET ?? 'production'
+const siteUrl = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contego.vercel.app'
+
+function resolveProductionUrl(doc: Record<string, any>): string | undefined {
+  if (doc._type === 'blogPost' && doc.slug?.current) {
+    return `${siteUrl}/blog/${doc.slug.current}`
+  }
+  if (doc._type === 'alternative' && doc.slug?.current) {
+    return `${siteUrl}/alternatives/${doc.slug.current}`
+  }
+  return undefined
+}
 
 export default defineConfig({
   name: 'contego',
@@ -64,5 +75,12 @@ export default defineConfig({
 
   schema: {
     types: schemaTypes,
+  },
+
+  document: {
+    productionUrl: async (prev, context) => {
+      const { document: doc } = context
+      return resolveProductionUrl(doc) || prev
+    },
   },
 })

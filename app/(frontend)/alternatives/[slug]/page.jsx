@@ -6,6 +6,9 @@ import { client } from '@/sanity/lib/client'
 import { ALTERNATIVE_SLUGS_QUERY, ALTERNATIVE_QUERY } from '@/sanity/lib/queries'
 import { FEATURE_SCHEMA, CONTEGO, COMPETITORS } from './data'
 
+export const dynamicParams = true
+export const revalidate = 60
+
 const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contego.agency'
 
 const FEATURE_IDS = FEATURE_SCHEMA.flatMap((s) => s.rows.map((r) => r.id))

@@ -6,6 +6,8 @@ import { client } from '@/sanity/lib/client'
 import { ALTERNATIVES_LIST_QUERY } from '@/sanity/lib/queries'
 import { COMPETITORS } from './[slug]/data'
 
+export const revalidate = 60
+
 const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contego.agency'
 
 async function getAlternatives() {
