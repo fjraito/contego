@@ -1,5 +1,4 @@
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { FAQAccordion } from '@/components/FAQAccordion'
@@ -12,35 +11,90 @@ export const dynamicParams = true
 export const revalidate = 60
 
 const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contego.agency'
+const DEFAULT_HERO_DESCRIPTION = 'A clear side-by-side look at two prop firm marketing agency options, so you can choose the right partner for your goals, budget, and growth stage.'
+const DEFAULT_COMPARISON_DESCRIPTION = 'A practical look at how Contego and this competitor compare across strategy, content, SEO, video, trust, and fit for different prop firm stages.'
 
 const FEATURE_IDS = FEATURE_SCHEMA.flatMap((s) => s.rows.map((r) => r.id))
 
-function sanityToCompetitor(doc) {
-  if (!doc) return null
-  const values = {}
+function asRating(value) {
+  if (!value) return { v: 'partial' }
+  if (typeof value === 'string') return { v: value }
+  return { v: value.v || 'partial' }
+}
+
+function legacyFeatureSections(doc) {
   for (const id of FEATURE_IDS) {
     const f = doc[`f_${id}`]
-    values[id] = f ? { v: f.v || 'partial' } : { v: 'partial' }
+    if (f?.v) {
+      return FEATURE_SCHEMA.map((section) => ({
+        section: section.section,
+        rows: section.rows.map((row) => ({
+          label: row.label,
+          contego: CONTEGO.values[row.id],
+          competitor: asRating(doc[`f_${row.id}`]),
+        })),
+      }))
+    }
   }
+  return null
+}
+
+function normalizeFeatureSections(sections) {
+  if (!Array.isArray(sections) || sections.length === 0) return null
+  return sections.map((section) => ({
+    section: section.section,
+    rows: (section.rows || []).map((row) => ({
+      label: row.label,
+      contego: asRating(row.contego),
+      competitor: asRating(row.competitor),
+    })),
+  }))
+}
+
+function normalizeStaticCompetitor(competitor) {
+  if (!competitor) return null
   return {
+    ...competitor,
+    featureSections: normalizeFeatureSections(competitor.featureSections) || [],
+    heroDescription: competitor.heroDescription || DEFAULT_HERO_DESCRIPTION,
+    comparisonDescription: competitor.comparisonDescription || DEFAULT_COMPARISON_DESCRIPTION,
+  }
+}
+
+function sanityToCompetitor(doc, fallback = null) {
+  if (!doc) return fallback
+  const featureSections =
+    normalizeFeatureSections(doc.featureSections) ||
+    legacyFeatureSections(doc) ||
+    fallback?.featureSections ||
+    []
+
+  return {
+    ...fallback,
     slug: doc.slug,
     name: doc.competitorName,
     short: doc.competitorShort || doc.competitorName,
     initials: doc.competitorInitials || doc.competitorName?.[0] || '?',
-    values,
-    verdictIntro: doc.verdictIntro || '',
-    pickContego: doc.pickContego || [],
-    pickThem: doc.pickThem || [],
-    faqItems: (doc.faqItems || []).map((f) => ({ q: f.q, a: f.a })),
+    logoUrl: doc.competitorLogoUrl || fallback?.logoUrl || '',
+    heroDescription: doc.heroDescription || fallback?.heroDescription || DEFAULT_HERO_DESCRIPTION,
+    comparisonDescription: doc.comparisonDescription || fallback?.comparisonDescription || DEFAULT_COMPARISON_DESCRIPTION,
+    featureSections,
+    verdictIntro: doc.verdictIntro || fallback?.verdictIntro || '',
+    pickContego: doc.pickContego || fallback?.pickContego || [],
+    pickThem: doc.pickThem || fallback?.pickThem || [],
+    faqItems: (doc.faqItems || fallback?.faqItems || []).map((f) => ({ q: f.q, a: f.a })),
+    metaTitle: doc.metaTitle || fallback?.metaTitle,
+    metaDescription: doc.metaDescription || fallback?.metaDescription,
   }
 }
 
 async function getCompetitor(slug) {
+  const fallback = normalizeStaticCompetitor(COMPETITORS[slug])
   try {
     const doc = await client.fetch(ALTERNATIVE_QUERY, { slug }, { next: { revalidate: 60 } })
-    if (doc) return sanityToCompetitor(doc)
+    if (doc) return sanityToCompetitor(doc, fallback)
   } catch (_) { /* fall through */ }
-  return COMPETITORS[slug] || null
+  return fallback
 }
 
 export async function generateStaticParams() {
@@ -57,11 +111,12 @@ export async function generateMetadata({ params }) {
   const { slug } = await params
   const c = await getCompetitor(slug)
   if (!c) return {}
+  const description = c.metaDescription || c.heroDescription || DEFAULT_HERO_DESCRIPTION
   return {
-    title: `Contego vs ${c.name}`,
-    description: `A clear side-by-side look at Contego vs ${c.name} for prop firm marketing — services, content, SEO, AI UGC, and which is the right fit.`,
+    title: c.metaTitle || `Contego vs ${c.name}`,
+    description,
     alternates: { canonical: `/alternatives/${slug}` },
-    openGraph: { title: `Contego vs ${c.name}`, url: `/alternatives/${slug}` },
+    openGraph: { title: c.metaTitle || `Contego vs ${c.name}`, description, url: `/alternatives/${slug}` },
   }
 }
 
@@ -84,6 +139,14 @@ function ValOrTick({ value }) {
   return null
 }
 
+function BrandLogo({ src, alt, fallback, className = '' }) {
+  if (src) {
+    return <img src={src} alt={alt} className={`brand-logo-img ${className}`.trim()} />
+  }
+
+  return <span className="brand-logo">{fallback}</span>
+}
+
 // ── Page ──
 
 export default async function AlternativePage({ params }) {
@@ -96,7 +159,7 @@ export default async function AlternativePage({ params }) {
     '@type': 'WebPage',
     name: `Contego vs ${c.name}`,
     url: `${SITE_URL}/alternatives/${slug}`,
-    description: `Contego vs ${c.name} — prop firm marketing comparison.`,
+    description: c.heroDescription || `Contego vs ${c.name} prop firm marketing comparison.`,
   }
 
   return (
@@ -116,7 +179,7 @@ export default async function AlternativePage({ params }) {
               <span className="hero-name">{c.name}</span>
             </h1>
             <p className="lead">
-              A clear side-by-side look at two prop firm marketing agency options, so you can choose the right partner for your goals, budget, and growth stage.
+              {c.heroDescription}
             </p>
           </div>
         </section>
@@ -170,7 +233,7 @@ export default async function AlternativePage({ params }) {
             <div style={{ textAlign: 'center', maxWidth: 720, margin: '0 auto 36px' }}>
               <span className="eyebrow"><span className="dot" />Full comparison</span>
               <h2 style={{ marginTop: 14 }}>Compare the things that<br />actually affect growth.</h2>
-              <p style={{ color: 'var(--text-2)', marginTop: 16, fontSize: 16 }}>A practical look at how Contego and {c.name} compare across strategy, content, SEO, video, trust, and fit for different prop firm stages.</p>
+              <p style={{ color: 'var(--text-2)', marginTop: 16, fontSize: 16 }}>{c.comparisonDescription}</p>
             </div>
             <table className="simple-table">
               <thead>
@@ -178,33 +241,29 @@ export default async function AlternativePage({ params }) {
                   <th>Feature</th>
                   <th className="us-col">
                     <span className="brand-cell">
-                      <Image src="/assets/contego-logo.png" alt="Contego" width={100} height={32} className="brand-logo-img" />
+                      <BrandLogo src={CONTEGO.logoUrl} alt="Contego" fallback="C" className="brand-logo-img--contego" />
                     </span>
                   </th>
                   <th>
                     <span className="brand-cell">
-                      <span className="brand-logo">{c.initials}</span>
-                      <span className="brand-text">{c.name}</span>
+                      <BrandLogo src={c.logoUrl} alt={c.name} fallback={c.initials} />
+                      {!c.logoUrl && <span className="brand-text">{c.name}</span>}
                     </span>
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {FEATURE_SCHEMA.flatMap((section, si) => [
+                {c.featureSections.flatMap((section, si) => [
                   <tr key={`s${si}`} className="sect-row">
                     <td colSpan={3}>{section.section}</td>
                   </tr>,
-                  ...section.rows.map((row) => {
-                    const us = CONTEGO.values[row.id]
-                    const them = c.values[row.id]
-                    return (
-                      <tr key={row.id} className="feat-row">
-                        <td>{row.label}</td>
-                        <td className="val-cell us"><ValOrTick value={us} /></td>
-                        <td className="val-cell"><ValOrTick value={them} /></td>
-                      </tr>
-                    )
-                  }),
+                  ...section.rows.map((row) => (
+                    <tr key={`${section.section}-${row.label}`} className="feat-row">
+                      <td>{row.label}</td>
+                      <td className="val-cell us"><ValOrTick value={row.contego} /></td>
+                      <td className="val-cell"><ValOrTick value={row.competitor} /></td>
+                    </tr>
+                  )),
                 ])}
               </tbody>
             </table>

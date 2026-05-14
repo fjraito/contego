@@ -10,6 +10,19 @@ export const revalidate = 60
 
 const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contego.agency'
 
+function normalizeAlternative(alt) {
+  const fallback = COMPETITORS[alt.slug]
+  return {
+    _id: alt._id || `static-${alt.slug}`,
+    slug: alt.slug,
+    competitorName: alt.competitorName || fallback?.name,
+    competitorShort: alt.competitorShort || fallback?.short,
+    competitorInitials: alt.competitorInitials || fallback?.initials,
+    competitorLogoUrl: alt.competitorLogoUrl || fallback?.logoUrl,
+    heroDescription: fallback?.heroDescription,
+  }
+}
+
 async function getAlternatives() {
   let sanityAlts = []
   try {
@@ -18,18 +31,19 @@ async function getAlternatives() {
 
   // Merge with static fallback data
   const seen = new Set(sanityAlts.map((a) => a.slug))
+  const normalizedSanityAlts = sanityAlts.map(normalizeAlternative)
   const staticAlts = Object.values(COMPETITORS)
     .filter((c) => !seen.has(c.slug))
-    .map((c) => ({
+    .map((c) => normalizeAlternative({
       _id: `static-${c.slug}`,
-      title: `Contego vs ${c.name}`,
       slug: c.slug,
       competitorName: c.name,
       competitorShort: c.short,
       competitorInitials: c.initials,
+      competitorLogoUrl: c.logoUrl,
     }))
 
-  return [...sanityAlts, ...staticAlts].sort((a, b) =>
+  return [...normalizedSanityAlts, ...staticAlts].sort((a, b) =>
     a.competitorName.localeCompare(b.competitorName)
   )
 }
@@ -54,6 +68,14 @@ function ArrowIcon() {
       <line x1="5" y1="12" x2="19" y2="12" />
       <polyline points="12 5 19 12 12 19" />
     </svg>
+  )
+}
+
+function LogoMark({ src, alt, fallback, tone }) {
+  return (
+    <span className={`alt-card__logo ${tone}`}>
+      {src ? <img src={src} alt={alt} /> : fallback}
+    </span>
   )
 }
 
@@ -105,18 +127,20 @@ export default async function AlternativesIndex() {
                 >
                   <div className="alt-card__top">
                     <div className="alt-card__vs">
-                      <span className="alt-card__logo us">C</span>
+                      <LogoMark src="/assets/contego-logo.png" alt="Contego" fallback="C" tone="us" />
                       <span className="alt-card__vs-label">vs</span>
-                      <span className="alt-card__logo them">
-                        {alt.competitorInitials || alt.competitorName?.[0] || '?'}
-                      </span>
+                      <LogoMark
+                        src={alt.competitorLogoUrl}
+                        alt={alt.competitorName}
+                        fallback={alt.competitorInitials || alt.competitorName?.[0] || '?'}
+                        tone="them"
+                      />
                     </div>
                     <h2 className="alt-card__name">
                       Contego vs {alt.competitorName}
                     </h2>
                     <p className="alt-card__desc">
-                      A full comparison of services, pricing, UGC output, and which
-                      is the right fit for your prop firm.
+                      {alt.heroDescription || 'A full comparison of services, content, AI UGC, and which option is the right fit for your prop firm.'}
                     </p>
                   </div>
                   <span className="alt-card__link">

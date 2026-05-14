@@ -5,6 +5,7 @@ function featureField(name: string, title: string) {
     name,
     title,
     type: 'object',
+    hidden: true,
     fields: [
       {
         name: 'v',
@@ -22,6 +23,25 @@ function featureField(name: string, title: string) {
         initialValue: 'partial',
       },
     ],
+  })
+}
+
+function ratingField(name: string, title: string) {
+  return defineField({
+    name,
+    title,
+    type: 'string',
+    options: {
+      list: [
+        { title: 'Yes', value: 'yes' },
+        { title: 'No', value: 'no' },
+        { title: 'Partial', value: 'partial' },
+      ],
+      layout: 'radio',
+      direction: 'horizontal',
+    },
+    initialValue: 'partial',
+    validation: (R) => R.required(),
   })
 }
 
@@ -59,8 +79,15 @@ export const alternative = defineType({
       title: 'Initials',
       type: 'string',
       group: 'info',
-      description: '1-3 letters for the logo badge',
-      validation: (R) => R.max(3),
+      description: 'Short fallback text for the logo badge when no image is available',
+      validation: (R) => R.max(8),
+    }),
+    defineField({
+      name: 'competitorLogoUrl',
+      title: 'Competitor logo URL',
+      type: 'string',
+      group: 'info',
+      description: 'Use a local public path such as /assets/alternative-logos/yourpropfirm.svg or a full image URL.',
     }),
     defineField({
       name: 'slug',
@@ -87,8 +114,81 @@ export const alternative = defineType({
       initialValue: 'draft',
       validation: (R) => R.required(),
     }),
+    defineField({
+      name: 'heroDescription',
+      title: 'Hero description',
+      type: 'text',
+      group: 'info',
+      rows: 3,
+      description: 'Competitor-specific intro below the Contego vs competitor headline.',
+    }),
 
     // ── Feature comparison ──
+    defineField({
+      name: 'comparisonDescription',
+      title: 'Comparison intro',
+      type: 'text',
+      group: 'features',
+      rows: 3,
+      description: 'Short intro above the feature comparison table.',
+    }),
+    defineField({
+      name: 'featureSections',
+      title: 'Feature table sections',
+      type: 'array',
+      group: 'features',
+      description: 'Flexible comparison table grouped by section. Use yes, partial, and no ratings for each row.',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'section',
+              title: 'Section title',
+              type: 'string',
+              validation: (R) => R.required(),
+            }),
+            defineField({
+              name: 'rows',
+              title: 'Rows',
+              type: 'array',
+              of: [
+                {
+                  type: 'object',
+                  fields: [
+                    defineField({
+                      name: 'label',
+                      title: 'Feature label',
+                      type: 'string',
+                      validation: (R) => R.required(),
+                    }),
+                    ratingField('contego', 'Contego'),
+                    ratingField('competitor', 'Competitor'),
+                  ],
+                  preview: {
+                    select: { title: 'label', contego: 'contego', competitor: 'competitor' },
+                    prepare: ({ title, contego, competitor }) => ({
+                      title,
+                      subtitle: `Contego: ${contego || 'partial'} • Competitor: ${competitor || 'partial'}`,
+                    }),
+                  },
+                },
+              ],
+              validation: (R) => R.required().min(1),
+            }),
+          ],
+          preview: {
+            select: { title: 'section', rows: 'rows' },
+            prepare: ({ title, rows }) => ({
+              title: title || 'Untitled section',
+              subtitle: `${rows?.length || 0} rows`,
+            }),
+          },
+        },
+      ],
+    }),
+
+    // Legacy flat fields kept hidden so old Sanity docs still render.
     // Strategic Fit
     featureField('f_specialization', 'Prop firm specialization'),
     featureField('f_trust', 'Trust-led positioning'),
