@@ -3,6 +3,7 @@ import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { CTA } from '@/components/CTA'
 import { client } from '@/sanity/lib/client'
+import { STATIC_BLOG_POSTS } from './data'
 
 const CATEGORIES = ['SEO', 'AI UGC', 'Social Media', 'Prop Firm News', 'Marketing Strategy']
 const LIMIT = 8
@@ -20,12 +21,26 @@ async function getPosts(category, page = 1) {
   const end = start + LIMIT
   const categoryFilter = category ? `&& category == "${category}"` : ''
   const query = POSTS_QUERY.replace(/\$categoryFilter/g, categoryFilter)
+  let sanityPosts = []
+  let sanityTotal = 0
   try {
     const data = await client.fetch(query, { start, end }, { next: { revalidate: 60 } })
-    return { posts: data.posts ?? [], totalPages: Math.ceil((data.total ?? 0) / LIMIT) || 1 }
-  } catch {
-    return { posts: [], totalPages: 1 }
-  }
+    sanityPosts = data.posts ?? []
+    sanityTotal = data.total ?? 0
+  } catch { /* fall through to static posts */ }
+
+  const sanitySlugs = new Set(sanityPosts.map((post) => post.slug))
+  const staticPosts = STATIC_BLOG_POSTS
+    .filter((post) => !sanitySlugs.has(post.slug))
+    .filter((post) => !category || post.category === category)
+    .map(({ content, seo, ...post }) => post)
+
+  const posts = [...sanityPosts, ...staticPosts]
+    .sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0))
+    .slice(0, LIMIT)
+
+  const staticTotal = staticPosts.length
+  return { posts, totalPages: Math.ceil((sanityTotal + staticTotal) / LIMIT) || 1 }
 }
 
 export async function generateMetadata({ searchParams }) {

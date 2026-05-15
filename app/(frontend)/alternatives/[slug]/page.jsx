@@ -10,7 +10,7 @@ import { FEATURE_SCHEMA, CONTEGO, COMPETITORS } from './data'
 export const dynamicParams = true
 export const revalidate = 60
 
-const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contego.agency'
+const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contegoagency.com'
 const DEFAULT_HERO_DESCRIPTION = 'A clear side-by-side look at two prop firm marketing agency options, so you can choose the right partner for your goals, budget, and growth stage.'
 const DEFAULT_COMPARISON_DESCRIPTION = 'A practical look at how Contego and this competitor compare across strategy, content, SEO, video, trust, and fit for different prop firm stages.'
 

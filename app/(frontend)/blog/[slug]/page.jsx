@@ -4,9 +4,10 @@ import { PortableText } from '@portabletext/react'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { client } from '@/sanity/lib/client'
+import { getStaticBlogPost, STATIC_BLOG_POSTS } from '../data'
 import { TocClient } from './TocClient'
 
-const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contego.agency'
+const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contegoagency.com'
 
 const POST_QUERY = `*[_type == "blogPost" && slug.current == $slug && status == "published"][0] {
   _id, title, "slug": slug.current, excerpt, content, category,
@@ -21,14 +22,26 @@ const RELATED_QUERY = `*[_type == "blogPost" && status == "published" && categor
 
 async function getPost(slug) {
   try {
-    return await client.fetch(POST_QUERY, { slug }, { next: { revalidate: 60 } })
-  } catch { return null }
+    const post = await client.fetch(POST_QUERY, { slug }, { next: { revalidate: 60 } })
+    if (post) return post
+  } catch { /* fall through to static posts */ }
+  return getStaticBlogPost(slug)
 }
 
 async function getRelated(category, slug) {
+  let sanityRelated = []
   try {
-    return await client.fetch(RELATED_QUERY, { category, slug }, { next: { revalidate: 60 } })
-  } catch { return [] }
+    sanityRelated = await client.fetch(RELATED_QUERY, { category, slug }, { next: { revalidate: 60 } })
+  } catch { /* fall through to static posts */ }
+
+  const sanitySlugs = new Set(sanityRelated.map((post) => post.slug))
+  const staticRelated = STATIC_BLOG_POSTS
+    .filter((post) => post.category === category && post.slug !== slug && !sanitySlugs.has(post.slug))
+    .map(({ content, seo, ...post }) => post)
+
+  return [...sanityRelated, ...staticRelated]
+    .sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0))
+    .slice(0, 4)
 }
 
 function toId(text) {
@@ -60,8 +73,13 @@ export async function generateMetadata({ params }) {
   if (!post) return {}
   const title = post.seo?.metaTitle || post.title
   const description = post.seo?.metaDescription || post.excerpt
-  const ogImage = post.featuredImage?.url
-    ? [{ url: post.featuredImage.url, width: 1200, height: 630, alt: post.featuredImage.alt || title }]
+  const featuredImageUrl = post.featuredImage?.url?.startsWith('http')
+    ? post.featuredImage.url
+    : post.featuredImage?.url
+      ? `${SITE_URL}${post.featuredImage.url}`
+      : null
+  const ogImage = featuredImageUrl
+    ? [{ url: featuredImageUrl, width: 1200, height: 630, alt: post.featuredImage.alt || title }]
     : undefined
   return {
     title,
@@ -82,7 +100,7 @@ export async function generateMetadata({ params }) {
       card: 'summary_large_image',
       title,
       description,
-      images: post.featuredImage?.url ? [post.featuredImage.url] : undefined,
+      images: featuredImageUrl ? [featuredImageUrl] : undefined,
     },
   }
 }
@@ -184,7 +202,7 @@ export default async function BlogPost({ params }) {
     url: `${SITE_URL}/blog/${slug}`,
     author: { '@type': 'Person', name: authorName },
     publisher: { '@type': 'Organization', name: 'Contego', url: SITE_URL },
-    ...(post.featuredImage?.url && { image: post.featuredImage.url }),
+    ...(post.featuredImage?.url && { image: post.featuredImage.url.startsWith('http') ? post.featuredImage.url : `${SITE_URL}${post.featuredImage.url}` }),
   }
 
   return (

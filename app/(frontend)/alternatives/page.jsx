@@ -8,7 +8,7 @@ import { COMPETITORS } from './[slug]/data'
 
 export const revalidate = 60
 
-const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contego.agency'
+const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contegoagency.com'
 
 function normalizeAlternative(alt) {
   const fallback = COMPETITORS[alt.slug]
