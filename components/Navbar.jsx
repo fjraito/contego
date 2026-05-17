@@ -8,7 +8,7 @@ const NAV_LINKS = [
   { href: '#process', label: 'Process' },
   { href: '/pricing', label: 'Pricing' },
   { href: '#blog', label: 'Blog' },
-  { href: '#faq', label: 'FAQ' },
+  { href: '/faq', label: 'FAQ' },
 ]
 
 export function Navbar() {
