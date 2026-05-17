@@ -20,10 +20,10 @@ export function Footer() {
           <div className="foot-col">
             <h4>Company</h4>
             <ul>
-              <li><a href="#process">Process</a></li>
-              <li><a href="#pricing">Pricing</a></li>
-              <li><a href="#blog">Blog</a></li>
-              <li><a href="#faq">FAQ</a></li>
+              <li><a href="/#process">Process</a></li>
+              <li><a href="/#pricing">Pricing</a></li>
+              <li><a href="/blog">Blog</a></li>
+              <li><a href="/#faq">FAQ</a></li>
             </ul>
           </div>
           <div className="foot-col">
@@ -38,6 +38,11 @@ export function Footer() {
         </div>
         <div className="foot-bottom">
           <span>© 2026 Contego. All rights reserved.</span>
+          <div className="foot-legal">
+            <a href="/privacy-policy">Privacy Policy</a>
+            <a href="/terms-and-conditions">Terms</a>
+            <a href="/disclaimer">Disclaimer</a>
+          </div>
         </div>
       </div>
     </footer>

@@ -1328,6 +1328,122 @@ html { scroll-behavior: smooth; }
   font-weight: 650;
 }
 
+/* ── Legal pages ── */
+.legal-page {
+  padding: 120px 0 96px;
+}
+.legal-breadcrumb {
+  margin-bottom: 36px;
+}
+.legal-hero {
+  max-width: 860px;
+  margin-bottom: 34px;
+}
+.legal-hero h1 {
+  margin: 16px 0 14px;
+  font-size: clamp(42px, 7vw, 82px);
+  line-height: 0.95;
+  letter-spacing: 0;
+}
+.legal-hero p {
+  max-width: 720px;
+  color: var(--text-2);
+  font-size: 18px;
+  line-height: 1.7;
+}
+.legal-updated {
+  display: inline-flex;
+  margin-top: 22px;
+  padding: 9px 13px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-2);
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 13px;
+  font-weight: 650;
+}
+.legal-card {
+  max-width: 920px;
+  padding: clamp(24px, 5vw, 54px);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.035);
+}
+.legal-intro {
+  padding-bottom: 26px;
+  margin-bottom: 28px;
+  border-bottom: 1px solid var(--border);
+}
+.legal-intro p,
+.legal-section p {
+  margin: 0 0 15px;
+  color: var(--text-2);
+  font-size: 16px;
+  line-height: 1.8;
+}
+.legal-section {
+  scroll-margin-top: 100px;
+}
+.legal-section + .legal-section {
+  margin-top: 34px;
+  padding-top: 34px;
+  border-top: 1px solid var(--border);
+}
+.legal-section h2 {
+  margin: 0 0 16px;
+  font-size: 24px;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+.legal-group {
+  margin-top: 20px;
+}
+.legal-group h3 {
+  margin: 0 0 10px;
+  color: var(--text);
+  font-size: 17px;
+  letter-spacing: 0;
+}
+.legal-section ul {
+  margin: 10px 0 18px;
+  padding-left: 1.25rem;
+  color: var(--text-2);
+}
+.legal-section li {
+  margin: 7px 0;
+  line-height: 1.65;
+}
+.legal-contact {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-2);
+  background: rgba(6, 20, 11, 0.42);
+  font-style: normal;
+}
+.legal-contact strong {
+  color: var(--text);
+}
+.legal-contact a {
+  color: var(--green);
+}
+.foot-legal {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.foot-legal a {
+  color: var(--text-3);
+  font-size: 13px;
+  transition: color 0.2s ease;
+}
+.foot-legal a:hover {
+  color: var(--green);
+}
+
 /* ── CTA box ── */
 .post-cta-box {
   margin-top: 56px;
