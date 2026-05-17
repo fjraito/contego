@@ -1291,6 +1291,42 @@ html { scroll-behavior: smooth; }
 .post-body figure { margin: 28px 0; }
 .post-body figure img { width: 100%; border-radius: 12px; border: 1px solid var(--border); }
 .post-body figcaption { font-size: 13px; color: var(--text-3); text-align: center; margin-top: 10px; }
+.post-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin: 30px 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+}
+.post-table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.post-table th,
+.post-table td {
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--border);
+  border-right: 1px solid var(--border);
+  vertical-align: top;
+}
+.post-table th:last-child,
+.post-table td:last-child { border-right: 0; }
+.post-table tr:last-child td { border-bottom: 0; }
+.post-table th {
+  color: var(--text);
+  font-weight: 700;
+  text-align: left;
+  background: rgba(56, 232, 127, 0.08);
+}
+.post-table td { color: var(--text-2); }
+.post-table td:first-child {
+  color: var(--text);
+  font-weight: 650;
+}
 
 /* ── CTA box ── */
 .post-cta-box {

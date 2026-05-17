@@ -4,7 +4,7 @@ import { PortableText } from '@portabletext/react'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { client } from '@/sanity/lib/client'
-import { getStaticBlogPost, STATIC_BLOG_POSTS } from '../data'
+import { getStaticBlogPost, STATIC_BLOG_POSTS, STATIC_BLOG_SLUGS } from '../data'
 import { TocClient } from './TocClient'
 
 const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contegoagency.com'
@@ -21,6 +21,8 @@ const RELATED_QUERY = `*[_type == "blogPost" && status == "published" && categor
 }`
 
 async function getPost(slug) {
+  if (STATIC_BLOG_SLUGS.has(slug)) return getStaticBlogPost(slug)
+
   try {
     const post = await client.fetch(POST_QUERY, { slug }, { next: { revalidate: 60 } })
     if (post) return post
@@ -165,6 +167,30 @@ const ptComponents = {
           {value.caption && <figcaption>{value.caption}</figcaption>}
         </figure>
       ) : null,
+    table: ({ value }) => (
+      <div className="post-table-wrap">
+        <table className="post-table">
+          {value.headers?.length > 0 && (
+            <thead>
+              <tr>
+                {value.headers.map((header, index) => (
+                  <th key={`${header}-${index}`}>{header}</th>
+                ))}
+              </tr>
+            </thead>
+          )}
+          <tbody>
+            {value.rows?.map((row) => (
+              <tr key={row._key}>
+                {row.cells?.map((cell, index) => (
+                  <td key={`${row._key}-${index}`}>{cell}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    ),
   },
 }
 

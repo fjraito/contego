@@ -3,7 +3,7 @@ import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { CTA } from '@/components/CTA'
 import { client } from '@/sanity/lib/client'
-import { STATIC_BLOG_POSTS } from './data'
+import { STATIC_BLOG_POSTS, STATIC_BLOG_SLUGS } from './data'
 
 const CATEGORIES = ['SEO', 'AI UGC', 'Social Media', 'Prop Firm News', 'Marketing Strategy']
 const LIMIT = 8
@@ -29,18 +29,17 @@ async function getPosts(category, page = 1) {
     sanityTotal = data.total ?? 0
   } catch { /* fall through to static posts */ }
 
-  const sanitySlugs = new Set(sanityPosts.map((post) => post.slug))
+  const sanityPostsWithoutMigrated = sanityPosts.filter((post) => !STATIC_BLOG_SLUGS.has(post.slug))
   const staticPosts = STATIC_BLOG_POSTS
-    .filter((post) => !sanitySlugs.has(post.slug))
     .filter((post) => !category || post.category === category)
     .map(({ content, seo, ...post }) => post)
 
-  const posts = [...sanityPosts, ...staticPosts]
+  const posts = [...staticPosts, ...sanityPostsWithoutMigrated]
     .sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0))
     .slice(0, LIMIT)
 
-  const staticTotal = staticPosts.length
-  return { posts, totalPages: Math.ceil((sanityTotal + staticTotal) / LIMIT) || 1 }
+  const migratedSanityCount = sanityPosts.length - sanityPostsWithoutMigrated.length
+  return { posts, totalPages: Math.ceil((sanityTotal - migratedSanityCount + staticPosts.length) / LIMIT) || 1 }
 }
 
 export async function generateMetadata({ searchParams }) {
