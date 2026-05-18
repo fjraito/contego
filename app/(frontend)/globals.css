@@ -2059,15 +2059,15 @@ html { scroll-behavior: smooth; }
   margin-bottom: 20px;
 }
 .alt-card__logo {
-  width: 128px;
-  height: 42px;
-  border-radius: 10px;
-  padding: 8px 12px;
+  width: 160px;
+  height: 56px;
+  border-radius: 12px;
+  padding: 10px 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 15px;
+  font-size: 16px;
   border: 1px solid var(--border-2);
   flex-shrink: 0;
 }
@@ -2087,7 +2087,7 @@ html { scroll-behavior: smooth; }
   object-fit: contain;
 }
 .alt-card__logo.us img {
-  max-width: 104px;
+  max-width: 120px;
 }
 .alt-card__vs-label {
   font-size: 11px;
@@ -2125,7 +2125,7 @@ html { scroll-behavior: smooth; }
 @media (max-width: 640px) {
   .alt-grid { grid-template-columns: 1fr; }
   .alt-card { padding: 24px 20px 20px; }
-  .alt-card__logo { width: 112px; height: 40px; }
+  .alt-card__logo { width: 130px; height: 48px; padding: 8px 12px; }
 }
 
 /* ── Evergreen pillars (redesigned) ── */
@@ -2338,7 +2338,8 @@ html { scroll-behavior: smooth; }
   object-fit: contain;
 }
 .simple-table thead .brand-logo-img--contego { max-width: 110px; max-height: 28px; }
-.simple-table thead .competitor-logo { max-width: 100px; height: 24px; width: auto; object-fit: contain; filter: brightness(0) invert(1); opacity: 0.85; }
+.simple-table thead .competitor-logo { max-width: 120px; height: 28px; width: auto; object-fit: contain; filter: brightness(0) invert(1); opacity: 0.85; }
+[data-theme='light'] .simple-table thead .competitor-logo { filter: none; opacity: 1; }
 [data-theme="light"] .simple-table thead .competitor-logo { filter: none; opacity: 1; }
 
 .simple-table .sect-row td {

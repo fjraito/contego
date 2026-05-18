@@ -18,6 +18,16 @@ async function getAlternatives() {
     sanityAlts = await client.fetch(ALTERNATIVES_LIST_QUERY, {}, { next: { revalidate: 60 } })
   } catch (_) { /* fall through */ }
 
+  const merged = sanityAlts.map((a) => {
+    const s = Object.values(COMPETITORS).find((c) => c.slug === a.slug)
+    if (!s) return a
+    return {
+      ...a,
+      competitorLogo: a.competitorLogo || s.logo,
+      competitorInitials: a.competitorInitials || s.initials,
+    }
+  })
+
   const sanitySlugs = new Set(sanityAlts.map((a) => a.slug))
   const staticAlts = Object.values(COMPETITORS)
     .filter((c) => !sanitySlugs.has(c.slug))
@@ -29,7 +39,7 @@ async function getAlternatives() {
       competitorLogo: c.logo,
     }))
 
-  return [...sanityAlts, ...staticAlts].sort((a, b) => a.competitorName.localeCompare(b.competitorName))
+  return [...merged, ...staticAlts].sort((a, b) => a.competitorName.localeCompare(b.competitorName))
 }
 
 export const metadata = {
@@ -96,12 +106,12 @@ export default async function AlternativesIndex() {
                   <div className="alt-card__top">
                     <div className="alt-card__vs">
                       <span className="alt-card__logo us">
-                        <Image src="/assets/contego-logo.png" alt="Contego" width={28} height={28} style={{ objectFit: 'contain' }} />
+                        <Image src="/assets/contego-logo.png" alt="Contego" width={120} height={36} style={{ objectFit: 'contain' }} />
                       </span>
                       <span className="alt-card__vs-label">vs</span>
                       <span className="alt-card__logo them">
                         {alt.competitorLogo ? (
-                          <img src={alt.competitorLogo} alt={alt.competitorName} style={{ width: 28, height: 28, objectFit: 'contain' }} />
+                          <img src={alt.competitorLogo} alt={alt.competitorName} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
                         ) : (
                           alt.competitorInitials || alt.competitorName?.[0] || '?'
                         )}

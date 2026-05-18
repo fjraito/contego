@@ -33,11 +33,27 @@ function sanityToCompetitor(doc) {
 }
 
 async function getCompetitor(slug) {
+  const staticData = COMPETITORS[slug] || null
+  let sanityData = null
   try {
     const doc = await client.fetch(ALTERNATIVE_QUERY, { slug }, { next: { revalidate: 60 } })
-    if (doc) return sanityToCompetitor(doc)
+    if (doc) sanityData = sanityToCompetitor(doc)
   } catch (_) { /* fall through */ }
-  return COMPETITORS[slug] || null
+
+  if (!sanityData && !staticData) return null
+  if (!sanityData) return staticData
+  if (!staticData) return sanityData
+
+  return {
+    ...staticData,
+    ...sanityData,
+    logo: sanityData.logo || staticData.logo,
+    featureTable: sanityData.featureTable?.length ? sanityData.featureTable : staticData.featureTable,
+    verdictIntro: sanityData.verdictIntro || staticData.verdictIntro,
+    pickContego: sanityData.pickContego?.length ? sanityData.pickContego : staticData.pickContego,
+    pickThem: sanityData.pickThem?.length ? sanityData.pickThem : staticData.pickThem,
+    faqItems: sanityData.faqItems?.length ? sanityData.faqItems : staticData.faqItems,
+  }
 }
 
 export async function generateStaticParams() {
