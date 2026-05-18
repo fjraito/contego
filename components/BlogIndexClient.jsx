@@ -29,7 +29,7 @@ function FeaturedPost({ post, index }) {
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       viewport={{ once: true }}
     >
-      <Link href={`/blog/${post.slug}`} className="featured">
+      <Link href={`/blog/${post.slug}`} className="blog-featured">
         <div className="featured-thumb">
           <span className="featured-badge"><span className="dot" />Featured</span>
           {post.featuredImage?.url ? (
