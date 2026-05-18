@@ -16,11 +16,13 @@ const NAV_LINKS = [
   {
     label: 'Resources',
     children: [
+      { href: '/prop-firms', label: 'Prop Firms' },
       { href: '/blog', label: 'Blog' },
       { href: '/alternatives', label: 'Alternatives' },
       { href: '/faq', label: 'FAQ' },
     ],
   },
+  { href: '/contact', label: 'Contact' },
 ]
 
 function Dropdown({ item }) {

@@ -21,6 +21,7 @@ export function Footer() {
             <h4>Resources</h4>
             <ul>
               <li><a href="/pricing">Pricing</a></li>
+              <li><a href="/prop-firms">Prop Firms</a></li>
               <li><a href="/blog">Blog</a></li>
               <li><a href="/alternatives">Alternatives</a></li>
               <li><a href="/faq">FAQ</a></li>
@@ -29,7 +30,8 @@ export function Footer() {
           <div className="foot-col">
             <h4>Connect</h4>
             <ul>
-              <li><a href="#">hello@contego.co</a></li>
+              <li><a href="/contact">Contact</a></li>
+              <li><a href="mailto:hello@contego.agency">hello@contego.agency</a></li>
               <li><a href="#">Twitter / X</a></li>
               <li><a href="#">LinkedIn</a></li>
               <li><a href="#">Instagram</a></li>
