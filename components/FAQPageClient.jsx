@@ -378,12 +378,8 @@ function FaqHero({ query, setQuery, matchCount, totalCount }) {
   return (
     <section className="faq-hero">
       <div className="shell">
-        <div className="crumbs">
-          <a href="/">Home</a>
-          <span className="sep">/</span>
-          <span>FAQ</span>
-        </div>
-        <h1>
+        <span className="page-eyebrow">FAQ</span>
+        <h1 style={{ marginTop: 22 }}>
           Frequently asked<br />
           <span className="italic-accent">questions.</span>
         </h1>

@@ -37,10 +37,7 @@ export function ServiceHero({ d }) {
     <section className="svc-hero">
       <div className="shell">
         <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={viewport}>
-          <span className="num-pill">
-            <span className="num">{d.num}</span>
-            {d.eyebrow}
-          </span>
+          <span className="page-eyebrow">{d.eyebrow}</span>
         </motion.div>
 
         <motion.h1 variants={fadeUp} initial="hidden" whileInView="show" viewport={viewport}>

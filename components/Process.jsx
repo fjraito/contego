@@ -38,7 +38,7 @@ export function Process() {
           viewport={viewport}
         >
           <motion.span className="eyebrow" variants={fadeUp}><span className="dot" />How we work</motion.span>
-          <motion.h2 variants={fadeUp}>A controlled system for<br />building trader demand.</motion.h2>
+          <motion.h2 variants={fadeUp}>A controlled system for building trader demand.</motion.h2>
           <motion.p className="desc" variants={fadeUp}>Contego starts by finding the gaps in your current marketing, then builds the SEO, social, and AI UGC workflow your prop firm needs to grow with clarity.</motion.p>
         </motion.div>
 

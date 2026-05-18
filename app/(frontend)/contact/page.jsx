@@ -37,8 +37,8 @@ export default function ContactPage() {
       <main>
         <section className="contact-hero">
           <div className="shell">
-            <span className="eyebrow"><span className="dot" />Talk to us</span>
-            <h1>
+            <span className="page-eyebrow">Contact</span>
+            <h1 style={{ marginTop: 22 }}>
               Let&apos;s build the <span className="italic-accent">growth engine.</span>
             </h1>
             <p className="lead">
@@ -59,9 +59,7 @@ export default function ContactPage() {
           <div className="shell">
             <div className="section-head" style={{ marginBottom: 28 }}>
               <span className="eyebrow"><span className="dot" />Offices</span>
-              <h2 style={{ fontSize: 'clamp(28px, 3.4vw, 44px)' }}>
-                Three timezones,<br />one team.
-              </h2>
+              <h2>Three timezones, one team.</h2>
             </div>
             <div className="offices">
               {[

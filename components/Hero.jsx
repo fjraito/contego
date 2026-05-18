@@ -84,7 +84,7 @@ function HeroFloating() {
           </motion.span>
 
           <motion.h1 variants={fadeUp}>
-            Prop firm marketing agency built for{' '}
+            Prop firm marketing built for{' '}
             <span className="italic-accent">trust-led growth.</span>
           </motion.h1>
 

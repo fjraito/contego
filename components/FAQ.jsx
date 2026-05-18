@@ -63,7 +63,7 @@ export function FAQ() {
           viewport={viewport}
         >
           <motion.span className="eyebrow" variants={fadeUp}><span className="dot" />FAQ</motion.span>
-          <motion.h2 variants={fadeUp}>Questions prop firm teams ask<br />before working with Contego.</motion.h2>
+          <motion.h2 variants={fadeUp}>Questions prop firms ask before working with us.</motion.h2>
         </motion.div>
 
         <FAQAccordion items={items} />

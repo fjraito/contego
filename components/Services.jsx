@@ -41,7 +41,7 @@ export function Services() {
           viewport={viewport}
         >
           <motion.span className="eyebrow" variants={fadeUp}><span className="dot" />Services</motion.span>
-          <motion.h2 variants={fadeUp}>Marketing content built around<br />how traders decide.</motion.h2>
+          <motion.h2 variants={fadeUp}>Marketing content built around how traders decide.</motion.h2>
           <motion.p className="desc" variants={fadeUp}>Traders compare rules, payouts, platforms, proof, and brand credibility before they buy. Contego turns those decision points into SEO pages, social content, and short-form video.</motion.p>
         </motion.div>
 

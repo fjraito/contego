@@ -42,7 +42,7 @@ export function Blog() {
           viewport={viewport}
         >
           <motion.span className="eyebrow" variants={fadeUp}><span className="dot" />Blog</motion.span>
-          <motion.h2 variants={fadeUp}>Practical insights for growing<br />a prop firm with trust.</motion.h2>
+          <motion.h2 variants={fadeUp}>Practical insights for growing a prop firm with trust.</motion.h2>
           <motion.p className="desc" variants={fadeUp}>Explore ideas that help prop firms improve visibility, explain their offer better, and build more credibility with serious traders.</motion.p>
         </motion.div>
 

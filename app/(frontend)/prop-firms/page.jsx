@@ -38,8 +38,8 @@ export default function PropFirmsPage() {
       <main>
         <section className="pf-hero">
           <div className="shell">
-            <span className="pill"><span className="dot" />Updated May 2026 · 15 firms tracked</span>
-            <h1>The best <span className="italic-accent">prop firms</span><br />of 2026.</h1>
+            <span className="page-eyebrow">Prop Firms</span>
+            <h1 style={{ marginTop: 22 }}>The best <span className="italic-accent">prop firms</span><br />of 2026.</h1>
             <p className="lead">
               An independent, editorially ranked directory of the prop trading firms our research team
               would actually fund an evaluation with this quarter. No pay-to-rank, no fluff — just

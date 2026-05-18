@@ -23,7 +23,7 @@ export function Pricing() {
           viewport={viewport}
         >
           <motion.span className="eyebrow" variants={fadeUp}><span className="dot" />Pricing</motion.span>
-          <motion.h2 variants={fadeUp}>Start with the package that matches<br />your acquisition goal.</motion.h2>
+          <motion.h2 variants={fadeUp}>Pick the plan that fits your growth stage.</motion.h2>
           <motion.p className="desc" variants={fadeUp}>Each package is designed to help your prop firm create better content output without losing message quality or brand trust.</motion.p>
         </motion.div>
 
