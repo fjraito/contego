@@ -1,100 +1,43 @@
 import { notFound } from 'next/navigation'
+import Image from 'next/image'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
+import { CTA } from '@/components/CTA'
 import { FAQAccordion } from '@/components/FAQAccordion'
+import { IconCheck, IconX, IconMinus, SectionHeader } from '@/components/Icons'
 import { IllSEO, IllSocial, IllUGC, IllLanding } from '@/components/AlternativeIllustrations'
 import { client } from '@/sanity/lib/client'
 import { ALTERNATIVE_SLUGS_QUERY, ALTERNATIVE_QUERY } from '@/sanity/lib/queries'
-import { FEATURE_SCHEMA, CONTEGO, COMPETITORS } from './data'
+import { COMPETITORS } from './data'
 
 export const dynamicParams = true
 export const revalidate = 60
 
-const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contegoagency.com'
-const DEFAULT_HERO_DESCRIPTION = 'A clear side-by-side look at two prop firm marketing agency options, so you can choose the right partner for your goals, budget, and growth stage.'
-const DEFAULT_COMPARISON_DESCRIPTION = 'A practical look at how Contego and this competitor compare across strategy, content, SEO, video, trust, and fit for different prop firm stages.'
+const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contego.agency'
 
-const FEATURE_IDS = FEATURE_SCHEMA.flatMap((s) => s.rows.map((r) => r.id))
-
-function asRating(value) {
-  if (!value) return { v: 'partial' }
-  if (typeof value === 'string') return { v: value }
-  return { v: value.v || 'partial' }
-}
-
-function legacyFeatureSections(doc) {
-  for (const id of FEATURE_IDS) {
-    const f = doc[`f_${id}`]
-    if (f?.v) {
-      return FEATURE_SCHEMA.map((section) => ({
-        section: section.section,
-        rows: section.rows.map((row) => ({
-          label: row.label,
-          contego: CONTEGO.values[row.id],
-          competitor: asRating(doc[`f_${row.id}`]),
-        })),
-      }))
-    }
-  }
-  return null
-}
-
-function normalizeFeatureSections(sections) {
-  if (!Array.isArray(sections) || sections.length === 0) return null
-  return sections.map((section) => ({
-    section: section.section,
-    rows: (section.rows || []).map((row) => ({
-      label: row.label,
-      contego: asRating(row.contego),
-      competitor: asRating(row.competitor),
-    })),
-  }))
-}
-
-function normalizeStaticCompetitor(competitor) {
-  if (!competitor) return null
+function sanityToCompetitor(doc) {
+  if (!doc) return null
   return {
-    ...competitor,
-    featureSections: normalizeFeatureSections(competitor.featureSections) || [],
-    heroDescription: competitor.heroDescription || DEFAULT_HERO_DESCRIPTION,
-    comparisonDescription: competitor.comparisonDescription || DEFAULT_COMPARISON_DESCRIPTION,
-  }
-}
-
-function sanityToCompetitor(doc, fallback = null) {
-  if (!doc) return fallback
-  const featureSections =
-    normalizeFeatureSections(doc.featureSections) ||
-    legacyFeatureSections(doc) ||
-    fallback?.featureSections ||
-    []
-
-  return {
-    ...fallback,
     slug: doc.slug,
     name: doc.competitorName,
     short: doc.competitorShort || doc.competitorName,
     initials: doc.competitorInitials || doc.competitorName?.[0] || '?',
-    logoUrl: doc.competitorLogoUrl || fallback?.logoUrl || '',
-    heroDescription: doc.heroDescription || fallback?.heroDescription || DEFAULT_HERO_DESCRIPTION,
-    comparisonDescription: doc.comparisonDescription || fallback?.comparisonDescription || DEFAULT_COMPARISON_DESCRIPTION,
-    featureSections,
-    verdictIntro: doc.verdictIntro || fallback?.verdictIntro || '',
-    pickContego: doc.pickContego || fallback?.pickContego || [],
-    pickThem: doc.pickThem || fallback?.pickThem || [],
-    faqItems: (doc.faqItems || fallback?.faqItems || []).map((f) => ({ q: f.q, a: f.a })),
-    metaTitle: doc.metaTitle || fallback?.metaTitle,
-    metaDescription: doc.metaDescription || fallback?.metaDescription,
+    logo: doc.competitorLogo || null,
+    url: doc.competitorUrl || null,
+    featureTable: doc.featureTable || [],
+    verdictIntro: doc.verdictIntro || '',
+    pickContego: doc.pickContego || [],
+    pickThem: doc.pickThem || [],
+    faqItems: (doc.faqItems || []).map((f) => ({ q: f.q, a: f.a })),
   }
 }
 
 async function getCompetitor(slug) {
-  const fallback = normalizeStaticCompetitor(COMPETITORS[slug])
   try {
     const doc = await client.fetch(ALTERNATIVE_QUERY, { slug }, { next: { revalidate: 60 } })
-    if (doc) return sanityToCompetitor(doc, fallback)
+    if (doc) return sanityToCompetitor(doc)
   } catch (_) { /* fall through */ }
-  return fallback
+  return COMPETITORS[slug] || null
 }
 
 export async function generateStaticParams() {
@@ -111,40 +54,20 @@ export async function generateMetadata({ params }) {
   const { slug } = await params
   const c = await getCompetitor(slug)
   if (!c) return {}
-  const description = c.metaDescription || c.heroDescription || DEFAULT_HERO_DESCRIPTION
   return {
-    title: c.metaTitle || `Contego vs ${c.name}`,
-    description,
+    title: `Contego vs ${c.name}`,
+    description: `A clear side-by-side look at Contego vs ${c.name} for prop firm marketing — services, content, SEO, AI UGC, and which is the right fit.`,
     alternates: { canonical: `/alternatives/${slug}` },
-    openGraph: { title: c.metaTitle || `Contego vs ${c.name}`, description, url: `/alternatives/${slug}` },
+    openGraph: { title: `Contego vs ${c.name}`, url: `/alternatives/${slug}` },
   }
 }
 
-// ── Icons ──
-
-function IconCheck() {
-  return <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5"><polyline points="20 6 9 17 4 12" /></svg>
-}
-function IconX() {
-  return <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5"><line x1="6" y1="6" x2="18" y2="18" /><line x1="18" y1="6" x2="6" y2="18" /></svg>
-}
-function IconMinus() {
-  return <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5"><line x1="5" y1="12" x2="19" y2="12" /></svg>
-}
 
 function ValOrTick({ value }) {
-  if (value.v === 'yes') return <span className="tick yes"><IconCheck /></span>
-  if (value.v === 'no') return <span className="tick no"><IconX /></span>
-  if (value.v === 'partial') return <span className="tick partial"><IconMinus /></span>
+  if (value === 'yes') return <span className="tick yes"><IconCheck /></span>
+  if (value === 'no') return <span className="tick no"><IconX /></span>
+  if (value === 'partial') return <span className="tick partial"><IconMinus /></span>
   return null
-}
-
-function BrandLogo({ src, alt, fallback, className = '' }) {
-  if (src) {
-    return <img src={src} alt={alt} className={`brand-logo-img ${className}`.trim()} />
-  }
-
-  return <span className="brand-logo">{fallback}</span>
 }
 
 // ── Page ──
@@ -159,7 +82,7 @@ export default async function AlternativePage({ params }) {
     '@type': 'WebPage',
     name: `Contego vs ${c.name}`,
     url: `${SITE_URL}/alternatives/${slug}`,
-    description: c.heroDescription || `Contego vs ${c.name} prop firm marketing comparison.`,
+    description: `Contego vs ${c.name} — prop firm marketing comparison.`,
   }
 
   return (
@@ -179,18 +102,18 @@ export default async function AlternativePage({ params }) {
               <span className="hero-name">{c.name}</span>
             </h1>
             <p className="lead">
-              {c.heroDescription}
+              A clear side-by-side look at two prop firm marketing agency options, so you can choose the right partner for your goals, budget, and growth stage.
             </p>
           </div>
         </section>
 
         {/* ── Pillars (reusable) ── */}
         <section className="section-tight">
-          <div style={{ textAlign: 'center', maxWidth: 720, margin: '0 auto 36px', padding: '0 28px' }}>
-            <span className="eyebrow"><span className="dot" />The Contego difference</span>
-            <h2 style={{ marginTop: 14 }}>Built differently for<br />prop firm growth.</h2>
-            <p style={{ color: 'var(--text-2)', marginTop: 16, fontSize: 16 }}>Four reasons prop firms choose Contego when they need sharper content, stronger trust, and a clearer system for trader acquisition.</p>
-          </div>
+          <SectionHeader
+            eyebrow="The Contego difference"
+            heading="Built differently for<br />prop firm growth."
+            description="Four reasons prop firms choose Contego when they need sharper content, stronger trust, and a clearer system for trader acquisition."
+          />
           <div className="pillars">
             <div className="pillar">
               <span className="pillar-num">01</span>
@@ -228,55 +151,63 @@ export default async function AlternativePage({ params }) {
         </section>
 
         {/* ── Full comparison table ── */}
-        <section className="compare-section">
-          <div className="shell">
-            <div style={{ textAlign: 'center', maxWidth: 720, margin: '0 auto 36px' }}>
-              <span className="eyebrow"><span className="dot" />Full comparison</span>
-              <h2 style={{ marginTop: 14 }}>Compare the things that<br />actually affect growth.</h2>
-              <p style={{ color: 'var(--text-2)', marginTop: 16, fontSize: 16 }}>{c.comparisonDescription}</p>
+        {c.featureTable && c.featureTable.length > 0 && (
+          <section className="compare-section">
+            <div className="shell">
+              <SectionHeader
+                eyebrow="Full comparison"
+                heading={`Compare the things that<br />actually affect growth.`}
+                description={`A practical look at how Contego and ${c.name} compare across strategy, content, SEO, video, trust, and fit for different prop firm stages.`}
+              />
+              <table className="simple-table">
+                <thead>
+                  <tr>
+                    <th>Feature</th>
+                    <th className="us-col">
+                      <span className="brand-cell">
+                        <Image src="/assets/contego-logo.png" alt="Contego" width={100} height={32} className="brand-logo-img" />
+                      </span>
+                    </th>
+                    <th>
+                      <span className="brand-cell">
+                        {c.logo ? (
+                          <img src={c.logo} alt={c.name} className="brand-logo-img competitor-logo" />
+                        ) : (
+                          <>
+                            <span className="brand-logo">{c.initials}</span>
+                            <span className="brand-text">{c.name}</span>
+                          </>
+                        )}
+                      </span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {c.featureTable.flatMap((section, si) => [
+                    <tr key={`s${si}`} className="sect-row">
+                      <td colSpan={3}>{section.sectionName}</td>
+                    </tr>,
+                    ...(section.rows || []).map((row, ri) => (
+                      <tr key={`r${si}-${ri}`} className="feat-row">
+                        <td>{row.label}</td>
+                        <td className="val-cell us"><ValOrTick value={row.contego} /></td>
+                        <td className="val-cell"><ValOrTick value={row.competitor} /></td>
+                      </tr>
+                    )),
+                  ])}
+                </tbody>
+              </table>
             </div>
-            <table className="simple-table">
-              <thead>
-                <tr>
-                  <th>Feature</th>
-                  <th className="us-col">
-                    <span className="brand-cell">
-                      <BrandLogo src={CONTEGO.logoUrl} alt="Contego" fallback="C" className="brand-logo-img--contego" />
-                    </span>
-                  </th>
-                  <th>
-                    <span className="brand-cell">
-                      <BrandLogo src={c.logoUrl} alt={c.name} fallback={c.initials} />
-                      {!c.logoUrl && <span className="brand-text">{c.name}</span>}
-                    </span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {c.featureSections.flatMap((section, si) => [
-                  <tr key={`s${si}`} className="sect-row">
-                    <td colSpan={3}>{section.section}</td>
-                  </tr>,
-                  ...section.rows.map((row) => (
-                    <tr key={`${section.section}-${row.label}`} className="feat-row">
-                      <td>{row.label}</td>
-                      <td className="val-cell us"><ValOrTick value={row.contego} /></td>
-                      <td className="val-cell"><ValOrTick value={row.competitor} /></td>
-                    </tr>
-                  )),
-                ])}
-              </tbody>
-            </table>
-          </div>
-        </section>
+          </section>
+        )}
 
         {/* ── Why Contego (reusable) ── */}
         <section className="section-tight">
-          <div style={{ textAlign: 'center', maxWidth: 720, margin: '0 auto 36px', padding: '0 28px' }}>
-            <span className="eyebrow"><span className="dot" />Why Contego</span>
-            <h2 style={{ marginTop: 14 }}>A prop firm marketing agency that turns<br />buyer questions into growth assets.</h2>
-            <p style={{ color: 'var(--text-2)', marginTop: 16, fontSize: 16 }}>Your market already has doubts before they buy. Contego turns those doubts into clear SEO pages, social content, AI UGC videos, and landing pages that make your offer easier to understand and choose.</p>
-          </div>
+          <SectionHeader
+            eyebrow="Why Contego"
+            heading="A prop firm marketing agency that turns<br />buyer questions into growth assets."
+            description="Your market already has doubts before they buy. Contego turns those doubts into clear SEO pages, social content, AI UGC videos, and landing pages that make your offer easier to understand and choose."
+          />
           <div className="deep-dive">
             <div className="dd-row">
               <div className="dd-text">
@@ -319,10 +250,7 @@ export default async function AlternativePage({ params }) {
 
         {/* ── Final verdict ── */}
         <section className="section-tight">
-          <div style={{ textAlign: 'center', maxWidth: 720, margin: '0 auto 36px', padding: '0 28px' }}>
-            <span className="eyebrow"><span className="dot" />The bottom line</span>
-            <h2 style={{ marginTop: 14 }}>Final verdict.</h2>
-          </div>
+          <SectionHeader eyebrow="The bottom line" heading="Final verdict." />
           <div className="verdict">
             <div className="verdict-card">
               <div className="verdict-head">
@@ -365,10 +293,7 @@ export default async function AlternativePage({ params }) {
 
         {/* ── Why prop firms choose Contego (reusable) ── */}
         <section className="section-tight">
-          <div style={{ textAlign: 'center', maxWidth: 720, margin: '0 auto 24px', padding: '0 28px' }}>
-            <span className="eyebrow"><span className="dot" />Why prop firms choose Contego</span>
-            <h2 style={{ marginTop: 14 }}>Why prop firms<br />choose Contego.</h2>
-          </div>
+          <SectionHeader eyebrow="Why prop firms choose Contego" heading="Why prop firms<br />choose Contego." style={{ marginBottom: 24 }} />
           <div className="switch-grid">
             {[
               { ic: '⚡', t: 'Contego AI UGC Engine', d: 'No other prop firm marketing agency brings AI UGC into the core system like Contego. We turn your offers, rules, FAQs, objections, and proof points into short-form videos built for social, ads, and landing pages.' },
@@ -397,20 +322,15 @@ export default async function AlternativePage({ params }) {
           </section>
         )}
 
-        {/* ── CTA (reusable) ── */}
-        <section className="section">
-          <div className="shell">
-            <div className="cta">
-              <span className="pill"><span className="dot" />Ready to switch?</span>
-              <h2 style={{ marginTop: 24 }}>Choose a prop firm marketing agency<br />that makes your offer easier to trust.</h2>
-              <p>Contego helps prop firms create SEO pages, social content, AI UGC videos, and landing page copy that answer buyer questions before they hesitate.</p>
-              <div className="hero-ctas">
-                <a href="/#cta" className="btn btn-primary">Start with Contego <span className="arrow">→</span></a>
-                <a href="/#services" className="btn btn-ghost">See services</a>
-              </div>
-            </div>
-          </div>
-        </section>
+        <CTA
+          pill="Ready to switch?"
+          heading="Choose a prop firm marketing agency<br />that makes your offer easier to trust."
+          description="Contego helps prop firms create SEO pages, social content, AI UGC videos, and landing page copy that answer buyer questions before they hesitate."
+          primaryLabel="Start with Contego"
+          primaryHref="/#cta"
+          secondaryLabel="See services"
+          secondaryHref="/#services"
+        />
 
       </main>
       <Footer />

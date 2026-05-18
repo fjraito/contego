@@ -1,51 +1,22 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { CTA } from '@/components/CTA'
+import { ArrowIcon } from '@/components/Icons'
 import { client } from '@/sanity/lib/client'
 import { ALTERNATIVES_LIST_QUERY } from '@/sanity/lib/queries'
-import { COMPETITORS } from './[slug]/data'
 
 export const revalidate = 60
 
-const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contegoagency.com'
-
-function normalizeAlternative(alt) {
-  const fallback = COMPETITORS[alt.slug]
-  return {
-    _id: alt._id || `static-${alt.slug}`,
-    slug: alt.slug,
-    competitorName: alt.competitorName || fallback?.name,
-    competitorShort: alt.competitorShort || fallback?.short,
-    competitorInitials: alt.competitorInitials || fallback?.initials,
-    competitorLogoUrl: alt.competitorLogoUrl || fallback?.logoUrl,
-    heroDescription: fallback?.heroDescription,
-  }
-}
+const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contego.agency'
 
 async function getAlternatives() {
   let sanityAlts = []
   try {
     sanityAlts = await client.fetch(ALTERNATIVES_LIST_QUERY, {}, { next: { revalidate: 60 } })
   } catch (_) { /* fall through */ }
-
-  // Merge with static fallback data
-  const seen = new Set(sanityAlts.map((a) => a.slug))
-  const normalizedSanityAlts = sanityAlts.map(normalizeAlternative)
-  const staticAlts = Object.values(COMPETITORS)
-    .filter((c) => !seen.has(c.slug))
-    .map((c) => normalizeAlternative({
-      _id: `static-${c.slug}`,
-      slug: c.slug,
-      competitorName: c.name,
-      competitorShort: c.short,
-      competitorInitials: c.initials,
-      competitorLogoUrl: c.logoUrl,
-    }))
-
-  return [...normalizedSanityAlts, ...staticAlts].sort((a, b) =>
-    a.competitorName.localeCompare(b.competitorName)
-  )
+  return sanityAlts.sort((a, b) => a.competitorName.localeCompare(b.competitorName))
 }
 
 export const metadata = {
@@ -62,22 +33,6 @@ export const metadata = {
   },
 }
 
-function ArrowIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-      <line x1="5" y1="12" x2="19" y2="12" />
-      <polyline points="12 5 19 12 12 19" />
-    </svg>
-  )
-}
-
-function LogoMark({ src, alt, fallback, tone }) {
-  return (
-    <span className={`alt-card__logo ${tone}`}>
-      {src ? <img src={src} alt={alt} /> : fallback}
-    </span>
-  )
-}
 
 export default async function AlternativesIndex() {
   const alternatives = await getAlternatives()
@@ -127,20 +82,24 @@ export default async function AlternativesIndex() {
                 >
                   <div className="alt-card__top">
                     <div className="alt-card__vs">
-                      <LogoMark src="/assets/contego-logo.png" alt="Contego" fallback="C" tone="us" />
+                      <span className="alt-card__logo us">
+                        <Image src="/assets/contego-logo.png" alt="Contego" width={28} height={28} style={{ objectFit: 'contain' }} />
+                      </span>
                       <span className="alt-card__vs-label">vs</span>
-                      <LogoMark
-                        src={alt.competitorLogoUrl}
-                        alt={alt.competitorName}
-                        fallback={alt.competitorInitials || alt.competitorName?.[0] || '?'}
-                        tone="them"
-                      />
+                      <span className="alt-card__logo them">
+                        {alt.competitorLogo ? (
+                          <img src={alt.competitorLogo} alt={alt.competitorName} style={{ width: 28, height: 28, objectFit: 'contain' }} />
+                        ) : (
+                          alt.competitorInitials || alt.competitorName?.[0] || '?'
+                        )}
+                      </span>
                     </div>
                     <h2 className="alt-card__name">
                       Contego vs {alt.competitorName}
                     </h2>
                     <p className="alt-card__desc">
-                      {alt.heroDescription || 'A full comparison of services, content, AI UGC, and which option is the right fit for your prop firm.'}
+                      A full comparison of services, pricing, UGC output, and which
+                      is the right fit for your prop firm.
                     </p>
                   </div>
                   <span className="alt-card__link">
