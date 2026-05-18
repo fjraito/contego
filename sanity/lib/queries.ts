@@ -53,21 +53,18 @@ export const ALTERNATIVE_QUERY = groq`*[_type == "alternative" && slug.current =
   competitorName,
   competitorShort,
   competitorInitials,
-  competitorLogoUrl,
-  heroDescription,
-  comparisonDescription,
-  featureSections[] {
-    section,
+  competitorLogo,
+  competitorUrl,
+  featureTable[] {
+    _key,
+    sectionName,
     rows[] {
+      _key,
       label,
       contego,
       competitor
     }
   },
-  f_specialization, f_trust, f_content_acq,
-  f_seo, f_smm, f_ugc, f_paid, f_landing,
-  f_scripts, f_hooks, f_guardrails, f_voice,
-  f_fit_trust, f_fit_integrated, f_fit_broader,
   verdictIntro,
   pickContego,
   pickThem,
@@ -82,5 +79,5 @@ export const ALTERNATIVES_LIST_QUERY = groq`*[_type == "alternative" && status =
   competitorName,
   competitorShort,
   competitorInitials,
-  competitorLogoUrl
+  competitorLogo
 }`

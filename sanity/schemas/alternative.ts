@@ -1,50 +1,5 @@
 import { defineField, defineType } from 'sanity'
 
-function featureField(name: string, title: string) {
-  return defineField({
-    name,
-    title,
-    type: 'object',
-    hidden: true,
-    fields: [
-      {
-        name: 'v',
-        type: 'string',
-        title: 'Rating',
-        options: {
-          list: [
-            { title: 'Yes', value: 'yes' },
-            { title: 'No', value: 'no' },
-            { title: 'Partial', value: 'partial' },
-          ],
-          layout: 'radio',
-          direction: 'horizontal',
-        },
-        initialValue: 'partial',
-      },
-    ],
-  })
-}
-
-function ratingField(name: string, title: string) {
-  return defineField({
-    name,
-    title,
-    type: 'string',
-    options: {
-      list: [
-        { title: 'Yes', value: 'yes' },
-        { title: 'No', value: 'no' },
-        { title: 'Partial', value: 'partial' },
-      ],
-      layout: 'radio',
-      direction: 'horizontal',
-    },
-    initialValue: 'partial',
-    validation: (R) => R.required(),
-  })
-}
-
 export const alternative = defineType({
   name: 'alternative',
   title: 'Alternative',
@@ -57,7 +12,6 @@ export const alternative = defineType({
     { name: 'seo', title: 'SEO' },
   ],
   fields: [
-    // ── Competitor info ──
     defineField({
       name: 'competitorName',
       title: 'Competitor name',
@@ -79,15 +33,22 @@ export const alternative = defineType({
       title: 'Initials',
       type: 'string',
       group: 'info',
-      description: 'Short fallback text for the logo badge when no image is available',
-      validation: (R) => R.max(8),
+      description: '1-3 letters for the logo badge',
+      validation: (R) => R.max(3),
     }),
     defineField({
-      name: 'competitorLogoUrl',
+      name: 'competitorLogo',
       title: 'Competitor logo URL',
-      type: 'string',
+      type: 'url',
       group: 'info',
-      description: 'Use a local public path such as /assets/alternative-logos/yourpropfirm.svg or a full image URL.',
+      description: 'Full URL to the competitor logo image (stored in /public/assets/competitors/)',
+    }),
+    defineField({
+      name: 'competitorUrl',
+      title: 'Competitor website',
+      type: 'url',
+      group: 'info',
+      description: 'e.g. "https://growyourpropfirm.com"',
     }),
     defineField({
       name: 'slug',
@@ -114,72 +75,82 @@ export const alternative = defineType({
       initialValue: 'draft',
       validation: (R) => R.required(),
     }),
-    defineField({
-      name: 'heroDescription',
-      title: 'Hero description',
-      type: 'text',
-      group: 'info',
-      rows: 3,
-      description: 'Competitor-specific intro below the Contego vs competitor headline.',
-    }),
 
-    // ── Feature comparison ──
+    // ── Feature comparison (dynamic per competitor) ──
     defineField({
-      name: 'comparisonDescription',
-      title: 'Comparison intro',
-      type: 'text',
-      group: 'features',
-      rows: 3,
-      description: 'Short intro above the feature comparison table.',
-    }),
-    defineField({
-      name: 'featureSections',
-      title: 'Feature table sections',
+      name: 'featureTable',
+      title: 'Feature comparison table',
       type: 'array',
       group: 'features',
-      description: 'Flexible comparison table grouped by section. Use yes, partial, and no ratings for each row.',
+      description: 'Each section has a name and rows comparing Contego vs the competitor.',
       of: [
         {
           type: 'object',
+          name: 'featureSection',
+          title: 'Section',
           fields: [
-            defineField({
-              name: 'section',
-              title: 'Section title',
+            {
+              name: 'sectionName',
               type: 'string',
-              validation: (R) => R.required(),
-            }),
-            defineField({
+              title: 'Section name',
+              description: 'e.g. "Strategic Fit", "Service Scope"',
+              validation: (R: any) => R.required(),
+            },
+            {
               name: 'rows',
-              title: 'Rows',
               type: 'array',
+              title: 'Rows',
               of: [
                 {
                   type: 'object',
+                  name: 'featureRow',
                   fields: [
-                    defineField({
-                      name: 'label',
-                      title: 'Feature label',
+                    { name: 'label', type: 'string', title: 'Feature label', validation: (R: any) => R.required() },
+                    {
+                      name: 'contego',
                       type: 'string',
-                      validation: (R) => R.required(),
-                    }),
-                    ratingField('contego', 'Contego'),
-                    ratingField('competitor', 'Competitor'),
+                      title: 'Contego',
+                      options: {
+                        list: [
+                          { title: 'Yes', value: 'yes' },
+                          { title: 'No', value: 'no' },
+                          { title: 'Partial', value: 'partial' },
+                        ],
+                        layout: 'radio',
+                        direction: 'horizontal',
+                      },
+                      initialValue: 'yes',
+                    },
+                    {
+                      name: 'competitor',
+                      type: 'string',
+                      title: 'Competitor',
+                      options: {
+                        list: [
+                          { title: 'Yes', value: 'yes' },
+                          { title: 'No', value: 'no' },
+                          { title: 'Partial', value: 'partial' },
+                        ],
+                        layout: 'radio',
+                        direction: 'horizontal',
+                      },
+                      initialValue: 'partial',
+                    },
                   ],
                   preview: {
                     select: { title: 'label', contego: 'contego', competitor: 'competitor' },
-                    prepare: ({ title, contego, competitor }) => ({
-                      title,
-                      subtitle: `Contego: ${contego || 'partial'} • Competitor: ${competitor || 'partial'}`,
+                    prepare: ({ title, contego, competitor }: any) => ({
+                      title: title || 'Untitled',
+                      subtitle: `Contego: ${contego || '?'} | Competitor: ${competitor || '?'}`,
                     }),
                   },
                 },
               ],
-              validation: (R) => R.required().min(1),
-            }),
+            },
           ],
           preview: {
-            select: { title: 'section', rows: 'rows' },
-            prepare: ({ title, rows }) => ({
+            select: { title: 'sectionName', rows: 'rows' },
+            prepare: ({ title, rows }: any) => ({
               title: title || 'Untitled section',
               subtitle: `${rows?.length || 0} rows`,
             }),
@@ -187,27 +158,6 @@ export const alternative = defineType({
         },
       ],
     }),
-
-    // Legacy flat fields kept hidden so old Sanity docs still render.
-    // Strategic Fit
-    featureField('f_specialization', 'Prop firm specialization'),
-    featureField('f_trust', 'Trust-led positioning'),
-    featureField('f_content_acq', 'Content-led acquisition focus'),
-    // Service Scope
-    featureField('f_seo', 'SEO strategy'),
-    featureField('f_smm', 'Social media management'),
-    featureField('f_ugc', 'AI UGC video system'),
-    featureField('f_paid', 'Paid ads support'),
-    featureField('f_landing', 'Landing page messaging'),
-    // Content & Creative
-    featureField('f_scripts', 'Short-form video scripts'),
-    featureField('f_hooks', 'Hook testing system'),
-    featureField('f_guardrails', 'AI content guardrails'),
-    featureField('f_voice', 'Brand voice control'),
-    // Best Fit
-    featureField('f_fit_trust', 'Best for trust-aware content growth'),
-    featureField('f_fit_integrated', 'Best for SEO, social, and AI UGC together'),
-    featureField('f_fit_broader', 'Best for broader digital marketing support'),
 
     // ── Verdict ──
     defineField({
