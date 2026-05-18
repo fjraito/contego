@@ -50,11 +50,13 @@ function Dropdown({ item }) {
       </button>
       {open && (
         <div className="nav-dropdown__menu">
-          {item.children.map((child) => (
-            <a key={child.href} href={child.href} className="nav-dropdown__item" onClick={() => setOpen(false)}>
-              {child.label}
-            </a>
-          ))}
+          <div className="nav-dropdown__menu-inner">
+            {item.children.map((child) => (
+              <a key={child.href} href={child.href} className="nav-dropdown__item" onClick={() => setOpen(false)}>
+                {child.label}
+              </a>
+            ))}
+          </div>
         </div>
       )}
     </div>
