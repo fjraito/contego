@@ -5613,11 +5613,9 @@ html { scroll-behavior: smooth; }
   position: sticky;
   top: 80px;
   align-self: start;
-  max-height: calc(100vh - 100px);
-  overflow-y: auto;
 }
 @media (max-width: 1024px){
-  .fr-side { position: relative; top: auto; max-height: none; }
+  .fr-side { position: relative; top: auto; }
 }
 .fr-main { max-width: 780px; }
 

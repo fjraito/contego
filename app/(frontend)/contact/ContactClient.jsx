@@ -109,7 +109,7 @@ function ContactForm() {
 
       <div className="form-actions">
         <button className="btn btn-primary" type="submit">
-          Send the brief <span className="arrow">&rarr;</span>
+          Send the brief <span className="arrow">→</span>
         </button>
         <span className="form-foot"><span className="pip" /> Replies from a human operator, not a bot.</span>
       </div>
@@ -128,7 +128,7 @@ function ContactSidebar() {
         </div>
         <div className="txt">
           <b>Replying within 12 hours</b>
-          <span>Mon&ndash;Fri</span>
+          <span>Mon–Fri</span>
         </div>
       </div>
 
@@ -142,7 +142,7 @@ function ContactSidebar() {
             <span className="lbl">Email</span>
             <span className="val">hello@contego.agency</span>
           </span>
-          <span className="arrow">&rarr;</span>
+          <span className="arrow">→</span>
         </a>
         <a className="contact-row" href="#" rel="nofollow noopener noreferrer">
           <span className="ic">
@@ -152,7 +152,7 @@ function ContactSidebar() {
             <span className="lbl">Book a call</span>
             <span className="val">30-min strategy session</span>
           </span>
-          <span className="arrow">&rarr;</span>
+          <span className="arrow">→</span>
         </a>
         <a className="contact-row" href="#" rel="nofollow noopener noreferrer">
           <span className="ic">
@@ -162,7 +162,7 @@ function ContactSidebar() {
             <span className="lbl">X / Twitter</span>
             <span className="val">@contego</span>
           </span>
-          <span className="arrow">&rarr;</span>
+          <span className="arrow">→</span>
         </a>
         <a className="contact-row" href="#" rel="nofollow noopener noreferrer">
           <span className="ic">
@@ -172,7 +172,7 @@ function ContactSidebar() {
             <span className="lbl">LinkedIn</span>
             <span className="val">/company/contego</span>
           </span>
-          <span className="arrow">&rarr;</span>
+          <span className="arrow">→</span>
         </a>
       </div>
 
@@ -189,7 +189,7 @@ function ContactSidebar() {
           <div className="tl-step">
             <span className="dot">2</span>
             <div className="body">
-              <b>Operator review &middot; within 12h</b>
+              <b>Operator review · within 12h</b>
               <span>An operator (not a sales rep) reads your note and decides if there&apos;s a fit.</span>
             </div>
           </div>

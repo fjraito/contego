@@ -12,18 +12,19 @@ export function generateStaticParams() {
   return Object.keys(FIRMS).map((slug) => ({ slug }))
 }
 
-export function generateMetadata({ params }) {
-  const firm = FIRMS[params.slug]
+export async function generateMetadata({ params }) {
+  const { slug } = await params
+  const firm = FIRMS[slug]
   if (!firm) return {}
   return {
     title: `${firm.name} Review`,
     description: `Independent 2026 review of ${firm.name} — payouts, profit split, evaluation rules, and trader sentiment. Reviewed by the Contego editorial team.`,
-    alternates: { canonical: `/prop-firms/${params.slug}` },
+    alternates: { canonical: `/prop-firms/${slug}` },
     openGraph: {
       type: 'article',
       title: `${firm.name} Review — Contego`,
       description: `Independent 2026 review of ${firm.name} — payouts, profit split, evaluation rules, and trader sentiment.`,
-      url: `/prop-firms/${params.slug}`,
+      url: `/prop-firms/${slug}`,
     },
   }
 }
@@ -67,9 +68,9 @@ export default async function FirmReviewPage({ params }) {
 
                 <div className="actions">
                   <a href={firm.url} className="btn btn-primary" target="_blank" rel="nofollow noopener noreferrer">
-                    Visit {firm.name.split(' ')[0]} <span className="arrow">&nearr;</span>
+                    Visit {firm.name.split(' ')[0]} <span className="arrow">↗</span>
                   </a>
-                  <a href="#promo" className="btn btn-ghost">Get 25% off &rarr; {firm.promo.code}</a>
+                  <a href="#promo" className="btn btn-ghost">Get 25% off → {firm.promo.code}</a>
                 </div>
 
                 <div className="meta-row">
@@ -166,7 +167,7 @@ export default async function FirmReviewPage({ params }) {
 
             <div className="fr-updated">
               <strong>Reviewed quarterly</strong>
-              Next refresh: Jul 2026 &middot; 6-criterion methodology &middot; No pay-to-rank
+              Next refresh: Jul 2026 · 6-criterion methodology · No pay-to-rank
             </div>
           </aside>
 
@@ -317,7 +318,7 @@ function VerdictBlock({ firm }) {
         <div className="v-text">
           <div className="v-title">{firm.verdictTitle}</div>
           <p>{firm.verdictBody}</p>
-          <div className="v-quote">&ldquo;{firm.verdictQuote}&rdquo;</div>
+          <div className="v-quote">{'“'}{firm.verdictQuote}{'"'}</div>
         </div>
       </div>
     </div>
@@ -428,7 +429,7 @@ function PlatformsBlock({ firm }) {
 function PromoBlock({ promo }) {
   return (
     <div className="fr-promo">
-      <span className="badge">Exclusive &middot; Contego</span>
+      <span className="badge">Exclusive · Contego</span>
       <div className="text">
         <div className="h">{promo.text}</div>
         <div className="e">{promo.expiry}</div>
@@ -485,7 +486,7 @@ function RelatedFirms({ items }) {
           <p className="tagline">{f.tagline}</p>
           <div className="foot">
             <span className="fund">{f.funding} max</span>
-            <span className="rate">&starf; {f.rating.toFixed(1)}</span>
+            <span className="rate">★ {f.rating.toFixed(1)}</span>
           </div>
         </Link>
       ))}

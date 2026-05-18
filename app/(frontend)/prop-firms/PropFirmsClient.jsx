@@ -89,7 +89,7 @@ function FirmCard({ firm, showPromo }) {
       <div className="pf-actions">
         <Link href={`/prop-firms/${firm.slug}`} className="btn btn-ghost">Read review</Link>
         <a href="#" className="btn btn-primary" target="_blank" rel="nofollow noopener noreferrer">
-          Visit site <span className="arrow">&nearr;</span>
+          Visit site <span className="arrow">↗</span>
         </a>
       </div>
 
@@ -195,7 +195,7 @@ function Pagination({ page, totalPages, onChange }) {
         {pages.map((p, i) => (
           <li key={i}>
             {p === '...' ? (
-              <span className="pf-pg-ell">&hellip;</span>
+              <span className="pf-pg-ell">…</span>
             ) : (
               <button
                 className={`pf-pg-num ${p === page ? 'active' : ''}`}
@@ -235,7 +235,7 @@ function Methodology() {
           a firm up the list — affiliate links may appear on outbound visits, but they don&apos;t influence order.
         </p>
         <p style={{ fontSize: 13, color: 'var(--text-3)' }}>
-          Last updated <strong style={{ color: 'var(--text-2)' }}>May 2026</strong> &middot; Reviewed by 3 editors
+          Last updated <strong style={{ color: 'var(--text-2)' }}>May 2026</strong> · Reviewed by 3 editors
         </p>
       </div>
       <div className="crit">
@@ -298,9 +298,9 @@ export default function PropFirmsClient() {
 
           <div className="pf-result-meta">
             <span>
-              Showing <strong>{filtered.length === 0 ? 0 : startIdx + 1}&ndash;{Math.min(filtered.length, startIdx + PAGE_SIZE)}</strong> of <strong>{filtered.length}</strong> firms
-              {query ? <> matching &ldquo;<strong>{query}</strong>&rdquo;</> : null}
-              {category !== 'all' ? <> &middot; <strong>{CATEGORIES.find(c => c.id === category)?.label}</strong></> : null}
+              Showing <strong>{filtered.length === 0 ? 0 : startIdx + 1}–{Math.min(filtered.length, startIdx + PAGE_SIZE)}</strong> of <strong>{filtered.length}</strong> firms
+              {query ? <> matching {'“'}<strong>{query}</strong>{'"'}</> : null}
+              {category !== 'all' ? <> · <strong>{CATEGORIES.find(c => c.id === category)?.label}</strong></> : null}
             </span>
             <span>Updated May 2026</span>
           </div>
