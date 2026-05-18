@@ -12,18 +12,18 @@ export function Footer() {
           <div className="foot-col">
             <h4>Services</h4>
             <ul>
-              <li><a href="#services">SEO</a></li>
-              <li><a href="#services">Social media</a></li>
-              <li><a href="#services">AI UGC video</a></li>
+              <li><a href="/services/seo">SEO</a></li>
+              <li><a href="/services/social">Social Media</a></li>
+              <li><a href="/services/ai-ugc">AI UGC Video</a></li>
             </ul>
           </div>
           <div className="foot-col">
-            <h4>Company</h4>
+            <h4>Resources</h4>
             <ul>
-              <li><a href="/#process">Process</a></li>
-              <li><a href="/#pricing">Pricing</a></li>
+              <li><a href="/pricing">Pricing</a></li>
               <li><a href="/blog">Blog</a></li>
-              <li><a href="/#faq">FAQ</a></li>
+              <li><a href="/alternatives">Alternatives</a></li>
+              <li><a href="/faq">FAQ</a></li>
             </ul>
           </div>
           <div className="foot-col">

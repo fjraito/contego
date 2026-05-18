@@ -228,6 +228,66 @@ main { position: relative; z-index: 1; }
   transition: color 0.15s, background 0.15s;
 }
 .nav-links a:hover { color: var(--text); background: var(--pill-bg); }
+
+/* Desktop dropdown */
+.nav-dropdown { position: relative; }
+.nav-dropdown__trigger {
+  display: flex; align-items: center; gap: 4px;
+  color: var(--text-2);
+  background: none; border: none;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 14px; font-family: inherit; font-weight: inherit;
+  cursor: pointer;
+  transition: color 0.15s, background 0.15s;
+}
+.nav-dropdown__trigger:hover { color: var(--text); background: var(--pill-bg); }
+.nav-dropdown__chevron { transition: transform 0.2s; }
+.nav-dropdown__chevron.open { transform: rotate(180deg); }
+.nav-dropdown__menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 170px;
+  background: color-mix(in oklch, var(--bg) 95%, transparent);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 6px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+  animation: dropdown-in 0.15s ease;
+  z-index: 60;
+}
+@keyframes dropdown-in {
+  from { opacity: 0; transform: translateX(-50%) translateY(-4px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+.nav-dropdown__item {
+  display: block;
+  padding: 9px 14px;
+  color: var(--text-2);
+  text-decoration: none;
+  font-size: 13.5px;
+  border-radius: 10px;
+  transition: color 0.15s, background 0.15s;
+}
+.nav-dropdown__item:hover { color: var(--text); background: var(--pill-bg); }
+
+/* Mobile dropdown */
+.nav-mobile-dropdown { display: flex; flex-direction: column; }
+.nav-mobile-dropdown__trigger {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%;
+  background: none; border: none;
+  font-family: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.nav-mobile-dropdown__menu { padding-left: 16px; display: flex; flex-direction: column; gap: 2px; }
+.nav-mobile-dropdown__item { font-size: 14px !important; }
+
 .nav-cta { display: flex; align-items: center; gap: 8px; }
 .theme-toggle {
   width: 36px; height: 36px;

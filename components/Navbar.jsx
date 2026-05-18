@@ -1,15 +1,93 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useTheme } from './ThemeProvider'
 
 const NAV_LINKS = [
-  { href: '#services', label: 'Services' },
-  { href: '#process', label: 'Process' },
+  {
+    label: 'Services',
+    children: [
+      { href: '/services/seo', label: 'SEO' },
+      { href: '/services/social', label: 'Social Media' },
+      { href: '/services/ai-ugc', label: 'AI UGC Video' },
+    ],
+  },
   { href: '/pricing', label: 'Pricing' },
-  { href: '#blog', label: 'Blog' },
-  { href: '/faq', label: 'FAQ' },
+  {
+    label: 'Resources',
+    children: [
+      { href: '/blog', label: 'Blog' },
+      { href: '/alternatives', label: 'Alternatives' },
+      { href: '/faq', label: 'FAQ' },
+    ],
+  },
 ]
+
+function Dropdown({ item }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef(null)
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (ref.current && !ref.current.contains(e.target)) setOpen(false)
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  return (
+    <div className="nav-dropdown" ref={ref} onMouseEnter={() => setOpen(true)} onMouseLeave={() => setOpen(false)}>
+      <button
+        className="nav-dropdown__trigger"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+        aria-haspopup="true"
+      >
+        {item.label}
+        <svg className={`nav-dropdown__chevron${open ? ' open' : ''}`} width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M2.5 3.75L5 6.25L7.5 3.75" />
+        </svg>
+      </button>
+      {open && (
+        <div className="nav-dropdown__menu">
+          {item.children.map((child) => (
+            <a key={child.href} href={child.href} className="nav-dropdown__item" onClick={() => setOpen(false)}>
+              {child.label}
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function MobileDropdown({ item, onNavigate }) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div className="nav-mobile-dropdown">
+      <button
+        className="nav-mobile__link nav-mobile-dropdown__trigger"
+        onClick={() => setOpen((o) => !o)}
+        aria-expanded={open}
+      >
+        {item.label}
+        <svg className={`nav-dropdown__chevron${open ? ' open' : ''}`} width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M2.5 3.75L5 6.25L7.5 3.75" />
+        </svg>
+      </button>
+      {open && (
+        <div className="nav-mobile-dropdown__menu">
+          {item.children.map((child) => (
+            <a key={child.href} href={child.href} className="nav-mobile__link nav-mobile-dropdown__item" onClick={onNavigate}>
+              {child.label}
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
 
 export function Navbar() {
   const { theme, setTheme } = useTheme()
@@ -22,9 +100,13 @@ export function Navbar() {
           <img src="/assets/contego-logo.png" alt="Contego" />
         </a>
         <div className="nav-links">
-          {NAV_LINKS.map((l) => (
-            <a key={l.href} href={l.href}>{l.label}</a>
-          ))}
+          {NAV_LINKS.map((item) =>
+            item.children ? (
+              <Dropdown key={item.label} item={item} />
+            ) : (
+              <a key={item.href} href={item.href}>{item.label}</a>
+            )
+          )}
         </div>
         <div className="nav-cta">
           <button
@@ -67,16 +149,20 @@ export function Navbar() {
 
       {menuOpen && (
         <div className="nav-mobile" role="dialog" aria-label="Navigation menu">
-          {NAV_LINKS.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="nav-mobile__link"
-              onClick={() => setMenuOpen(false)}
-            >
-              {l.label}
-            </a>
-          ))}
+          {NAV_LINKS.map((item) =>
+            item.children ? (
+              <MobileDropdown key={item.label} item={item} onNavigate={() => setMenuOpen(false)} />
+            ) : (
+              <a
+                key={item.href}
+                href={item.href}
+                className="nav-mobile__link"
+                onClick={() => setMenuOpen(false)}
+              >
+                {item.label}
+              </a>
+            )
+          )}
           <a
             href="#cta"
             className="btn btn-primary nav-mobile__cta"
