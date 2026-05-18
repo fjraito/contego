@@ -29,7 +29,7 @@ export function TocClient({ headings }) {
           <li key={h.id}>
             <a
               href={`#${h.id}`}
-              className={[active === h.id ? 'active' : '', h.tag === 'h3' ? 'indent' : ''].filter(Boolean).join(' ') || undefined}
+              className={[active === h.id ? 'active' : '', h.tag === 'h3' ? 'indent' : 'h2-link'].filter(Boolean).join(' ') || undefined}
               onClick={(e) => {
                 e.preventDefault()
                 const el = document.getElementById(h.id)
