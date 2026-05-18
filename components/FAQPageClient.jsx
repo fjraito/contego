@@ -431,7 +431,7 @@ function FaqHero({ query, setQuery, matchCount, totalCount }) {
   )
 }
 
-function FaqSidebar({ categories, activeId, onJump }) {
+function FaqSidebar({ categories, activeId, onSelect }) {
   return (
     <aside className="faq-side">
       <div className="faq-side-label">Categories</div>
@@ -441,7 +441,7 @@ function FaqSidebar({ categories, activeId, onJump }) {
             <a
               href={`#fcat-${cat.id}`}
               className={activeId === cat.id ? 'active' : ''}
-              onClick={(e) => { e.preventDefault(); onJump(cat.id) }}
+              onClick={(e) => { e.preventDefault(); onSelect(cat.id) }}
             >
               <span>{cat.label}</span>
               <span className="count">{cat._visibleCount ?? cat.items.length}</span>
@@ -458,8 +458,8 @@ function FaqSidebar({ categories, activeId, onJump }) {
   )
 }
 
-function FaqContent({ filteredCats, query }) {
-  if (filteredCats.length === 0) {
+function FaqContent({ activeCat, catIndex, query }) {
+  if (!activeCat || activeCat.items.length === 0) {
     return (
       <div className="faq-content">
         <div className="faq-empty">
@@ -472,32 +472,30 @@ function FaqContent({ filteredCats, query }) {
   }
   return (
     <div className="faq-content">
-      {filteredCats.map((cat, ci) => (
-        <section key={cat.id} id={`fcat-${cat.id}`} className="faq-cat">
-          <div className="faq-cat-head">
-            <div className="faq-cat-head-left">
-              <span className="faq-ix">{String(ci + 1).padStart(2, '0')}</span>
-              <h2>{cat.title}</h2>
-            </div>
-            <span className="faq-total">{cat.items.length} question{cat.items.length === 1 ? '' : 's'}</span>
+      <section key={activeCat.id} id={`fcat-${activeCat.id}`} className="faq-cat">
+        <div className="faq-cat-head">
+          <div className="faq-cat-head-left">
+            <span className="faq-ix">{String(catIndex + 1).padStart(2, '0')}</span>
+            <h2>{activeCat.title}</h2>
           </div>
-          <div className="faq-list">
-            {cat.items.map((it, ii) => (
-              <details key={ii} className="faq-q" open={!!(query && query.length >= 2)}>
-                <summary>
-                  <span>{highlight(it.q, query)}</span>
-                  <span className="faq-plus">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <path d="M12 5v14M5 12h14" />
-                    </svg>
-                  </span>
-                </summary>
-                <div className="faq-answer">{renderAnswer(it.a, query)}</div>
-              </details>
-            ))}
-          </div>
-        </section>
-      ))}
+          <span className="faq-total">{activeCat.items.length} question{activeCat.items.length === 1 ? '' : 's'}</span>
+        </div>
+        <div className="faq-list">
+          {activeCat.items.map((it, ii) => (
+            <details key={ii} className="faq-q" open={!!(query && query.length >= 2)}>
+              <summary>
+                <span>{highlight(it.q, query)}</span>
+                <span className="faq-plus">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <path d="M12 5v14M5 12h14" />
+                  </svg>
+                </span>
+              </summary>
+              <div className="faq-answer">{renderAnswer(it.a, query)}</div>
+            </details>
+          ))}
+        </div>
+      </section>
     </div>
   )
 }
@@ -563,31 +561,19 @@ export function FAQPageClient() {
   }, [query])
 
   useEffect(() => {
-    const handler = () => {
-      const ids = filteredCats.map((c) => c.id)
-      let current = ids[0]
-      const offset = 140
-      for (const id of ids) {
-        const el = document.getElementById(`fcat-${id}`)
-        if (!el) continue
-        if (el.getBoundingClientRect().top - offset <= 0) current = id
-      }
-      setActiveId(current)
+    if (filteredCats.length > 0 && !filteredCats.find((c) => c.id === activeId)) {
+      setActiveId(filteredCats[0].id)
     }
-    handler()
-    window.addEventListener('scroll', handler, { passive: true })
-    return () => window.removeEventListener('scroll', handler)
-  }, [filteredCats])
+  }, [filteredCats, activeId])
 
-  const handleJump = useCallback((id) => {
-    const el = document.getElementById(`fcat-${id}`)
-    if (!el) return
-    const y = el.getBoundingClientRect().top + window.scrollY - 100
-    window.scrollTo({ top: y, behavior: 'smooth' })
+  const handleSelect = useCallback((id) => {
     setActiveId(id)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
 
   const activeQuery = query.trim().length >= 2 ? query.trim() : ''
+  const activeCat = filteredCats.find((c) => c.id === activeId)
+  const catIndex = filteredCats.findIndex((c) => c.id === activeId)
 
   return (
     <>
@@ -602,9 +588,9 @@ export function FAQPageClient() {
           <FaqSidebar
             categories={filteredCats}
             activeId={activeId}
-            onJump={handleJump}
+            onSelect={handleSelect}
           />
-          <FaqContent filteredCats={filteredCats} query={activeQuery} />
+          <FaqContent activeCat={activeCat} catIndex={catIndex} query={activeQuery} />
         </div>
         <FaqHelper />
       </section>
