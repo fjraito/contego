@@ -4,6 +4,7 @@ import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { CTA } from '@/components/CTA'
 import { ArrowIcon } from '@/components/Icons'
+import { COMPETITORS } from './[slug]/data'
 import { client } from '@/sanity/lib/client'
 import { ALTERNATIVES_LIST_QUERY } from '@/sanity/lib/queries'
 
@@ -16,7 +17,19 @@ async function getAlternatives() {
   try {
     sanityAlts = await client.fetch(ALTERNATIVES_LIST_QUERY, {}, { next: { revalidate: 60 } })
   } catch (_) { /* fall through */ }
-  return sanityAlts.sort((a, b) => a.competitorName.localeCompare(b.competitorName))
+
+  const sanitySlugs = new Set(sanityAlts.map((a) => a.slug))
+  const staticAlts = Object.values(COMPETITORS)
+    .filter((c) => !sanitySlugs.has(c.slug))
+    .map((c) => ({
+      _id: c.slug,
+      slug: c.slug,
+      competitorName: c.name,
+      competitorInitials: c.initials,
+      competitorLogo: c.logo,
+    }))
+
+  return [...sanityAlts, ...staticAlts].sort((a, b) => a.competitorName.localeCompare(b.competitorName))
 }
 
 export const metadata = {
