@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo, useCallback } from 'react'
+import { FAQAccordion } from './FAQAccordion'
 
 const FAQ_CATEGORIES = [
   {
@@ -382,11 +383,7 @@ function FaqHero({ query, setQuery, matchCount, totalCount }) {
           <span className="sep">/</span>
           <span>FAQ</span>
         </div>
-        <span className="pill">
-          <span className="dot" />
-          {totalCount} questions, answered
-        </span>
-        <h1 style={{ marginTop: 22 }}>
+        <h1>
           Frequently asked<br />
           <span className="italic-accent">questions.</span>
         </h1>
@@ -480,21 +477,7 @@ function FaqContent({ activeCat, catIndex, query }) {
           </div>
           <span className="faq-total">{activeCat.items.length} question{activeCat.items.length === 1 ? '' : 's'}</span>
         </div>
-        <div className="faq-list">
-          {activeCat.items.map((it, ii) => (
-            <details key={ii} className="faq-q" open={!!(query && query.length >= 2)}>
-              <summary>
-                <span>{highlight(it.q, query)}</span>
-                <span className="faq-plus">
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path d="M12 5v14M5 12h14" />
-                  </svg>
-                </span>
-              </summary>
-              <div className="faq-answer">{renderAnswer(it.a, query)}</div>
-            </details>
-          ))}
-        </div>
+        <FAQAccordion items={activeCat.items} key={activeCat.id} />
       </section>
     </div>
   )
