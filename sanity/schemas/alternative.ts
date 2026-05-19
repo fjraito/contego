@@ -205,18 +205,15 @@ export const alternative = defineType({
 
     // ── SEO ──
     defineField({
-      name: 'metaTitle',
-      title: 'Meta title override',
-      type: 'string',
+      name: 'seo',
+      title: 'SEO',
+      type: 'object',
       group: 'seo',
-      description: 'Leave blank to use "Contego vs [Competitor name]"',
-    }),
-    defineField({
-      name: 'metaDescription',
-      title: 'Meta description override',
-      type: 'text',
-      group: 'seo',
-      rows: 3,
+      fields: [
+        { name: 'metaTitle', type: 'string', title: 'Meta Title', description: 'Defaults to "Contego vs [Competitor]" if empty.' },
+        { name: 'metaDescription', type: 'text', title: 'Meta Description', rows: 3, description: 'Recommended: 140-160 chars.' },
+        { name: 'noIndex', type: 'boolean', title: 'No Index', initialValue: false },
+      ],
     }),
   ],
   preview: {

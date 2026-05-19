@@ -69,8 +69,7 @@ export const ALTERNATIVE_QUERY = groq`*[_type == "alternative" && slug.current =
   pickContego,
   pickThem,
   faqItems[] { q, a },
-  metaTitle,
-  metaDescription
+  seo
 }`
 
 export const ALTERNATIVES_LIST_QUERY = groq`*[_type == "alternative" && status == "published"] | order(competitorName asc) {
@@ -81,3 +80,56 @@ export const ALTERNATIVES_LIST_QUERY = groq`*[_type == "alternative" && status =
   competitorInitials,
   competitorLogo
 }`
+
+// ── Prop Firms ──
+
+export const PROP_FIRMS_LIST_QUERY = groq`*[_type == "propFirm" && status == "published"] | order(rank asc) {
+  _id,
+  "slug": slug.current,
+  name,
+  initials,
+  rank,
+  editorPick,
+  tagline,
+  rating,
+  reviews,
+  tags,
+  stats,
+  promo
+}`
+
+export const PROP_FIRM_QUERY = groq`*[_type == "propFirm" && slug.current == $slug && status == "published"][0] {
+  _id,
+  "slug": slug.current,
+  name,
+  initials,
+  domain,
+  url,
+  category,
+  founded,
+  hq,
+  rating,
+  reviews,
+  trustScore,
+  rank,
+  editorPick,
+  tagline,
+  oneLine,
+  tags,
+  stats,
+  highlights,
+  scoreBreakdown,
+  promo,
+  pros,
+  cons,
+  tiers,
+  rules,
+  platforms,
+  instruments,
+  payoutMethods,
+  payoutDetails,
+  faq,
+  seo
+}`
+
+export const PROP_FIRM_SLUGS_QUERY = groq`*[_type == "propFirm" && defined(slug.current)] { "slug": slug.current }`
