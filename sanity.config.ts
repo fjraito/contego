@@ -20,6 +20,7 @@ function resolveProductionUrl(doc: Record<string, any>): string | undefined {
 export default defineConfig({
   name: 'contego',
   title: 'Contego CMS',
+  basePath: '/studio',
   projectId,
   dataset,
 
