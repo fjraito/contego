@@ -121,6 +121,13 @@ export const blogPost = defineType({
       fields: [{ name: 'alt', type: 'string', title: 'Alt text' }],
     }),
     defineField({
+      name: 'featuredImageUrl',
+      title: 'Featured Image URL',
+      type: 'url',
+      group: 'meta',
+      description: 'Fallback if no uploaded image. Used for static/external images.',
+    }),
+    defineField({
       name: 'author',
       title: 'Author',
       type: 'string',

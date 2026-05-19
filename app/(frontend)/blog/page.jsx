@@ -7,7 +7,7 @@ import { STATIC_BLOG_POSTS, STATIC_BLOG_SLUGS } from './data'
 
 const ALL_POSTS_QUERY = `*[_type == "blogPost" && status == "published"] | order(publishedAt desc) {
   _id, title, "slug": slug.current, excerpt, category, publishedAt, author,
-  "featuredImage": featuredImage { "url": asset->url, "alt": coalesce(alt, "") }
+  "featuredImage": { "url": coalesce(featuredImage.asset->url, featuredImageUrl), "alt": coalesce(featuredImage.alt, "") }
 }`
 
 async function getAllPosts() {

@@ -17,7 +17,7 @@ const LATEST_POSTS_QUERY = `*[_type == "blogPost" && status == "published"] | or
   excerpt,
   category,
   publishedAt,
-  "featuredImage": featuredImage { "url": asset->url, "alt": coalesce(alt, "") }
+  "featuredImage": { "url": coalesce(featuredImage.asset->url, featuredImageUrl), "alt": coalesce(featuredImage.alt, "") }
 }`
 
 async function getLatestPosts() {

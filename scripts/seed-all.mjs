@@ -39,6 +39,7 @@ async function seedBlogPosts() {
       author: post.author || 'Contego Team',
       editedBy: post.editedBy || 'Contego Editorial',
       factCheckedBy: post.factCheckedBy || 'Contego Editorial',
+      featuredImageUrl: post.featuredImage?.url || null,
       seo: post.seo || {},
     }
 

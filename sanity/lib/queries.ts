@@ -1,7 +1,7 @@
 import { groq } from 'next-sanity'
 
 const IMAGE_FRAGMENT = `
-  "url": asset->url,
+  "url": coalesce(asset->url, ^.featuredImageUrl),
   "alt": coalesce(alt, "")
 `
 

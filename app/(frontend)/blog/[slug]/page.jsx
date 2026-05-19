@@ -13,7 +13,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'https://contegoagency.co
 const POST_QUERY = `*[_type == "blogPost" && slug.current == $slug && status == "published"][0] {
   _id, title, "slug": slug.current, excerpt, content, category,
   publishedAt, _updatedAt, author, editedBy, factCheckedBy,
-  "featuredImage": featuredImage { "url": asset->url, "alt": coalesce(alt, "") },
+  "featuredImage": { "url": coalesce(featuredImage.asset->url, featuredImageUrl), "alt": coalesce(featuredImage.alt, "") },
   seo
 }`
 
