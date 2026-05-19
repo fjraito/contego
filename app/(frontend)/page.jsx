@@ -8,8 +8,29 @@ import { Blog } from '@/components/Blog'
 import { FAQ } from '@/components/FAQ'
 import { CTA } from '@/components/CTA'
 import { Footer } from '@/components/Footer'
+import { client } from '@/sanity/lib/client'
 
-export default function Home() {
+const LATEST_POSTS_QUERY = `*[_type == "blogPost" && status == "published"] | order(publishedAt desc) [0...3] {
+  _id,
+  title,
+  "slug": slug.current,
+  excerpt,
+  category,
+  publishedAt,
+  "featuredImage": featuredImage { "url": asset->url, "alt": coalesce(alt, "") }
+}`
+
+async function getLatestPosts() {
+  try {
+    return await client.fetch(LATEST_POSTS_QUERY, {}, { next: { revalidate: 60 } })
+  } catch {
+    return []
+  }
+}
+
+export default async function Home() {
+  const posts = await getLatestPosts()
+
   return (
     <>
       <Navbar />
@@ -19,7 +40,7 @@ export default function Home() {
         <Services />
         <Process />
         <Pricing />
-        <Blog />
+        <Blog posts={posts} />
         <FAQ />
         <CTA />
       </main>
