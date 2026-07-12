@@ -1,0 +1,76 @@
+<svg viewBox="0 0 800 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="n-bg" x1="0" y1="0" x2="800" y2="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0b0d0c"/>
+      <stop offset="1" stop-color="#0f1211"/>
+    </linearGradient>
+    <radialGradient id="n-glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(400 150) scale(320 240)">
+      <stop offset="0" stop-color="#5AE48E" stop-opacity="0.13"/>
+      <stop offset="1" stop-color="#5AE48E" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="n-ray" x1="560" y1="0" x2="440" y2="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8befb0" stop-opacity="0.07"/>
+      <stop offset="1" stop-color="#8befb0" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="n-tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5AE48E" stop-opacity="0.10"/>
+      <stop offset="1" stop-color="#5AE48E" stop-opacity="0.02"/>
+    </linearGradient>
+    <linearGradient id="n-hot" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#43c07d" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#43c07d" stop-opacity="0.04"/>
+    </linearGradient>
+    <filter id="n-soft" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="14"/></filter>
+    <filter id="n-sm" x="-120%" y="-120%" width="340%" height="340%"><feGaussianBlur stdDeviation="4"/></filter>
+  </defs>
+
+  <rect width="800" height="300" fill="url(#n-bg)"/>
+  <polygon points="540,0 660,0 560,300 440,300" fill="url(#n-ray)"/>
+  <rect width="800" height="300" fill="url(#n-glow)"/>
+
+  <g fill="#7EEBA8">
+    <circle cx="90" cy="58" r="2.5" opacity="0.55"/>
+    <circle cx="90" cy="58" r="7" opacity="0.14" filter="url(#n-sm)"/>
+    <circle cx="716" cy="62" r="2.5" opacity="0.55"/>
+    <circle cx="76" cy="242" r="2" opacity="0.4"/>
+    <circle cx="732" cy="238" r="2" opacity="0.4"/>
+  </g>
+
+  <!-- three posts in a feed: yours sits in the middle, same shape, just alive -->
+
+  <!-- organic post, left -->
+  <g opacity="0.55">
+    <rect x="128" y="70" width="168" height="160" rx="18" fill="url(#n-tile)" stroke="#5AE48E" stroke-opacity="0.28"/>
+    <circle cx="156" cy="100" r="10" fill="#5AE48E" opacity="0.30"/>
+    <rect x="174" y="95" width="64" height="6" rx="3" fill="#5AE48E" opacity="0.25"/>
+    <rect x="148" y="124" width="128" height="6" rx="3" fill="#5AE48E" opacity="0.18"/>
+    <rect x="148" y="138" width="100" height="6" rx="3" fill="#5AE48E" opacity="0.13"/>
+    <rect x="148" y="152" width="114" height="6" rx="3" fill="#5AE48E" opacity="0.13"/>
+    <g stroke="#5AE48E" stroke-opacity="0.25" stroke-width="1.6" stroke-linecap="round" fill="none">
+      <path d="M152 200 C 152 196 156 194 158 197 C 160 194 164 196 164 200 C 164 204 158 207 158 207 C 158 207 152 204 152 200 Z"/>
+      <path d="M182 206 C 178 206 176 203 176 200 C 176 196 179 194 182 194 L 190 194 C 193 194 196 196 196 200 C 196 203 194 206 190 206 L 187 206 L 182 210 Z"/>
+    </g>
+  </g>
+
+  <!-- your video, middle -->
+  <g>
+    <ellipse cx="400" cy="150" rx="120" ry="110" fill="#43c07d" opacity="0.15" filter="url(#n-soft)"/>
+    <rect x="316" y="58" width="168" height="184" rx="18" fill="url(#n-hot)" stroke="#7EEBA8" stroke-opacity="0.9" stroke-width="1.4"/>
+    <circle cx="344" cy="90" r="10" fill="#7EEBA8" opacity="0.85"/>
+    <rect x="362" y="85" width="64" height="6" rx="3" fill="#96cbaa" opacity="0.55"/>
+    <circle cx="400" cy="150" r="22" fill="#0e1a13" stroke="#7EEBA8" stroke-opacity="0.9"/>
+    <path d="M394 140 L 411 150 L 394 160 Z" fill="#7EEBA8"/>
+    <circle cx="400" cy="150" r="22" fill="#7EEBA8" opacity="0.18" filter="url(#n-sm)"/>
+    <rect x="336" y="204" width="128" height="5" rx="2.5" fill="#5AE48E" opacity="0.16"/>
+    <rect x="336" y="204" width="78" height="5" rx="2.5" fill="#7EEBA8" opacity="0.8"/>
+  </g>
+
+  <!-- organic post, right -->
+  <g opacity="0.55">
+    <rect x="504" y="70" width="168" height="160" rx="18" fill="url(#n-tile)" stroke="#5AE48E" stroke-opacity="0.28"/>
+    <circle cx="532" cy="100" r="10" fill="#5AE48E" opacity="0.30"/>
+    <rect x="550" y="95" width="56" height="6" rx="3" fill="#5AE48E" opacity="0.25"/>
+    <rect x="524" y="128" width="128" height="66" rx="10" fill="#5AE48E" opacity="0.10"/>
+    <rect x="524" y="206" width="96" height="6" rx="3" fill="#5AE48E" opacity="0.14"/>
+  </g>
+</svg>

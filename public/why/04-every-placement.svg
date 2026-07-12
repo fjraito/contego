@@ -1,0 +1,130 @@
+<svg viewBox="0 0 800 420" fill="none" xmlns="http://www.w3.org/2000/svg" font-family="Inter, -apple-system, 'Segoe UI', sans-serif">
+  <defs>
+    <linearGradient id="p-bg" x1="0" y1="0" x2="800" y2="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0b0d0c"/>
+      <stop offset="1" stop-color="#0f1211"/>
+    </linearGradient>
+    <radialGradient id="p-glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(400 200) scale(420 320)">
+      <stop offset="0" stop-color="#5AE48E" stop-opacity="0.11"/>
+      <stop offset="1" stop-color="#5AE48E" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="p-ray" x1="620" y1="0" x2="480" y2="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8befb0" stop-opacity="0.09"/>
+      <stop offset="1" stop-color="#8befb0" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="p-tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5AE48E" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#5AE48E" stop-opacity="0.02"/>
+    </linearGradient>
+    <linearGradient id="p-screen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#163826" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#0d1913" stop-opacity="0.9"/>
+    </linearGradient>
+    <filter id="p-soft" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="12"/>
+    </filter>
+    <filter id="p-soft-sm" x="-120%" y="-120%" width="340%" height="340%">
+      <feGaussianBlur stdDeviation="4"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="420" fill="url(#p-bg)"/>
+  <polygon points="600,0 730,0 560,420 430,420" fill="url(#p-ray)"/>
+  <rect width="800" height="420" fill="url(#p-glow)"/>
+
+  <!-- fine grid -->
+  <g stroke="#5AE48E" stroke-opacity="0.05">
+    <path d="M0 105H800M0 210H800M0 315H800"/>
+    <path d="M160 0V420M320 0V420M480 0V420M640 0V420"/>
+  </g>
+
+  <!-- ambient particles -->
+  <g fill="#7EEBA8">
+    <circle cx="104" cy="70" r="2.5" opacity="0.6"/>
+    <circle cx="104" cy="70" r="7" opacity="0.15" filter="url(#p-soft-sm)"/>
+    <circle cx="722" cy="330" r="3" opacity="0.6"/>
+    <circle cx="722" cy="330" r="8" opacity="0.15" filter="url(#p-soft-sm)"/>
+    <circle cx="70" cy="330" r="2" opacity="0.4"/>
+    <circle cx="736" cy="80" r="2" opacity="0.5"/>
+  </g>
+
+  <!-- landscape frame behind (landing page / feed placement) -->
+  <g opacity="0.55">
+    <rect x="132" y="120" width="220" height="140" rx="16" fill="url(#p-tile)" stroke="#5AE48E" stroke-opacity="0.30"/>
+    <rect x="148" y="140" width="90" height="8" rx="4" fill="#5AE48E" opacity="0.30"/>
+    <rect x="148" y="158" width="140" height="6" rx="3" fill="#5AE48E" opacity="0.15"/>
+    <rect x="148" y="172" width="120" height="6" rx="3" fill="#5AE48E" opacity="0.15"/>
+    <rect x="148" y="196" width="72" height="22" rx="11" fill="#5AE48E" opacity="0.25"/>
+    <rect x="268" y="150" width="66" height="90" rx="10" fill="#5AE48E" opacity="0.12" stroke="#5AE48E" stroke-opacity="0.25"/>
+    <path d="M296 188 L 310 195 L 296 202 Z" fill="#7EEBA8" opacity="0.7"/>
+  </g>
+  <text x="242" y="286" text-anchor="middle" font-size="9" letter-spacing="2.5" fill="#96cbaa" opacity="0.5">LANDING PAGE</text>
+
+  <!-- square frame behind right (organic social) -->
+  <g opacity="0.55">
+    <rect x="560" y="128" width="130" height="130" rx="16" fill="url(#p-tile)" stroke="#5AE48E" stroke-opacity="0.30"/>
+    <circle cx="625" cy="180" r="20" fill="#5AE48E" opacity="0.18"/>
+    <path d="M618 172 L 636 180 L 618 188 Z" fill="#7EEBA8" opacity="0.7"/>
+    <rect x="580" y="216" width="90" height="6" rx="3" fill="#5AE48E" opacity="0.18"/>
+    <rect x="580" y="230" width="60" height="6" rx="3" fill="#5AE48E" opacity="0.12"/>
+  </g>
+  <text x="625" y="286" text-anchor="middle" font-size="9" letter-spacing="2.5" fill="#96cbaa" opacity="0.5">1:1 FEED</text>
+
+  <!-- glow behind hero phone -->
+  <ellipse cx="400" cy="210" rx="110" ry="150" fill="#43c07d" opacity="0.18" filter="url(#p-soft)"/>
+
+  <!-- HERO: vertical 9:16 phone -->
+  <g>
+    <rect x="336" y="70" width="128" height="248" rx="26" fill="url(#p-screen)" stroke="#7EEBA8" stroke-opacity="0.9" stroke-width="1.5"/>
+    <rect x="344" y="78" width="112" height="232" rx="20" stroke="#7EEBA8" stroke-opacity="0.12"/>
+    <!-- notch -->
+    <rect x="382" y="82" width="36" height="6" rx="3" fill="#7EEBA8" opacity="0.35"/>
+    <!-- content: hook bar + play -->
+    <circle cx="400" cy="176" r="26" fill="#0e1a13" stroke="#7EEBA8" stroke-opacity="0.9"/>
+    <path d="M393 164 L 413 176 L 393 188 Z" fill="#7EEBA8"/>
+    <circle cx="400" cy="176" r="26" fill="#7EEBA8" opacity="0.18" filter="url(#p-soft-sm)"/>
+    <!-- caption lines -->
+    <rect x="358" y="232" width="84" height="7" rx="3.5" fill="#7EEBA8" opacity="0.5"/>
+    <rect x="358" y="246" width="56" height="7" rx="3.5" fill="#7EEBA8" opacity="0.25"/>
+    <!-- progress bar -->
+    <rect x="358" y="292" width="84" height="4" rx="2" fill="#5AE48E" opacity="0.18"/>
+    <rect x="358" y="292" width="52" height="4" rx="2" fill="#7EEBA8" opacity="0.8"/>
+  </g>
+
+  <!-- badge on hero -->
+  <g>
+    <rect x="446" y="58" width="96" height="26" rx="13" fill="#0e1a13" stroke="#7EEBA8" stroke-opacity="0.9"/>
+    <text x="494" y="75" text-anchor="middle" font-size="10" letter-spacing="1.5" fill="#7EEBA8">9:16 READY</text>
+  </g>
+
+  <!-- connectors from hero phone to side placements -->
+  <g stroke="#5AE48E" stroke-opacity="0.45" fill="none" stroke-dasharray="3 6" stroke-linecap="round">
+    <path d="M336 190 C 320 190 300 186 296 178"/>
+    <path d="M464 190 C 490 190 530 188 556 186"/>
+  </g>
+
+  <!-- platform glyph strip -->
+  <g>
+    <rect x="292" y="336" width="216" height="44" rx="22" fill="url(#p-tile)" stroke="#5AE48E" stroke-opacity="0.30"/>
+    <!-- music note (short-form video) -->
+    <g stroke="#96cbaa" stroke-width="1.8" fill="none" opacity="0.85">
+      <path d="M334 350 V 366"/>
+      <circle cx="330" cy="366" r="4"/>
+      <path d="M334 350 C 338 352 341 353 344 353"/>
+    </g>
+    <!-- infinity (paid social) -->
+    <path d="M384 358 C 380 352 372 352 372 358 C 372 364 380 364 384 358 C 388 352 396 352 396 358 C 396 364 388 364 384 358 Z"
+          stroke="#96cbaa" stroke-width="1.8" fill="none" opacity="0.85"/>
+    <!-- play in rounded square (video platform) -->
+    <g opacity="0.85">
+      <rect x="424" y="348" width="22" height="20" rx="6" stroke="#96cbaa" stroke-width="1.8" fill="none"/>
+      <path d="M432 353 L 440 358 L 432 363 Z" fill="#96cbaa"/>
+    </g>
+    <!-- globe (web / landing) -->
+    <g stroke="#96cbaa" stroke-width="1.6" fill="none" opacity="0.85">
+      <circle cx="478" cy="358" r="9"/>
+      <path d="M469 358 H 487 M478 349 C 474 354 474 362 478 367 M478 349 C 482 354 482 362 478 367"/>
+    </g>
+  </g>
+  <text x="400" y="402" text-anchor="middle" font-size="9" letter-spacing="3" fill="#96cbaa" opacity="0.55">EVERY PLACEMENT, ONE PIPELINE</text>
+</svg>

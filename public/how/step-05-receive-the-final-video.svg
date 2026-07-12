@@ -1,0 +1,97 @@
+<svg viewBox="0 0 800 300" fill="none" xmlns="http://www.w3.org/2000/svg" font-family="Inter, -apple-system, 'Segoe UI', sans-serif">
+  <defs>
+    <linearGradient id="s5-bg" x1="0" y1="0" x2="800" y2="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0b0d0c"/>
+      <stop offset="1" stop-color="#0f1211"/>
+    </linearGradient>
+    <radialGradient id="s5-glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(400 160) scale(380 260)">
+      <stop offset="0" stop-color="#5AE48E" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#5AE48E" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="s5-ray" x1="240" y1="0" x2="360" y2="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8befb0" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#8befb0" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="s5-tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5AE48E" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#5AE48E" stop-opacity="0.02"/>
+    </linearGradient>
+    <linearGradient id="s5-tile-hot" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#43c07d" stop-opacity="0.24"/>
+      <stop offset="1" stop-color="#43c07d" stop-opacity="0.05"/>
+    </linearGradient>
+    <filter id="s5-soft" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="12"/></filter>
+    <filter id="s5-soft-sm" x="-120%" y="-120%" width="340%" height="340%"><feGaussianBlur stdDeviation="4"/></filter>
+  </defs>
+
+  <rect width="800" height="300" fill="url(#s5-bg)"/>
+  <polygon points="240,0 360,0 460,300 340,300" fill="url(#s5-ray)"/>
+  <rect width="800" height="300" fill="url(#s5-glow)"/>
+
+  <g stroke="#5AE48E" stroke-opacity="0.05">
+    <path d="M0 100H800M0 200H800"/>
+    <path d="M200 0V300M400 0V300M600 0V300"/>
+  </g>
+
+  <g fill="#7EEBA8">
+    <circle cx="88" cy="54" r="2.5" opacity="0.6"/>
+    <circle cx="88" cy="54" r="7" opacity="0.15" filter="url(#s5-soft-sm)"/>
+    <circle cx="726" cy="58" r="2.5" opacity="0.6"/>
+    <circle cx="70" cy="248" r="2" opacity="0.4"/>
+    <circle cx="744" cy="242" r="2" opacity="0.45"/>
+  </g>
+
+  <!-- delivery header chip -->
+  <g>
+    <rect x="300" y="42" width="200" height="34" rx="17" fill="#0e1a13" stroke="#7EEBA8" stroke-opacity="0.9"/>
+    <text x="326" y="64" font-size="11" fill="#a6d6ba">final.mp4</text>
+    <circle cx="446" cy="59" r="8" fill="#7EEBA8" opacity="0.15"/>
+    <path d="M442 59 L 445 62 L 451 55" stroke="#7EEBA8" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="463" y="63" font-size="10" letter-spacing="1" fill="#7EEBA8">ready</text>
+  </g>
+  <path d="M400 76 V 96" stroke="#7EEBA8" stroke-opacity="0.35"/>
+  <g stroke="#5AE48E" stroke-opacity="0.35" fill="none">
+    <path d="M400 96 C 400 110 260 100 218 118"/>
+    <path d="M400 96 V 112"/>
+    <path d="M400 96 C 400 110 540 100 582 118"/>
+  </g>
+
+  <!-- glow behind hero 9:16 -->
+  <ellipse cx="400" cy="188" rx="90" ry="110" fill="#43c07d" opacity="0.16" filter="url(#s5-soft)"/>
+
+  <!-- 9:16 hero -->
+  <g>
+    <rect x="356" y="112" width="88" height="150" rx="16" fill="url(#s5-tile-hot)" stroke="#7EEBA8" stroke-opacity="0.9" stroke-width="1.4"/>
+    <circle cx="400" cy="176" r="17" fill="#0e1a13" stroke="#7EEBA8" stroke-opacity="0.9"/>
+    <path d="M395 168 L 409 176 L 395 184 Z" fill="#7EEBA8"/>
+    <rect x="370" y="238" width="60" height="4" rx="2" fill="#5AE48E" opacity="0.18"/>
+    <rect x="370" y="238" width="38" height="4" rx="2" fill="#7EEBA8" opacity="0.8"/>
+    <text x="400" y="282" text-anchor="middle" font-size="9" letter-spacing="2" fill="#96cbaa" opacity="0.65">9:16</text>
+  </g>
+
+  <!-- 1:1 tile -->
+  <g opacity="0.85">
+    <rect x="164" y="128" width="108" height="108" rx="16" fill="url(#s5-tile)" stroke="#5AE48E" stroke-opacity="0.35"/>
+    <circle cx="218" cy="182" r="14" fill="#0e1a13" stroke="#5AE48E" stroke-opacity="0.6"/>
+    <path d="M214 176 L 225 182 L 214 188 Z" fill="#96cbaa" opacity="0.8"/>
+    <text x="218" y="258" text-anchor="middle" font-size="9" letter-spacing="2" fill="#96cbaa" opacity="0.55">1:1</text>
+  </g>
+
+  <!-- 16:9 tile -->
+  <g opacity="0.85">
+    <rect x="528" y="146" width="150" height="86" rx="16" fill="url(#s5-tile)" stroke="#5AE48E" stroke-opacity="0.35"/>
+    <circle cx="603" cy="189" r="14" fill="#0e1a13" stroke="#5AE48E" stroke-opacity="0.6"/>
+    <path d="M599 183 L 610 189 L 599 195 Z" fill="#96cbaa" opacity="0.8"/>
+    <text x="603" y="258" text-anchor="middle" font-size="9" letter-spacing="2" fill="#96cbaa" opacity="0.55">16:9</text>
+  </g>
+
+  <!-- download glyph, far right -->
+  <g>
+    <circle cx="728" cy="118" r="20" fill="#0e1a13" stroke="#7EEBA8" stroke-opacity="0.8"/>
+    <g stroke="#7EEBA8" stroke-width="2" stroke-linecap="round" fill="none">
+      <path d="M728 108 V 122"/>
+      <path d="M722 117 L 728 123 L 734 117"/>
+      <path d="M720 128 H 736"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,97 @@
+<svg viewBox="0 0 800 300" fill="none" xmlns="http://www.w3.org/2000/svg" font-family="Inter, -apple-system, 'Segoe UI', sans-serif">
+  <defs>
+    <linearGradient id="s2-bg" x1="0" y1="0" x2="800" y2="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0b0d0c"/>
+      <stop offset="1" stop-color="#0f1211"/>
+    </linearGradient>
+    <radialGradient id="s2-glow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(220 150) scale(300 240)">
+      <stop offset="0" stop-color="#5AE48E" stop-opacity="0.13"/>
+      <stop offset="1" stop-color="#5AE48E" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="s2-ray" x1="520" y1="0" x2="400" y2="300" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8befb0" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#8befb0" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="s2-tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5AE48E" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#5AE48E" stop-opacity="0.02"/>
+    </linearGradient>
+    <filter id="s2-soft" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="10"/></filter>
+    <filter id="s2-soft-sm" x="-120%" y="-120%" width="340%" height="340%"><feGaussianBlur stdDeviation="4"/></filter>
+  </defs>
+
+  <rect width="800" height="300" fill="url(#s2-bg)"/>
+  <polygon points="500,0 620,0 520,300 400,300" fill="url(#s2-ray)"/>
+  <rect width="800" height="300" fill="url(#s2-glow)"/>
+
+  <g stroke="#5AE48E" stroke-opacity="0.05">
+    <path d="M0 100H800M0 200H800"/>
+    <path d="M200 0V300M400 0V300M600 0V300"/>
+  </g>
+
+  <g fill="#7EEBA8">
+    <circle cx="96" cy="56" r="2.5" opacity="0.6"/>
+    <circle cx="96" cy="56" r="7" opacity="0.15" filter="url(#s2-soft-sm)"/>
+    <circle cx="724" cy="52" r="2.5" opacity="0.6"/>
+    <circle cx="740" cy="248" r="2" opacity="0.45"/>
+    <circle cx="70" cy="244" r="2" opacity="0.4"/>
+  </g>
+
+  <!-- core node: the message -->
+  <g>
+    <ellipse cx="196" cy="150" rx="86" ry="86" fill="#43c07d" opacity="0.15" filter="url(#s2-soft)"/>
+    <circle cx="196" cy="150" r="46" fill="#0e1a13" stroke="#7EEBA8" stroke-opacity="0.9" stroke-width="1.5"/>
+    <circle cx="196" cy="150" r="56" stroke="#7EEBA8" stroke-opacity="0.15"/>
+    <circle cx="196" cy="150" r="8" fill="#7EEBA8"/>
+    <circle cx="196" cy="150" r="8" fill="#7EEBA8" opacity="0.4" filter="url(#s2-soft-sm)"/>
+    <text x="196" y="222" text-anchor="middle" font-size="9" letter-spacing="3" fill="#96cbaa" opacity="0.65">YOUR MESSAGE</text>
+  </g>
+
+  <!-- branch lines -->
+  <g stroke="#5AE48E" fill="none">
+    <path d="M242 150 C 300 150 300 78 356 78" stroke-opacity="0.35"/>
+    <path d="M242 150 C 296 150 296 126 356 126" stroke-opacity="0.55" stroke-width="1.5"/>
+    <path d="M242 150 C 296 150 296 174 356 174" stroke-opacity="0.35"/>
+    <path d="M242 150 C 300 150 300 222 356 222" stroke-opacity="0.35"/>
+  </g>
+
+  <!-- decision chips with category labels -->
+  <g font-size="8" letter-spacing="2" fill="#96cbaa" opacity="0.5">
+    <text x="368" y="70">ANGLE</text>
+    <text x="368" y="118">CREATOR</text>
+    <text x="368" y="166">TONE</text>
+    <text x="368" y="214">FORMAT</text>
+  </g>
+  <g font-size="10" letter-spacing="0.5">
+    <rect x="356" y="62" width="150" height="30" rx="15" fill="url(#s2-tile)" stroke="#5AE48E" stroke-opacity="0.25" transform="translate(0 12)"/>
+    <text x="431" y="93" text-anchor="middle" fill="#a6d6ba" opacity="0.75">problem-first</text>
+
+    <rect x="356" y="110" width="150" height="30" rx="15" fill="#123021" stroke="#7EEBA8" stroke-opacity="0.85" transform="translate(0 12)"/>
+    <text x="431" y="141" text-anchor="middle" fill="#7EEBA8">casual creator, 20s</text>
+
+    <rect x="356" y="158" width="150" height="30" rx="15" fill="url(#s2-tile)" stroke="#5AE48E" stroke-opacity="0.25" transform="translate(0 12)"/>
+    <text x="431" y="189" text-anchor="middle" fill="#a6d6ba" opacity="0.75">conversational</text>
+
+    <rect x="356" y="206" width="150" height="30" rx="15" fill="url(#s2-tile)" stroke="#5AE48E" stroke-opacity="0.25" transform="translate(0 12)"/>
+    <text x="431" y="237" text-anchor="middle" fill="#a6d6ba" opacity="0.75">9:16 vertical</text>
+  </g>
+
+  <!-- convergence into concept card -->
+  <g stroke="#5AE48E" fill="none">
+    <path d="M506 86 C 560 86 560 138 604 138" stroke-opacity="0.30"/>
+    <path d="M506 134 C 556 134 556 146 604 146" stroke-opacity="0.45"/>
+    <path d="M506 182 C 556 182 556 158 604 158" stroke-opacity="0.30"/>
+    <path d="M506 230 C 560 230 560 166 604 166" stroke-opacity="0.30"/>
+  </g>
+
+  <g>
+    <ellipse cx="670" cy="152" rx="80" ry="80" fill="#43c07d" opacity="0.12" filter="url(#s2-soft)"/>
+    <rect x="604" y="100" width="132" height="104" rx="18" fill="url(#s2-tile)" stroke="#7EEBA8" stroke-opacity="0.7" stroke-width="1.2"/>
+    <text x="626" y="128" font-size="8" letter-spacing="2.5" fill="#96cbaa" opacity="0.65">CONCEPT</text>
+    <rect x="626" y="140" width="88" height="6" rx="3" fill="#7EEBA8" opacity="0.6"/>
+    <rect x="626" y="154" width="64" height="6" rx="3" fill="#5AE48E" opacity="0.30"/>
+    <rect x="626" y="168" width="76" height="6" rx="3" fill="#5AE48E" opacity="0.30"/>
+    <circle cx="718" cy="118" r="9" fill="#0e1a13" stroke="#7EEBA8" stroke-opacity="0.9"/>
+    <path d="M714 118 L 717 121 L 723 114" stroke="#7EEBA8" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>

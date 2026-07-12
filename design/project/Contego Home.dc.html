@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Instrument Sans',sans-serif;background:#0B0D0C;color:#F4F1EA;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  a{color:#5AE48E;text-decoration:none}
+  a:hover{color:#7EEBA8}
+  img{display:block;max-width:100%}
+  ::selection{background:#5AE48E;color:#08120C}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  @keyframes glowpulse{0%,100%{opacity:.55}50%{opacity:.9}}
+  .fu{animation:fadeUp .8s cubic-bezier(.2,.7,.2,1) both}
+</style>
+</helmet>
+<div style="background:#0B0D0C;color:#F4F1EA;overflow-x:hidden;position:relative">
+
+  <!-- announcement -->
+  <div style="background:#5AE48E;color:#07130C;text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.06em;padding:9px 16px;font-weight:500">
+    FREE AI UGC VIDEO SAMPLE &nbsp;&middot;&nbsp; SEND YOUR PRODUCT, GET ONE HYPER-REALISTIC CLIP BACK
+  </div>
+
+  <!-- nav -->
+  <header style="position:sticky;top:0;z-index:50;background:rgba(11,13,12,.72);backdrop-filter:blur(14px);border-bottom:1px solid rgba(244,241,234,.08)">
+    <nav style="max-width:1200px;margin:0 auto;padding:16px 28px;display:flex;align-items:center;justify-content:space-between;gap:24px">
+      <a href="#top" style="display:flex;align-items:center;gap:9px;color:#F4F1EA">
+        <img src="assets/contego-mark.png" alt="Contego" style="height:26px;width:auto">
+        <span style="font-family:'Archivo',sans-serif;font-weight:800;font-size:21px;letter-spacing:-.02em;color:#F4F1EA">Contego</span>
+      </a>
+      <div style="display:flex;align-items:center;gap:30px" data-nav-links>
+        <a href="#work" style="color:#C7CDC8;font-size:15px;font-weight:500">Work</a>
+        <a href="#service" style="color:#C7CDC8;font-size:15px;font-weight:500">Service</a>
+        <a href="#process" style="color:#C7CDC8;font-size:15px;font-weight:500">Process</a>
+        <a href="#proof" style="color:#C7CDC8;font-size:15px;font-weight:500">Proof</a>
+        <a href="#faq" style="color:#C7CDC8;font-size:15px;font-weight:500">FAQ</a>
+      </div>
+      <a href="#claim" style="background:#5AE48E;color:#07130C;font-family:'Archivo',sans-serif;font-weight:700;font-size:14px;padding:11px 18px;border-radius:9px;white-space:nowrap">Free video sample</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section id="top" style="position:relative;padding:84px 28px 96px;text-align:center;overflow:hidden">
+    <div style="position:absolute;top:-80px;left:50%;transform:translateX(-50%);width:900px;height:620px;background:radial-gradient(ellipse at center,rgba(90,228,142,.28),rgba(90,228,142,0) 65%);filter:blur(20px);animation:glowpulse 6s ease-in-out infinite;pointer-events:none"></div>
+    <div style="position:relative;max-width:920px;margin:0 auto">
+      <div class="fu" style="font-family:'JetBrains Mono',monospace;font-size:12.5px;letter-spacing:.22em;color:#5AE48E;margin-bottom:24px">AI UGC AGENCY</div>
+      <h1 class="fu" style="font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(40px,6.4vw,74px);line-height:.98;letter-spacing:-.03em;color:#F4F1EA;animation-delay:.05s">AI UGC that doesn't<br>look like AI.</h1>
+      <p class="fu" style="max-width:560px;margin:26px auto 0;font-size:18px;line-height:1.55;color:#AEB5AF;animation-delay:.12s">We make hyper-realistic UGC video for paid social. No plastic faces, no robotic voices. Just creator-style content that earns trust in the first second, so people keep watching and buy.</p>
+      <div class="fu" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:34px;animation-delay:.18s">
+        <a href="#claim" style="background:#5AE48E;color:#07130C;font-family:'Archivo',sans-serif;font-weight:700;font-size:16px;padding:15px 26px;border-radius:11px">Claim your free video sample</a>
+        <a href="#work" style="background:transparent;color:#F4F1EA;border:1px solid rgba(244,241,234,.22);font-family:'Archivo',sans-serif;font-weight:600;font-size:16px;padding:15px 24px;border-radius:11px">See the work</a>
+      </div>
+    </div>
+    <!-- video reel -->
+    <div id="work" style="position:relative;max-width:900px;margin:66px auto 0;display:flex;align-items:center;justify-content:center;gap:20px">
+      <div style="position:relative;width:200px;flex:0 0 auto;aspect-ratio:9/16;border-radius:20px;overflow:hidden;box-shadow:0 30px 60px -20px rgba(0,0,0,.7);transform:translateY(18px) rotate(-4deg);animation:floaty 7s ease-in-out infinite">
+        <image-slot id="reel-1" shape="rect" placeholder="Drop UGC clip"></image-slot>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none"><svg width="46" height="46" viewBox="0 0 46 46"><circle cx="23" cy="23" r="23" fill="rgba(11,13,12,.55)"/><path d="M19 15 L32 23 L19 31 Z" fill="#F4F1EA"/></svg></div>
+      </div>
+      <div style="position:relative;width:250px;flex:0 0 auto;aspect-ratio:9/16;border-radius:22px;overflow:hidden;box-shadow:0 40px 80px -18px rgba(0,0,0,.8);z-index:2;border:1px solid rgba(90,228,142,.35)">
+        <image-slot id="reel-2" shape="rect" placeholder="Drop UGC clip"></image-slot>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none"><svg width="54" height="54" viewBox="0 0 54 54"><circle cx="27" cy="27" r="27" fill="rgba(90,228,142,.9)"/><path d="M22 17 L38 27 L22 37 Z" fill="#07130C"/></svg></div>
+      </div>
+      <div style="position:relative;width:200px;flex:0 0 auto;aspect-ratio:9/16;border-radius:20px;overflow:hidden;box-shadow:0 30px 60px -20px rgba(0,0,0,.7);transform:translateY(18px) rotate(4deg);animation:floaty 7s ease-in-out infinite;animation-delay:1.2s">
+        <image-slot id="reel-3" shape="rect" placeholder="Drop UGC clip"></image-slot>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none"><svg width="46" height="46" viewBox="0 0 46 46"><circle cx="23" cy="23" r="23" fill="rgba(11,13,12,.55)"/><path d="M19 15 L32 23 L19 31 Z" fill="#F4F1EA"/></svg></div>
+      </div>
+    </div>
+    <p style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#6B726C;margin-top:28px;letter-spacing:.04em">Drop your own clips into the frames above, or leave them for us to fill.</p>
+  </section>
+
+  <!-- trust strip -->
+  <section style="border-top:1px solid rgba(244,241,234,.08);border-bottom:1px solid rgba(244,241,234,.08);padding:40px 28px">
+    <p style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.12em;color:#6B726C;margin-bottom:26px">TRUSTED BY GROWTH TEAMS RUNNING PAID SOCIAL</p>
+    <div style="max-width:960px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:14px">
+      <sc-for list="{{ logos }}" as="lg" hint-placeholder-count="6">
+        <div style="width:132px;height:44px;border:1px dashed rgba(244,241,234,.16);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:#565C57;letter-spacing:.08em">{{ lg }}</div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- REALISM (the core statement) -->
+  <section style="padding:110px 28px;position:relative;overflow:hidden">
+    <div style="position:absolute;bottom:-140px;left:-120px;width:520px;height:520px;background:radial-gradient(circle,rgba(90,228,142,.16),transparent 70%);filter:blur(10px);pointer-events:none"></div>
+    <div style="max-width:1080px;margin:0 auto;position:relative">
+      <div style="max-width:760px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.2em;color:#5AE48E;margin-bottom:20px">THE ONE THING THAT MATTERS</div>
+        <h2 style="font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(34px,5vw,58px);line-height:1.02;letter-spacing:-.025em;color:#F4F1EA">If viewers can tell it's<br>AI, it failed.</h2>
+        <p style="margin-top:22px;font-size:18px;line-height:1.6;color:#AEB5AF;max-width:560px">AI video usually breaks the moment a face moves or a voice speaks. That is where we win. Our videos hold up frame by frame, so the only thing viewers notice is your message.</p>
+      </div>
+      <!-- comparison -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:52px">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><span style="width:8px;height:8px;border-radius:50%;background:#C25A4E"></span><span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#8A918B;letter-spacing:.06em">TYPICAL AI UGC</span></div>
+          <div style="position:relative;aspect-ratio:16/10;border-radius:16px;overflow:hidden;border:1px solid rgba(244,241,234,.1);background:repeating-linear-gradient(135deg,#15100f,#15100f 12px,#181211 12px,#181211 24px);display:flex;align-items:center;justify-content:center">
+            <span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#7a6a66;text-align:center;line-height:1.6">plastic faces &middot; uncanny lip sync<br>robotic delivery &middot; instant scroll</span>
+          </div>
+        </div>
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px"><span style="width:8px;height:8px;border-radius:50%;background:#5AE48E"></span><span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#5AE48E;letter-spacing:.06em">CONTEGO</span></div>
+          <div style="position:relative;aspect-ratio:16/10;border-radius:16px;overflow:hidden;border:1px solid rgba(90,228,142,.35)">
+            <image-slot id="compare-real" shape="rect" placeholder="Drop a real Contego clip"></image-slot>
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none"><svg width="50" height="50" viewBox="0 0 50 50"><circle cx="25" cy="25" r="25" fill="rgba(90,228,142,.9)"/><path d="M20 16 L35 25 L20 34 Z" fill="#07130C"/></svg></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICE (light) -->
+  <section id="service" data-screen-label="Service" style="background:#F4F1EA;color:#0B0D0C;padding:110px 28px">
+    <div style="max-width:1080px;margin:0 auto">
+      <div style="max-width:620px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.2em;color:#2C7A4D;margin-bottom:20px">WHAT WE DO</div>
+        <h2 style="font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(32px,4.6vw,54px);line-height:1.03;letter-spacing:-.025em;color:#0B0D0C">One thing, done at<br>the highest level.</h2>
+        <p style="margin-top:22px;font-size:18px;line-height:1.6;color:#4A504B;max-width:520px">Hyper-realistic AI UGC video. We handle strategy, conversion-focused scripts, production, and delivery. You get finished, ad-ready video. Not raw AI output you have to fix.</p>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:52px">
+        <sc-for list="{{ pipeline }}" as="p" hint-placeholder-count="4">
+          <div style="background:#FBFAF6;border:1px solid rgba(11,13,12,.08);border-radius:16px;padding:24px 22px">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#2C7A4D;margin-bottom:16px">0{{ p.n }}</div>
+            <div style="font-family:'Archivo',sans-serif;font-weight:700;font-size:19px;color:#0B0D0C;margin-bottom:8px">{{ p.title }}</div>
+            <p style="font-size:14.5px;line-height:1.55;color:#5B615C">{{ p.body }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIFFERENTIATORS (dark) -->
+  <section style="padding:110px 28px">
+    <div style="max-width:1080px;margin:0 auto">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.2em;color:#5AE48E;margin-bottom:20px">WHY CONTEGO</div>
+      <h2 style="font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(32px,4.6vw,54px);line-height:1.03;letter-spacing:-.025em;color:#F4F1EA;max-width:640px">Three reasons the video<br>actually performs.</h2>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:52px">
+        <sc-for list="{{ diffs }}" as="d" hint-placeholder-count="3">
+          <div style="border-top:2px solid #5AE48E;padding-top:26px">
+            <div style="font-family:'Archivo',sans-serif;font-weight:800;font-size:23px;color:#F4F1EA;margin-bottom:12px">{{ d.title }}</div>
+            <p style="font-size:16px;line-height:1.6;color:#AEB5AF">{{ d.body }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- USE CASES -->
+  <section style="padding:0 28px 110px">
+    <div style="max-width:1080px;margin:0 auto;background:#101312;border:1px solid rgba(244,241,234,.08);border-radius:24px;padding:48px 44px">
+      <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:32px">
+        <h3 style="font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(24px,3vw,34px);letter-spacing:-.02em;color:#F4F1EA;max-width:440px;line-height:1.1">Built for wherever short video sells.</h3>
+        <p style="font-size:15px;color:#8A918B;max-width:300px">Ad-ready formats delivered to spec for every channel and placement.</p>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:12px">
+        <sc-for list="{{ useCases }}" as="uc" hint-placeholder-count="6">
+          <div style="background:#0B0D0C;border:1px solid rgba(244,241,234,.1);border-radius:999px;padding:12px 20px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#D3D8D3;letter-spacing:.02em">{{ uc }}</div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS (light) -->
+  <section id="process" data-screen-label="Process" style="background:#F4F1EA;color:#0B0D0C;padding:110px 28px">
+    <div style="max-width:1080px;margin:0 auto">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.2em;color:#2C7A4D;margin-bottom:20px">HOW IT WORKS</div>
+      <h2 style="font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(32px,4.6vw,54px);line-height:1.03;letter-spacing:-.025em;color:#0B0D0C;max-width:620px">From brief to ad-ready<br>in one flow.</h2>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:52px;border-top:1px solid rgba(11,13,12,.12)">
+        <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
+          <div style="padding:28px 22px 8px;border-right:1px solid rgba(11,13,12,.1)">
+            <div style="font-family:'Archivo',sans-serif;font-weight:800;font-size:40px;color:#5AE48E;-webkit-text-stroke:1px #2C7A4D;margin-bottom:16px">{{ s.n }}</div>
+            <div style="font-family:'Archivo',sans-serif;font-weight:700;font-size:18px;color:#0B0D0C;margin-bottom:8px">{{ s.title }}</div>
+            <p style="font-size:14.5px;line-height:1.55;color:#5B615C">{{ s.body }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROOF -->
+  <section id="proof" data-screen-label="Proof" style="padding:110px 28px">
+    <div style="max-width:1080px;margin:0 auto">
+      <div style="text-align:center;max-width:600px;margin:0 auto 20px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.2em;color:#5AE48E;margin-bottom:20px">PROOF</div>
+        <h2 style="font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(32px,4.6vw,54px);line-height:1.03;letter-spacing:-.025em;color:#F4F1EA">The only score that counts is whether it sells.</h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:44px">
+        <sc-for list="{{ metrics }}" as="m" hint-placeholder-count="6">
+          <div style="background:{{ m.bg }};border:1px solid {{ m.border }};border-radius:18px;padding:28px 24px;min-height:150px;display:flex;flex-direction:column;justify-content:space-between">
+            <div style="border:1px dashed {{ m.dash }};border-radius:10px;height:52px;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:11px;color:{{ m.note }};letter-spacing:.06em">add result</div>
+            <div style="font-family:'Archivo',sans-serif;font-weight:700;font-size:15px;color:{{ m.fg }};margin-top:16px">{{ m.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <p style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:12px;color:#6B726C;margin-top:26px;letter-spacing:.03em">Placeholders. We only publish results we can prove.</p>
+    </div>
+  </section>
+
+  <!-- CLAIM / CTA band -->
+  <section id="claim" data-screen-label="Claim sample" style="background:#F4F1EA;color:#0B0D0C;padding:96px 28px">
+    <div style="max-width:900px;margin:0 auto;background:#0B0D0C;border-radius:28px;padding:60px 48px;position:relative;overflow:hidden">
+      <div style="position:absolute;top:-120px;right:-80px;width:420px;height:420px;background:radial-gradient(circle,rgba(90,228,142,.3),transparent 68%);filter:blur(10px);pointer-events:none"></div>
+      <div style="position:relative;max-width:560px">
+        <h2 style="font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(30px,4.4vw,50px);line-height:1.02;letter-spacing:-.025em;color:#F4F1EA">Claim your free AI UGC video sample.</h2>
+        <p style="margin-top:18px;font-size:17px;line-height:1.55;color:#AEB5AF">Send us your product. We send back one hyper-realistic UGC video, free, so you can judge the realism yourself before you commit to anything.</p>
+        <sc-if value="{{ submitted }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:28px;background:rgba(90,228,142,.12);border:1px solid rgba(90,228,142,.4);border-radius:12px;padding:18px 20px;font-size:15px;color:#5AE48E">Got it. We'll be in touch within one business day.</div>
+        </sc-if>
+        <form onSubmit="{{ onSubmit }}" style="margin-top:28px;display:flex;gap:10px;flex-wrap:wrap">
+          <input type="email" required placeholder="Your work email" style="flex:1 1 260px;min-width:0;background:#131615;border:1px solid rgba(244,241,234,.16);color:#F4F1EA;font-family:'Instrument Sans',sans-serif;font-size:15px;padding:15px 16px;border-radius:11px;outline:none">
+          <button type="submit" style="background:#5AE48E;color:#07130C;border:none;font-family:'Archivo',sans-serif;font-weight:700;font-size:15px;padding:15px 24px;border-radius:11px;cursor:pointer;white-space:nowrap">Claim my sample</button>
+        </form>
+        <p style="margin-top:14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#6B726C;letter-spacing:.04em">NO COST &middot; NO CATCH &middot; ONE CLIP, ON US</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" data-screen-label="FAQ" style="padding:100px 28px 20px">
+    <div style="max-width:820px;margin:0 auto">
+      <h2 style="font-family:'Archivo',sans-serif;font-weight:800;font-size:clamp(30px,4.2vw,48px);letter-spacing:-.025em;color:#F4F1EA;margin-bottom:40px">Questions, answered.</h2>
+      <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="5">
+        <div style="border-top:1px solid rgba(244,241,234,.1)">
+          <button onClick="{{ f.toggle }}" style="width:100%;background:none;border:none;cursor:pointer;text-align:left;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:24px 0;font-family:'Archivo',sans-serif;font-weight:600;font-size:19px;color:#F4F1EA">
+            <span>{{ f.q }}</span>
+            <span style="color:#5AE48E;font-size:24px;flex:0 0 auto;line-height:1">{{ f.sign }}</span>
+          </button>
+          <sc-if value="{{ f.open }}" hint-placeholder-val="{{ false }}">
+            <p style="padding:0 0 26px;font-size:16px;line-height:1.6;color:#AEB5AF;max-width:640px">{{ f.a }}</p>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer style="padding:80px 28px 40px;border-top:1px solid rgba(244,241,234,.08);margin-top:60px">
+    <div style="max-width:1080px;margin:0 auto;display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px">
+      <div>
+        <div style="display:flex;align-items:center;gap:9px;margin-bottom:16px">
+          <img src="assets/contego-mark.png" alt="Contego" style="height:24px;width:auto">
+          <span style="font-family:'Archivo',sans-serif;font-weight:800;font-size:20px;letter-spacing:-.02em;color:#F4F1EA">Contego</span>
+        </div>
+        <p style="font-size:15px;line-height:1.55;color:#8A918B;max-width:280px">Hyper-realistic AI UGC video for paid social. Creative that earns trust in the first second.</p>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:#6B726C;margin-bottom:16px">SERVICE</div>
+        <div style="display:flex;flex-direction:column;gap:12px"><a href="#work" style="color:#C7CDC8;font-size:15px">Work</a><a href="#service" style="color:#C7CDC8;font-size:15px">What we do</a><a href="#process" style="color:#C7CDC8;font-size:15px">Process</a><a href="#proof" style="color:#C7CDC8;font-size:15px">Proof</a></div>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:#6B726C;margin-bottom:16px">COMPANY</div>
+        <div style="display:flex;flex-direction:column;gap:12px"><a href="#faq" style="color:#C7CDC8;font-size:15px">FAQ</a><a href="#claim" style="color:#C7CDC8;font-size:15px">Free sample</a><a href="https://contegoagency.com" style="color:#C7CDC8;font-size:15px">contegoagency.com</a></div>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:#6B726C;margin-bottom:16px">CONTACT</div>
+        <div style="display:flex;flex-direction:column;gap:12px"><a href="#claim" style="color:#5AE48E;font-size:15px">Claim your sample</a><a href="#" style="color:#C7CDC8;font-size:15px">LinkedIn</a><a href="#" style="color:#C7CDC8;font-size:15px">Email us</a></div>
+      </div>
+    </div>
+    <div style="max-width:1080px;margin:56px auto 0;padding-top:24px;border-top:1px solid rgba(244,241,234,.08);display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#565C57;letter-spacing:.04em">
+      <span>&copy; 2026 CONTEGO</span>
+      <span>AI UGC AGENCY</span>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { openFaq: 0, submitted: false };
+
+  renderVals() {
+    const openFaq = this.state.openFaq;
+    const faqData = [
+      { q: "Will the video actually look real?", a: "That is the whole point. If a viewer can tell it is AI, we consider the video a failure. We build and review every clip so faces, voices, and delivery hold up frame by frame." },
+      { q: "Are you a tool I log into?", a: "No. Contego is an agency. We handle strategy, conversion-focused scripts, production, and delivery end to end. You get finished, ad-ready files, not software or raw output." },
+      { q: "What do I get in the free sample?", a: "Send us your product and offer. We send back one hyper-realistic UGC video, free, so you can judge the realism and the writing yourself before committing." },
+      { q: "How fast can you turn videos around?", a: "Much faster than traditional UGC. There is no creator scheduling, shipping, or reshoots, so we can test more hook variants every week." },
+      { q: "What channels do you deliver for?", a: "Paid social on TikTok, Meta, and YouTube Shorts, plus organic social, landing pages, and product explainers. Everything is delivered to spec for the placement." }
+    ];
+    const faqs = faqData.map((f, i) => ({
+      q: f.q, a: f.a, open: openFaq === i, sign: openFaq === i ? "\u2212" : "+",
+      toggle: () => this.setState({ openFaq: openFaq === i ? -1 : i })
+    }));
+
+    return {
+      logos: ["your logo", "your logo", "your logo", "your logo", "your logo", "your logo"],
+      pipeline: [
+        { n: 1, title: "Strategy", body: "We map the offer, audience, and angles worth testing before a single frame is made." },
+        { n: 2, title: "Scripts", body: "Conversion copywriters write the hooks and scripts that carry the video." },
+        { n: 3, title: "Production", body: "We generate hyper-realistic UGC video that does not read as AI." },
+        { n: 4, title: "Delivery", body: "You get finished, ad-ready files, cut to spec for every placement." }
+      ],
+      diffs: [
+        { title: "Realism", body: "Ours does not look like AI. That one difference decides whether viewers keep watching or scroll past." },
+        { title: "Scripts that convert", body: "AI video fails at the script, not the render. Our background is conversion copywriting, so every video is built to sell." },
+        { title: "Speed and volume", body: "No scheduling, shipping, or reshoots. More hook variants tested every week, at a fraction of traditional UGC cost." }
+      ],
+      useCases: ["TikTok ads", "Meta ads", "YouTube Shorts", "Organic social", "Landing pages", "Product explainers"],
+      steps: [
+        { n: "01", title: "Brief", body: "Tell us the product and the offer." },
+        { n: "02", title: "Script", body: "We write conversion-focused hooks and scripts." },
+        { n: "03", title: "Produce", body: "We generate hyper-realistic UGC video." },
+        { n: "04", title: "Test", body: "You get ad-ready files and fresh variants." }
+      ],
+      metrics: [
+        { label: "ROAS lift", bg: "rgba(90,228,142,.1)", border: "rgba(90,228,142,.3)", dash: "rgba(90,228,142,.4)", note: "#5AE48E", fg: "#F4F1EA" },
+        { label: "Cost per result", bg: "#101312", border: "rgba(244,241,234,.1)", dash: "rgba(244,241,234,.2)", note: "#6B726C", fg: "#F4F1EA" },
+        { label: "Hook rate", bg: "#101312", border: "rgba(244,241,234,.1)", dash: "rgba(244,241,234,.2)", note: "#6B726C", fg: "#F4F1EA" },
+        { label: "Videos shipped / month", bg: "#101312", border: "rgba(244,241,234,.1)", dash: "rgba(244,241,234,.2)", note: "#6B726C", fg: "#F4F1EA" },
+        { label: "Thumb-stop rate", bg: "#101312", border: "rgba(244,241,234,.1)", dash: "rgba(244,241,234,.2)", note: "#6B726C", fg: "#F4F1EA" },
+        { label: "Winning variants", bg: "rgba(90,228,142,.1)", border: "rgba(90,228,142,.3)", dash: "rgba(90,228,142,.4)", note: "#5AE48E", fg: "#F4F1EA" }
+      ],
+      faqs,
+      submitted: this.state.submitted,
+      onSubmit: (e) => { e.preventDefault(); this.setState({ submitted: true }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

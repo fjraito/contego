@@ -1,0 +1,132 @@
+<svg viewBox="0 0 800 420" fill="none" xmlns="http://www.w3.org/2000/svg" font-family="Inter, -apple-system, 'Segoe UI', sans-serif">
+  <defs>
+    <linearGradient id="h-bg" x1="0" y1="0" x2="800" y2="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0b0d0c"/>
+      <stop offset="1" stop-color="#0f1211"/>
+    </linearGradient>
+    <radialGradient id="h-glow-tl" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(120 40) rotate(45) scale(420)">
+      <stop offset="0" stop-color="#5AE48E" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="#5AE48E" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="h-glow-br" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(700 400) scale(380)">
+      <stop offset="0" stop-color="#43c07d" stop-opacity="0.10"/>
+      <stop offset="1" stop-color="#43c07d" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="h-ray" x1="230" y1="0" x2="420" y2="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#8befb0" stop-opacity="0.09"/>
+      <stop offset="1" stop-color="#8befb0" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="h-tile" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5AE48E" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#5AE48E" stop-opacity="0.02"/>
+    </linearGradient>
+    <linearGradient id="h-bar-win" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7EEBA8"/>
+      <stop offset="1" stop-color="#2c7a4d"/>
+    </linearGradient>
+    <linearGradient id="h-bar-dim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5AE48E" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#5AE48E" stop-opacity="0.06"/>
+    </linearGradient>
+    <filter id="h-soft" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="10"/>
+    </filter>
+    <filter id="h-soft-sm" x="-120%" y="-120%" width="340%" height="340%">
+      <feGaussianBlur stdDeviation="4"/>
+    </filter>
+  </defs>
+
+  <!-- base -->
+  <rect width="800" height="420" fill="url(#h-bg)"/>
+  <polygon points="230,0 400,0 520,420 300,420" fill="url(#h-ray)"/>
+  <rect width="800" height="420" fill="url(#h-glow-tl)"/>
+  <rect width="800" height="420" fill="url(#h-glow-br)"/>
+
+  <!-- fine grid -->
+  <g stroke="#5AE48E" stroke-opacity="0.05">
+    <path d="M0 105H800M0 210H800M0 315H800"/>
+    <path d="M160 0V420M320 0V420M480 0V420M640 0V420"/>
+  </g>
+
+  <!-- ambient particles -->
+  <g fill="#7EEBA8">
+    <circle cx="118" cy="66" r="3" opacity="0.8"/>
+    <circle cx="118" cy="66" r="8" opacity="0.18" filter="url(#h-soft-sm)"/>
+    <circle cx="708" cy="92" r="2.5" opacity="0.6"/>
+    <circle cx="708" cy="92" r="7" opacity="0.14" filter="url(#h-soft-sm)"/>
+    <circle cx="356" cy="368" r="2" opacity="0.5"/>
+    <circle cx="60" cy="300" r="2" opacity="0.4"/>
+  </g>
+
+  <!-- LEFT: one core idea tile -->
+  <g>
+    <rect x="72" y="150" width="112" height="112" rx="26" fill="url(#h-tile)" stroke="#5AE48E" stroke-opacity="0.38"/>
+    <rect x="80" y="158" width="96" height="96" rx="20" stroke="#5AE48E" stroke-opacity="0.10"/>
+    <!-- spark / idea glyph -->
+    <path d="M128 178 L133 198 L153 203 L133 208 L128 228 L123 208 L103 203 L123 198 Z" fill="#7EEBA8" opacity="0.95"/>
+    <path d="M128 178 L133 198 L153 203 L133 208 L128 228 L123 208 L103 203 L123 198 Z" fill="#7EEBA8" opacity="0.35" filter="url(#h-soft-sm)"/>
+    <text x="128" y="246" text-anchor="middle" font-size="10" letter-spacing="2.5" fill="#96cbaa" opacity="0.7">ONE IDEA</text>
+  </g>
+
+  <!-- branch lines to variant chips -->
+  <g stroke="#5AE48E" fill="none">
+    <path d="M184 206 C 240 206 240 122 292 122" stroke-opacity="0.35"/>
+    <path d="M184 206 C 236 206 236 178 292 178" stroke-opacity="0.35"/>
+    <path d="M184 206 C 236 206 236 234 292 234" stroke-opacity="0.55" stroke-width="1.5"/>
+    <path d="M184 206 C 240 206 240 290 292 290" stroke-opacity="0.35"/>
+  </g>
+
+  <!-- variant chips -->
+  <g font-size="11" letter-spacing="1">
+    <rect x="292" y="106" width="128" height="32" rx="16" fill="url(#h-tile)" stroke="#5AE48E" stroke-opacity="0.25"/>
+    <text x="356" y="126" text-anchor="middle" fill="#a6d6ba" opacity="0.75">problem-first</text>
+
+    <rect x="292" y="162" width="128" height="32" rx="16" fill="url(#h-tile)" stroke="#5AE48E" stroke-opacity="0.25"/>
+    <text x="356" y="182" text-anchor="middle" fill="#a6d6ba" opacity="0.75">proof-first</text>
+
+    <rect x="292" y="218" width="128" height="32" rx="16" fill="#123021" stroke="#7EEBA8" stroke-opacity="0.85"/>
+    <rect x="292" y="218" width="128" height="32" rx="16" fill="#7EEBA8" opacity="0.10" filter="url(#h-soft-sm)"/>
+    <text x="356" y="238" text-anchor="middle" fill="#7EEBA8">hook-led</text>
+
+    <rect x="292" y="274" width="128" height="32" rx="16" fill="url(#h-tile)" stroke="#5AE48E" stroke-opacity="0.25"/>
+    <text x="356" y="294" text-anchor="middle" fill="#a6d6ba" opacity="0.75">unboxing</text>
+  </g>
+
+  <!-- connector from winning chip to chart -->
+  <path d="M420 234 C 470 234 470 300 505 300" stroke="#7EEBA8" stroke-opacity="0.45" fill="none" stroke-dasharray="3 5"/>
+
+  <!-- RIGHT: hook-rate chart panel -->
+  <g>
+    <rect x="500" y="92" width="248" height="252" rx="22" fill="url(#h-tile)" stroke="#5AE48E" stroke-opacity="0.30"/>
+    <text x="526" y="126" font-size="10" letter-spacing="3" fill="#96cbaa" opacity="0.65">HOOK RATE</text>
+
+    <!-- baseline -->
+    <path d="M526 306 H 724" stroke="#5AE48E" stroke-opacity="0.20"/>
+
+    <!-- dim bars -->
+    <rect x="530" y="262" width="24" height="44" rx="5" fill="url(#h-bar-dim)"/>
+    <rect x="572" y="246" width="24" height="60" rx="5" fill="url(#h-bar-dim)"/>
+    <rect x="614" y="270" width="24" height="36" rx="5" fill="url(#h-bar-dim)"/>
+    <rect x="698" y="254" width="24" height="52" rx="5" fill="url(#h-bar-dim)"/>
+
+    <!-- winner bar -->
+    <rect x="656" y="158" width="24" height="148" rx="6" fill="url(#h-bar-win)"/>
+    <rect x="656" y="158" width="24" height="148" rx="6" fill="#7EEBA8" opacity="0.45" filter="url(#h-soft)"/>
+
+    <!-- winner badge -->
+    <g>
+      <rect x="626" y="128" width="88" height="24" rx="12" fill="#0e1a13" stroke="#7EEBA8" stroke-opacity="0.9"/>
+      <circle cx="641" cy="140" r="3.5" fill="#7EEBA8"/>
+      <text x="652" y="144" font-size="10" letter-spacing="1.5" fill="#7EEBA8">WINNER</text>
+    </g>
+
+    <!-- variant labels -->
+    <g font-size="9" fill="#96cbaa" opacity="0.5" text-anchor="middle" letter-spacing="1">
+      <text x="542" y="326">V1</text>
+      <text x="584" y="326">V2</text>
+      <text x="626" y="326">V3</text>
+      <text x="668" y="326">V4</text>
+      <text x="710" y="326">V5</text>
+    </g>
+  </g>
+</svg>
