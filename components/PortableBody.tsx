@@ -4,9 +4,8 @@ import type { PortableTextBlock } from "@portabletext/types";
 import { urlFor } from "@/lib/sanity/image";
 
 export function slugifyHeading(block: PortableTextBlock): string {
-  const text = Array.isArray(block.children)
-    ? block.children.map((c: { text?: string }) => c.text || "").join("")
-    : "";
+  const spans = (block.children ?? []) as Array<{ text?: string }>;
+  const text = spans.map((c) => c.text || "").join("");
   return text
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
