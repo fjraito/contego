@@ -3,7 +3,7 @@ import Nav from "@/components/Nav";
 import SectionLabel from "@/components/SectionLabel";
 import Claim from "@/components/Claim";
 import Footer from "@/components/Footer";
-import { POSTS } from "@/lib/content";
+import { getPosts } from "@/lib/blog-data";
 
 export const metadata: Metadata = {
   title: "Blog — Contego",
@@ -11,23 +11,60 @@ export const metadata: Metadata = {
     "Notes on AI UGC, creative strategy, and paid social from the Contego team.",
 };
 
-function Thumb({ tint, category, big }: { tint: string; category: string; big?: boolean }) {
+function Thumb({
+  tint,
+  category,
+  coverUrl,
+  big,
+}: {
+  tint: string;
+  category: string;
+  coverUrl?: string | null;
+  big?: boolean;
+}) {
   return (
     <div
-      className={`relative ${big ? "aspect-[16/8]" : "aspect-[16/10]"} overflow-hidden`}
-      style={{
-        background: `radial-gradient(70% 60% at 30% 20%, hsla(${tint},55%,.28), transparent 55%), radial-gradient(80% 70% at 82% 90%, rgba(44,122,77,.4), transparent 60%), linear-gradient(150deg,#12211a,#0a0e0c)`,
-      }}
+      className={`relative ${big ? "aspect-[16/8]" : "aspect-[16/10]"} overflow-hidden bg-cover bg-center`}
+      style={
+        coverUrl
+          ? { backgroundImage: `url(${coverUrl})` }
+          : {
+              background: `radial-gradient(70% 60% at 30% 20%, hsla(${tint},55%,.28), transparent 55%), radial-gradient(80% 70% at 82% 90%, rgba(44,122,77,.4), transparent 60%), linear-gradient(150deg,#12211a,#0a0e0c)`,
+            }
+      }
     >
-      <span className="absolute top-4 left-4 font-mono text-[10px] tracking-[.06em] text-[#5AE48E] px-2.5 py-1 rounded-full border border-[#5AE48E]/30 bg-[#07130c]/40">
+      <span className="absolute top-4 left-4 text-[10px] tracking-[.06em] text-[#5AE48E] px-2.5 py-1 rounded-full border border-[#5AE48E]/30 bg-[#07130c]/60">
         {category}
       </span>
     </div>
   );
 }
 
-export default function BlogPage() {
-  const [featured, ...rest] = POSTS;
+export default async function BlogPage() {
+  const posts = await getPosts();
+  const [featured, ...rest] = posts;
+
+  if (!featured) {
+    return (
+      <>
+        <Nav />
+        <section className="pt-[160px] pb-[160px] px-[28px] text-center">
+          <div className="max-w-[560px] mx-auto">
+            <div className="flex justify-center mb-6">
+              <SectionLabel>BLOG</SectionLabel>
+            </div>
+            <h1 className="font-display font-medium text-[clamp(30px,4vw,44px)] text-[#F4F1EA]">
+              No posts yet.
+            </h1>
+            <p className="mt-4 text-[16px] text-[#AEB5AF]">
+              Publish your first article in the Studio to see it here.
+            </p>
+          </div>
+        </section>
+        <Footer />
+      </>
+    );
+  }
   return (
     <>
       <Nav />
@@ -51,7 +88,7 @@ export default function BlogPage() {
         <div className="max-w-[1080px] mx-auto">
           {/* featured */}
           <a href={`/blog/${featured.slug}`} className="group block card card-sheen overflow-hidden mb-6 md:grid md:grid-cols-2">
-            <Thumb tint={featured.tint} category={featured.category} big />
+            <Thumb tint={featured.tint} category={featured.category} coverUrl={featured.coverUrl} big />
             <div className="p-8 flex flex-col justify-center">
               <div className="font-mono text-[11px] text-[#6B726C] mb-3">
                 {featured.date} · {featured.read}
@@ -76,7 +113,7 @@ export default function BlogPage() {
                 href={`/blog/${p.slug}`}
                 className="group block card overflow-hidden hover:border-[#5AE48E]/25 transition-colors"
               >
-                <Thumb tint={p.tint} category={p.category} />
+                <Thumb tint={p.tint} category={p.category} coverUrl={p.coverUrl} />
                 <div className="p-6">
                   <div className="font-mono text-[10.5px] text-[#6B726C] mb-2.5">
                     {p.date} · {p.read}
@@ -91,10 +128,6 @@ export default function BlogPage() {
               </a>
             ))}
           </div>
-
-          <p className="text-center font-mono text-[11px] text-[#565C57] tracking-[.04em] mt-10">
-            Sample posts — article pages coming soon.
-          </p>
         </div>
       </section>
 

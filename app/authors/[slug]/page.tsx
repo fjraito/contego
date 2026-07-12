@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Nav from "@/components/Nav";
 import Claim from "@/components/Claim";
 import Footer from "@/components/Footer";
-import { AUTHORS, postsByAuthor, type Author } from "@/lib/content";
+import { getAuthor, getPostsByAuthor, type BlogAuthor } from "@/lib/blog-data";
 
 export async function generateMetadata({
   params,
@@ -11,7 +11,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const a = AUTHORS[slug];
+  const a = await getAuthor(slug);
   return {
     title: a ? `${a.name}, ${a.role} — Contego` : "Author — Contego",
     description: a?.bio,
@@ -27,7 +27,18 @@ function Verified({ size = 18 }: { size?: number }) {
   );
 }
 
-function Avatar({ a, size }: { a: Author; size: number }) {
+function Avatar({ a, size }: { a: BlogAuthor; size: number }) {
+  if (a.imageUrl) {
+    // eslint-disable-next-line @next/next/no-img-element
+    return (
+      <img
+        src={a.imageUrl}
+        alt={a.name}
+        className="rounded-full object-cover flex-none"
+        style={{ width: size, height: size }}
+      />
+    );
+  }
   return (
     <span
       className="rounded-full flex items-center justify-center font-display font-semibold text-[#07130c] flex-none"
@@ -51,10 +62,10 @@ export default async function AuthorPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const author = AUTHORS[slug];
+  const author = await getAuthor(slug);
   if (!author) notFound();
 
-  const posts = postsByAuthor(slug);
+  const posts = await getPostsByAuthor(slug);
 
   return (
     <>
@@ -188,10 +199,14 @@ export default async function AuthorPage({
                 className="group block card overflow-hidden hover:border-[#5AE48E]/25 transition-colors"
               >
                 <div
-                  className="relative aspect-[16/10] overflow-hidden"
-                  style={{
-                    background: `radial-gradient(70% 60% at 30% 20%, hsla(${p.tint},55%,.28), transparent 55%), radial-gradient(80% 70% at 82% 90%, rgba(44,122,77,.4), transparent 60%), linear-gradient(150deg,#12211a,#0a0e0c)`,
-                  }}
+                  className="relative aspect-[16/10] overflow-hidden bg-cover bg-center"
+                  style={
+                    p.coverUrl
+                      ? { backgroundImage: `url(${p.coverUrl})` }
+                      : {
+                          background: `radial-gradient(70% 60% at 30% 20%, hsla(${p.tint},55%,.28), transparent 55%), radial-gradient(80% 70% at 82% 90%, rgba(44,122,77,.4), transparent 60%), linear-gradient(150deg,#12211a,#0a0e0c)`,
+                        }
+                  }
                 >
                   <span className="absolute top-4 left-4 font-mono text-[10px] tracking-[.06em] text-[#5AE48E] px-2.5 py-1 rounded-full border border-[#5AE48E]/30 bg-[#07130c]/40">
                     {p.category}
